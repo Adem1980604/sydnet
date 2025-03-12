@@ -38,5 +38,6 @@ app.use('/transaktionssider', transaktionsRuter);
     //res.status(200).json();
 
 // vi starter vores server og tjekker at den virker, ved console.log
-app.listen(port, () => {
-    console.log(`app listening on port ${port}`)});
+app.listen(port, () => { //Gør at porten er åben og lytter
+    console.log(`app listening on port ${port}`) //Tekst i konsollen
+});
