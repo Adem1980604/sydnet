@@ -25,12 +25,12 @@ app.get('/', function(req, res){
 
 // impoter routerne
 const brugerRuter = require('./routes/bruger');
-const prteføljeRuter = require('./routes/porteføljestyring');
+const  porteføljeRuter = require('./routes/porteføljestyring');
 const transaktionsRuter = require('./routes/transaktionssider');
 
 
 app.use('/bruger', brugerRuter);
-app.use('/porteføljestyring', prteføljeRuter);
+app.use('/porteføljestyring', porteføljeRuter);
 app.use('/transaktionssider', transaktionsRuter);
 
 

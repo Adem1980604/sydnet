@@ -7,11 +7,11 @@ router.get('/bruger-oprettelse', function(req, res) {
 });
 
 router.get('/brugeroplysning', function(req, res) { 
-    res.render('bruger-sider/brugeoplysning'); 
+    res.render('bruger-sider/brugeroplysning'); 
 });
 
-router.get('/indsændelser', function(req, res) { 
-    res.render('bruger-sider/indsændelser'); 
+router.get('/indsænder', function(req, res) { 
+    res.render('bruger-sider/indsænder'); 
 });
 
 router.get('/log-ind', function(req, res) { 
