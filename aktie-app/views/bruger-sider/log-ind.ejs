@@ -24,8 +24,20 @@
         <label>Agangskode:</label>
         <input type="password" name="adgangkode" id="adgangkode" required>
     </div>
-
+<button type="submit"> Log-ind</button>
     </form>
 
+ <script>
+    // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
+        document.getElementById("logind_form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            let logIndData = {
+                brugernavn: document.getElementById("brugernavn").value,
+                adgangkode: document.getElementById("adgangskode").value
+            };
+            
+        })
+    </script>
 </body>
 </html>
