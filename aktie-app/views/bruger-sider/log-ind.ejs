@@ -21,11 +21,11 @@
         <div class="log-ind-formual">
 
             <h1>Log-ind</h1>
-        <label>Bruger Navn:</label>
-        <input type="text" name="brugernavn" id="brugernavn" required>
+        <label for ="brugernavn">Bruger Navn:</label>
+        <input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn" required>
 
-        <label>Agangskode:</label>
-        <input type="password" name="adgangkode" id="adgangkode" required>
+        <label for = "adgangskode">Agangskode:</label>
+        <input type="password" name="adgangskode"  title="Indtast din adgangskode"  id="adgangskode" required autocomplete="current-password">
 
         <a href="/bruger/bruger-oprettelse">Opret Bruger</a>
         <a href="/bruger/nulstill">Glemt adgangskode?</a>
@@ -41,9 +41,9 @@
             event.preventDefault();
 
             let logIndData = {
-                brugernavn: document.getElementById("brugernavn").value,
-                adgangkode: document.getElementById("adgangskode").value
-            };
+    brugernavn: document.getElementById("brugernavn").value,
+    adgangskode: document.getElementById("adgangskode").value 
+};
 
 const svar = await fetch('/bruger/log-ind', {
     method: 'POST',
@@ -57,10 +57,8 @@ const resultat = await svar.json(); // venter på,at serveren svarer
         if(svar.status === 200){
 // Hvis login er godkendt,send brugeren til forsiden (index.ejs)
             window.location.href = "/";
-        } else if (svar.status === 401){
-            alert("Fejl i enten brugernavn eller adgangskode") 
         }  else {
-            alert("Der opstod en fejl,prøv igen senere")
+            alert(resultat.message) // Fejlmeddelse som vi skriver i vores bruger.js 
         }
     });
         // Hvad mangler der: jeg tror vi skal lave noget await fetch som fanger det data der bliver indsat i SQL databasen
