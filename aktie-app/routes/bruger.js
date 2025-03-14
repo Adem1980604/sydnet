@@ -22,4 +22,5 @@ router.get('/nulstill', function(req, res) {
     res.render('bruger-sider/nulstill'); 
 });
 
+
 module.exports = router; 

@@ -3,6 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="/style-logInd.css"> 
+    
     <meta charset="UTF-8"> 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +12,26 @@
 </head>
 <body>
     <div class="jumbotron">
-        <h1>Log-ind</h1>
+      <div class="top-text">Sydnet</div>
+      <div class="under-text">Lad dine penge arbejde for dig</div> 
     </div>
     
     <form id="logind_form">
 
-        <div class="brugernavn">
+        <div class="log-ind-formual">
+
+            <h1>Log-ind</h1>
         <label>Bruger Navn:</label>
         <input type="text" name="brugernavn" id="brugernavn" required>
-    </div>
 
-    <div class="adgangskode">
         <label>Agangskode:</label>
         <input type="password" name="adgangkode" id="adgangkode" required>
+
+        <a href="/bruger/bruger-oprettelse">Opret Bruger</a>
+        <a href="/bruger/nulstill">Glemt adgangskode?</a>
+    
     </div>
+
 <button type="submit"> Log-ind</button>
     </form>
 
@@ -36,8 +44,13 @@
                 brugernavn: document.getElementById("brugernavn").value,
                 adgangkode: document.getElementById("adgangskode").value
             };
+
             
-        })
+            
+        }); 
+        // Hvad mangler der: jeg tror vi skal lave noget await fetch som fanger det data der bliver indsat i SQL databasen
+        // lav ling til skift adgangskode og opret bruger, plus når du trykker på logind skal den tage dig til mainpage 
+        // kig igennem den artikel jeg har fundet om HTMl for logind side 
     </script>
 </body>
 </html>
