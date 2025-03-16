@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/style-logInd.css"> 
+    
+    <meta charset="UTF-8"> 
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nulstil Adgangskode</title>
 </head>
 <body>
-    <h1>Siden hvor vi nulstiller vores adgangskode</h1>
+    <div class="jumbotron">
+      
+    </div>
+    
+    <form id="nulstill_form">
+
+        <div class="nulstill-formular">
+
+            <h1>Har du glemt din adgangskode?</h1>
+        <label for ="Ny Adgangskode">Skriv ny adgangskode:</label>
+        <input type="password" title="Indtast din brugernavn"  id="ny-adgangskode" required>
+
+        <label for = "Gentage Adgangskode">Gentag Adgangskode:</label>
+        <input type="password" title="Indtast din adgangskode"  id="ny-adgangskodeIgen" required autocomplete="current-password">
+
+        <a href="./log-ind">Tilbage</a> 
+    
+    </div>
+
+<button type="submit"> Skift Adgangskode</button>
+    </form>
+
+ <script>
+// vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
+document.getElementById("nulstill_form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+   let nyAdgangskode = document.getElementById("ny-adgangskode").value
+    let nyAdgangskodeIgen = document.getElementById("ny-adgangskodeIgen").value 
+
+
+const svar = await fetch('/bruger/nulstill', {
+    method: 'POST',
+    headers:{"Content-Type": "application/json"},
+    body: JSON.stringify({nyAdgangskode,nyAdgangskodeIgen}) 
+        }); 
+
+const resultat = await svar.json(); // venter på,at serveren svarer
+
+// vi laver et if statment for at tjekke om bruger har en konto
+        if(resultat.success){
+            alert("Adgangskoden er ændret");
+// Hvis angangkoden er ændet på den rigtig måde,send brugeren til forsiden (log-ind.ejs)
+            window.location.href = "/log-ind";
+        }  else {
+            alert("Kunne ikke nulstille adgangskoden. Prøv igen!") // Fejlmeddelse som vi skriver i vores bruger.js 
+        }
+    });
+    </script>
 </body>
 </html>

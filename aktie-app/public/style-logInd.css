@@ -84,9 +84,6 @@ body {
     font-weight: bold;
    
 }
-
-
-
 /* Labels */
 label {
     display: block;
@@ -124,3 +121,21 @@ button {
 button:hover {
     background-color: #4500b0;
 }
+
+/* Gør linket til en pæn knap */
+a {
+    display: inline-block; /* Gør det til en blok, så padding virker */
+    text-decoration: none; /* Fjern standard understregning */
+    font-size: 16px;
+ 
+    color: white; /* Hvid tekst */
+    background-color: #4500b0;
+    padding: 10px 20px; /* Gør knappen større */
+    border-radius: 5px; /* Afrundede kanter */
+    transition: background-color 0.3s, transform 0.2s; /* Glidende effekt */
+
+    margin-top: 20px; /* Giver lidt mere luft mellem inputfelt og knappen */
+    margin-bottom: 15px;
+}
+
+

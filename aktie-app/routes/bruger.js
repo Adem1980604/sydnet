@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 // vi sætter vores ROUTES op for BRUGER SIDER.
 // GET bruges til at vise log-ind siden 
 
@@ -22,7 +23,7 @@ router.get('/log-ind', function(req, res) {
 
 //POST-rute vil håndeter vores Login-data 
 router.post('/log-ind',(req,res) => {
-    console.log(req.body);
+    console.log(req.body); // debugging
   const  {brugernavn, adgangskode} = req.body;
 
   if (brugernavn === "m" && adgangskode === "f") { 
@@ -38,6 +39,23 @@ router.post('/log-ind',(req,res) => {
 router.get('/nulstill', function(req, res) { 
     res.render('bruger-sider/nulstill'); 
 });
+
+//POST-rute vil håndeter vores Login-data 
+router.post('/nulstill',(req,res) => {
+
+    console.log(req.body); // debugging
+  const  { nyAdgangskode, nyAdgangskodeIgen } = req.body;
+
+  if (nyAdgangskode === nyAdgangskodeIgen) { 
+    res.json({success: true, message: "Ændring af adgangskode var succesfuld"});
+} else { 
+
+// dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK.
+    res.status(400).json({success: false, message: "OBS. indtast samme adgangskode i begge felter "});
+}
+});
+// Her ville man normalt opdatere adgangskoden i databasen
+
 
 
 module.exports = router; 
