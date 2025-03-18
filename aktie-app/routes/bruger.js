@@ -9,8 +9,8 @@ router.get('/bruger-oprettelse', function(req, res) {
     res.render('bruger-sider/bruger-oprettelse'); 
 });
 
-router.get('/brugeroplysning', function(req, res) { 
-    res.render('bruger-sider/brugeroplysning'); 
+router.get('/kontoplysninger', function(req, res) { 
+    res.render('bruger-sider/kontoplysninger'); 
 });
 
 router.get('/indsænder', function(req, res) { 

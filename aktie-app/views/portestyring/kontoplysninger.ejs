@@ -1,0 +1,106 @@
+<!--OBS hvis du vil se siden skal du skrive http://localhost:4000/portefoljestyring/kontoplysninger/view -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontopolysninger</title>
+    <link rel="stylesheet" type="text/css" href="/kontooplyStyle.css"> 
+</head>
+<body>
+
+    
+    <div class="container">
+        <!-- Sidebar til formular -->
+        <aside class="sidebar">
+            <h2>Opret Konto</h2>
+            <form id="konto_form">
+                <label for="navn">Navn:</label>
+                <input type="text" id="navn" required>
+
+                <label for="valuta">Valuta:</label>
+                <input type="text" id="valuta" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="saldo">Saldo:</label>
+                <input type="number" id="saldo" required>
+
+                <label for="dato">Oprettelsesdato:</label>
+                <input type="date" id="dato" required>
+
+                <label for="bank">Tilknyttet Bank:</label>
+                <input type="text" id="bank" required>
+
+                <button type="button" onclick="sendkonto()">Opret konto</button>
+            </form>
+        </aside>
+
+        <!-- Hovedsektion til kontoliste -->
+        <main class="content">
+            <h1>Eksisterende Konti</h1>
+            <div id="konto-container"></div>
+        </main>
+    </div>
+
+
+
+    <script>
+        // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
+            
+    async function sendkonto(){
+            let nyKonto = {
+        navn: document.getElementById("navn").value,
+        valuta: document.getElementById("valuta").value, 
+        email: document.getElementById("email").value,
+        saldo: document.getElementById("saldo").value,
+        dato: document.getElementById("dato").value,
+        bank: document.getElementById("bank").value 
+    };
+
+    
+    const svar = await fetch('/portefoljestyring/kontoplysninger', {
+        method: 'POST',
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify(nyKonto) 
+            }); 
+    
+            if (svar.ok) {
+            await hentKonti(); 
+            };
+ 
+    };
+
+    async function hentKonti() {
+    const response = await fetch('/portefoljestyring/kontoplysninger');
+    const konti = await response.json();
+
+
+    const container = document.getElementById("konto-container");
+    container.innerHTML = ""; // Ryd gammel liste
+
+
+
+    for (let i = 0; i < konti.length; i++) {
+        const kontoElement = document.createElement("div");
+        kontoElement.classList.add("konto-liste");
+
+        kontoElement.innerHTML = `
+            <p><strong>Navn:</strong> ${konti[i].navn}</p>
+            <p><strong>Valuta:</strong> ${konti[i].valuta}</p>
+            <p><strong>Email:</strong> ${konti[i].email}</p>
+            <p><strong>Saldo:</strong> ${konti[i].saldo} DKK</p>
+            <p><strong>Oprettelsesdato:</strong> ${konti[i].dato}</p>
+            <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
+            <hr>
+        `;
+      
+    }
+}
+window.hentKonti = hentKonti;
+hentKonti();
+
+        </script>
+
+</body>
+</html>

@@ -10,6 +10,8 @@ const port = 4000;
 
 // her sætter vi EJS som template, så vi kan bruge "dynamiske" HTML-sider
 app.set('view engine', 'ejs'); 
+app.set('views', path.join(__dirname, 'views'));
+
 
 // dette håndere vores JSON-data altså POST request
 app.use(express.json()); 
@@ -21,16 +23,14 @@ app.use(express.static('public'));
 app.get('/', function(req, res){ 
     res.render('index')
 }); 
-
-
 // impoter routerne
 const brugerRuter = require('./routes/bruger');
-const  porteføljeRuter = require('./routes/porteføljestyring');
+const portefoljeRuter = require('./routes/portefoljestyring');
 const transaktionsRuter = require('./routes/transaktionssider');
 
 
 app.use('/bruger', brugerRuter);
-app.use('/porteføljestyring', porteføljeRuter);
+app.use('/portefoljestyring', portefoljeRuter);
 app.use('/transaktionssider', transaktionsRuter);
 
 
