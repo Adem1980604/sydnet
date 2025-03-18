@@ -3,9 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sydnet bruger-oprettelse</title>
+
+    <link rel="stylesheet" href= "mystyle.css"> <!--Find den rigtige css fil-->
+
 </head>
 <body>
-    <h1>Her er siden hvor vi skal oprette ny bruger </h1>
+    <!-- Teksten på siden-->
+    <h1>Opret en bruger</h1>
+    <p>Indtast dit brugernavn og dit password herunder</p>
+
+    <form id="Opret kode">
+
+        <label for="Brugernavn">Indtast brugernavn(mindst 8 tegn)</label>
+        <input type="text" name="Brugernavn" id="1" minlength="8" required>
+
+        <label for="Password">Indtast Password(Skal indeholde 8 eller flere tegn)</label>
+        <input type="text" name="Password" id="2" pattern=".{8,16}" required>
+
+        <label for="Password">Repeat Password(Skal indeholde mellem 8 og 16 tegn)</label>
+        <input type="text" name="Repeat Password" id="3" pattern=".{8,16}" required>
+
+        <button type="button" id = "knap">Submit</button>
+        <p id ="demo"></p>
+
+    </form>
+    <!--Tilføjer JS til HTML fil-->
+    <script>
+        let Username = document.getElementById("1")
+        let Password = document.getElementById("2")
+        let RepeatPassword = document.getElementById("3")
+
+        let element = document.getElementById("knap");
+        element.addEventListener("click", myFunction);
+
+        //Tjekker at password og repeat password er det samme
+        function myFunction() {
+            if(Password.value == RepeatPassword.value){
+                //Udskriver en pop op alert
+                alert("Konto er oprettet for brugeren " + Username.value);
+                //Udskriver tekst på selve siden
+                document.getElementById("demo").innerHTML = "Konto er oprettet for brugeren " + Username.value;
+                //Ændre background farven på knappen til blå
+                element.style.backgroundColor = "Blue"
+            } else {
+                //udskriver en pop op alert
+                alert("Kodeord ikke ens. Prøv igen!");
+                //Udskriver tekst på selve siden
+                document.getElementById("demo").innerHTML = "Kodeord ikke ens. Prøv igen!";
+                //Søger for at Password-felterne bliver ryddet, hvis de er forkerte
+                Password.value = "";
+                RepeatPassword.value= "";
+                //Ændre background farven på knappen tilbage til default
+                element.style.backgroundColor = ""
+            };
+        };
+    </script>
 </body>
 </html>
