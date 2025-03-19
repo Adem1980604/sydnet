@@ -61,4 +61,4 @@ router.post('/nulstill',(req,res) => {
 module.exports = router; 
 
 
-// hej ffhfhufh
+
