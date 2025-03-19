@@ -31,7 +31,7 @@ router.post('/log-ind',(req,res) => {
 } else { 
 
 // dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK
-    res.status(401).json({success: false, message: "Forkert brugernavn eller adgangskode"});
+    res.status(400).json({success: false, message: "Forkert brugernavn eller adgangskode"});
 }
 });
 

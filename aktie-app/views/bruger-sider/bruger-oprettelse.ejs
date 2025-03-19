@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sydnet bruger-oprettelse</title>
 
-    <link rel="stylesheet" href= "mystyle.css"> <!--Find den rigtige css fil-->
+    <link rel="stylesheet" type="text/css" href="/style-logInd.css">
 
 </head>
 <body>
@@ -19,10 +19,10 @@
         <input type="text" name="Brugernavn" id="1" minlength="8" required>
 
         <label for="Password">Indtast Password(Skal indeholde 8 eller flere tegn)</label>
-        <input type="text" name="Password" id="2" pattern=".{8,16}" required>
+        <input type="password" name="Password" id="2" pattern=".{8,16}" required>
 
         <label for="Password">Repeat Password(Skal indeholde mellem 8 og 16 tegn)</label>
-        <input type="text" name="Repeat Password" id="3" pattern=".{8,16}" required>
+        <input type="password" name="Repeat Password" id="3" pattern=".{8,16}" required>
 
         <button type="button" id = "knap">Submit</button>
         <p id ="demo"></p>
@@ -36,6 +36,8 @@
         let element = document.getElementById("knap");
         element.addEventListener("click", myFunction);
 
+    
+
         //Tjekker at password og repeat password er det samme
         function myFunction() {
             if(Password.value == RepeatPassword.value){
@@ -43,8 +45,8 @@
                 alert("Konto er oprettet for brugeren " + Username.value);
                 //Udskriver tekst på selve siden
                 document.getElementById("demo").innerHTML = "Konto er oprettet for brugeren " + Username.value;
-                //Ændre background farven på knappen til blå
-                element.style.backgroundColor = "Blue"
+              
+                window.location.href = "/bruger-sider/log-ind" // virker ikke :(( 
             } else {
                 //udskriver en pop op alert
                 alert("Kodeord ikke ens. Prøv igen!");
@@ -53,8 +55,7 @@
                 //Søger for at Password-felterne bliver ryddet, hvis de er forkerte
                 Password.value = "";
                 RepeatPassword.value= "";
-                //Ændre background farven på knappen tilbage til default
-                element.style.backgroundColor = ""
+      
             };
         };
     </script>
