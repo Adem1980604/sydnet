@@ -8,7 +8,6 @@ const path = require('path');
 const app = express(); 
 const port = 4000;
 
-//test
 
 // her sætter vi EJS som template, så vi kan bruge "dynamiske" HTML-sider
 app.set('view engine', 'ejs'); 
