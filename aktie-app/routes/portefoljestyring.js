@@ -29,7 +29,7 @@ router.get('/kontoplysninger/view', function(req, res) {
   // Opretter en POST til tilføjelse af konto 
 
   router.post('/kontoplysninger', function(req,res){
-    console.log("🔹 Modtaget data fra frontend:", req.body); 
+    console.log(req.body); 
     
     const nyKonto = {
           navn: req.body.navn,
@@ -41,8 +41,6 @@ router.get('/kontoplysninger/view', function(req, res) {
      };
      kontoplysningerArray.push(nyKonto) // pusheri vores array før vi har opsat databassen
 
-     console.log("✅ Ny konto tilføjet:", nyKonto); // ✅ Log ny konto
-    console.log("📋 Aktuel liste med konti:", kontoplysningerArray); // ✅ Log hele listen
      res.status(201).json({ message: "Konto oprettet!", data: nyKonto }); //Send svar som JSON
      
 });
