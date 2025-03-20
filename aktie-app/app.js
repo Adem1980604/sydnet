@@ -25,9 +25,9 @@ app.get('/', function(req, res){
     res.render('index')
 }); 
 // impoter routerne
-const brugerRuter = require('./routes/bruger');
-const portefoljeRuter = require('./routes/portefoljestyring');
-const transaktionsRuter = require('./routes/transaktionssider');
+const brugerRuter = require('./routers/bruger');
+const portefoljeRuter = require('./routers/portefoljestyring');
+const transaktionsRuter = require('./routers/transaktionssider');
 
 
 app.use('/bruger', brugerRuter);
