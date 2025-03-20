@@ -1,4 +1,4 @@
-//Test GitHub
+
 /*
 Lav hver css side til hver ejs fil ind i public, 
 lav bruger oplysninger side 
