@@ -1,4 +1,4 @@
-//Test GitHub
+
 /*
 Lav hver css side til hver ejs fil ind i public, 
 lav bruger oplysninger side 
@@ -7,6 +7,7 @@ const express = require('express');
 const path = require('path');
 const app = express(); 
 const port = 4000;
+
 
 // her sætter vi EJS som template, så vi kan bruge "dynamiske" HTML-sider
 app.set('view engine', 'ejs'); 
@@ -24,9 +25,9 @@ app.get('/', function(req, res){
     res.render('index')
 }); 
 // impoter routerne
-const brugerRuter = require('./routes/bruger');
-const portefoljeRuter = require('./routes/portefoljestyring');
-const transaktionsRuter = require('./routes/transaktionssider');
+const brugerRuter = require('./routers/bruger');
+const portefoljeRuter = require('./routers/portefoljestyring');
+const transaktionsRuter = require('./routers/transaktionssider');
 
 
 app.use('/bruger', brugerRuter);
