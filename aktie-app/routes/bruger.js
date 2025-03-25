@@ -60,4 +60,6 @@ router.post('/nulstill',(req,res) => {
 
 module.exports = router; 
 
+git add <file>
 
+//ejreijrier
