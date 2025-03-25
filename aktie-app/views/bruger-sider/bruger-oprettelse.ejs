@@ -9,55 +9,57 @@
 
 </head>
 <body>
-    <!-- Teksten på siden-->
-    <h1>Opret en bruger</h1>
-    <p>Indtast dit brugernavn og dit password herunder</p>
+    <div class="bruger-oprettelse">
+    <div class="top-text">Opret en bruger</div>
+    <div class="under-text">brugernavn og dit password herunder</div>
+     
 
-    <form id="Opret kode">
+    <div class="login-container">
+        <form id="opretForm">
 
-        <label for="Brugernavn">Indtast brugernavn(mindst 8 tegn)</label>
-        <input type="text" name="Brugernavn" id="1" minlength="8" required>
-
-        <label for="Password">Indtast Password(Skal indeholde 8 eller flere tegn)</label>
-        <input type="password" name="Password" id="2" pattern=".{8,16}" required>
-
-        <label for="Password">Repeat Password(Skal indeholde mellem 8 og 16 tegn)</label>
-        <input type="password" name="Repeat Password" id="3" pattern=".{8,16}" required>
-
-        <button type="button" id = "knap">Submit</button>
-        <p id ="demo"></p>
-
-    </form>
-    <script>
-        let Username = document.getElementById("1")
-        let Password = document.getElementById("2")
-        let RepeatPassword = document.getElementById("3")
-
-        let element = document.getElementById("knap");
-        element.addEventListener("click", myFunction);
-
+            <label for="Brugernavn">Indtast brugernavn(mindst 8 tegn)</label>
+            <input type="text" name="Brugernavn" id="1" minlength="8" required>
     
+            <label for="Password">Indtast Password(Skal indeholde 8 eller flere tegn)</label>
+            <input type="password" name="Password" id="2" pattern=".{8,16}" required>
+    
+            <label for="Password">Repeat Password(Skal indeholde mellem 8 og 16 tegn)</label>
+            <input type="password" name="Repeat Password" id="3" pattern=".{8,16}" required>
+    
+            <button type="submit" id = "knap">Opret Bruger</button>
+          
+    
+        </form>  
+    </div>
+</div>
 
-        //Tjekker at password og repeat password er det samme
-        function myFunction() {
-            if(Password.value == RepeatPassword.value){
-                //Udskriver en pop op alert
-                alert("Konto er oprettet for brugeren " + Username.value);
-                //Udskriver tekst på selve siden
-                document.getElementById("demo").innerHTML = "Konto er oprettet for brugeren " + Username.value;
-              
-                window.location.href = "/bruger-sider/log-ind" // virker ikke :(( 
-            } else {
-                //udskriver en pop op alert
-                alert("Kodeord ikke ens. Prøv igen!");
-                //Udskriver tekst på selve siden
-                document.getElementById("demo").innerHTML = "Kodeord ikke ens. Prøv igen!";
-                //Søger for at Password-felterne bliver ryddet, hvis de er forkerte
-                Password.value = "";
-                RepeatPassword.value= "";
-      
-            };
-        };
+    <script>
+
+        document.getElementById("opretForm").addEventListener("submit", async function(element){
+            element.preventDefault();
+     
+         
+        let username = document.getElementById("1").value;
+        let password = document.getElementById("2").value;
+        let repeatPassword = document.getElementById("3").value;
+
+        const svar = await fetch('/bruger/register', {
+    method: 'POST',
+    headers:{"Content-Type": "application/json"},
+    body: JSON.stringify({username, password,repeatPassword}) 
+        }); 
+
+       if(svar.redirected){
+        window.location.href = svar.url;
+        return;
+       }
+       if(!svar.ok){
+        alert("Der er sket en fejl, prøv igen !")
+        return; 
+       }
+    });
+
+
     </script>
 </body>
 </html>

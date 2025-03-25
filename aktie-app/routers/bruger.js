@@ -21,6 +21,23 @@ router.get('/log-ind', function(req, res) {
     res.render('bruger-sider/log-ind'); 
 });
 
+
+// HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
+router.post('/register', (req, res) => {
+    const { username, password, repeatPassword } = req.body;
+
+    // Tjek for tomme felter først
+    if (!username || !password || !repeatPassword) {
+        return res.status(400).json({ success: false, message: "Udfyld alle felter" });
+    }
+        // Tjek om adgangskoderne matcher
+        if (password !== repeatPassword) {
+            return res.status(400).json({ success: false, message: "Adgangskoderne matcher ikke" });
+        }
+
+    return res.redirect('/bruger/log-ind');
+});
+
 //POST-rute vil håndeter vores Login-data 
 router.post('/log-ind',(req,res) => {
     console.log(req.body); // debugging
