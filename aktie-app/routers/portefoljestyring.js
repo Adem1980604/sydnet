@@ -22,9 +22,13 @@ router.get('/kontoplysninger/view', function(req, res) {
     res.render('portestyring/kontoplysninger');
 });
 
+router.get('/konto-detalje', function(req, res) { 
+    res.render('portestyring/kontoplysninger');
+    // her skla vi på et eller andet måde tage fat i en id for hvert konto der lsaves ved brug af SQL, 
+
+});
+
   // vi laver en test om kontooplysninger virker
-
-
 
   // Opretter en POST til tilføjelse af konto 
 

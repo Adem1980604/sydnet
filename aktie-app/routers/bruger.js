@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const { sql, forbindDatabase } = require('../db'); // eller './db' alt efter hvor din fil ligger
+require('dotenv').config(); // sørger for at tage fat i vores env fil
+
+
 
 // vi sætter vores ROUTES op for BRUGER SIDER.
 // GET bruges til at vise log-ind siden 
@@ -13,8 +17,8 @@ router.get('/kontoplysninger', function(req, res) {
     res.render('bruger-sider/kontoplysninger'); 
 });
 
-router.get('/indsænder', function(req, res) { 
-    res.render('bruger-sider/indsænder'); 
+router.get('/indsaender', function(req, res) { 
+    res.render('bruger-sider/indsaender'); 
 });
 
 router.get('/log-ind', function(req, res) { 
@@ -23,7 +27,7 @@ router.get('/log-ind', function(req, res) {
 
 
 // HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
-router.post('/register', (req, res) => {
+router.post('/register', async(req, res) => {
     const { username, password, repeatPassword } = req.body;
 
     // Tjek for tomme felter først
@@ -34,8 +38,17 @@ router.post('/register', (req, res) => {
         if (password !== repeatPassword) {
             return res.status(400).json({ success: false, message: "Adgangskoderne matcher ikke" });
         }
+        
+  // skaber en forbindelse med db
+  const db = await forbindDatabase();
 
-    return res.redirect('/bruger/log-ind');
+
+  await db.request()
+    .input('name', sql.NVarChar(100), username)
+    .input('password', sql.NVarChar(100), password)
+    .query('INSERT INTO bruger.oplysninger (username, password) VALUES (@name, @password)');
+
+  return res.redirect('/bruger/log-ind');
 });
 
 //POST-rute vil håndeter vores Login-data 
@@ -51,7 +64,6 @@ router.post('/log-ind',(req,res) => {
     res.status(400).json({success: false, message: "Forkert brugernavn eller adgangskode"});
 }
 });
-
 
 router.get('/nulstill', function(req, res) { 
     res.render('bruger-sider/nulstill'); 
@@ -71,8 +83,19 @@ router.post('/nulstill',(req,res) => {
     res.status(400).json({success: false, message: "OBS. indtast samme adgangskode i begge felter "});
 }
 });
-// Her ville man normalt opdatere adgangskoden i databasen
 
+// vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsædense der laves
+router.post('indsend',(req,res)=>{
+const oplysninger = req.body; // henter oplysninger som: id på indsændelsen, valuta og værdi
+const nu = newDate(); // tager fat i nutidens dato
+const dato = nu.toISOString() // gør det letsæsligt når vi skal bruge det 
+const tid = nu.toTimeString()
+
+const indsendelse = { dato, tid, værdi, valuta };
+
+res.render({ indsendelse });
+}
+)
 
 
 module.exports = router; 

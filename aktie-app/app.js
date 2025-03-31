@@ -1,8 +1,4 @@
 
-/*
-Lav hver css side til hver ejs fil ind i public, 
-lav bruger oplysninger side 
-*/
 const express = require('express'); 
 const path = require('path');
 const app = express(); 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Kontooplysninger</title>
+  <link rel="stylesheet" href="/kontooplyStyle.css">
+</head>
+<body>
+
+<div class="container">
+  <aside class="sidebar">
+    <h2>Opret Konto</h2>
+    <form id="konto_form">
+      <label for="navn">Navn:</label>
+      <input type="text" id="navn" required>
+
+      <label for="valuta">Valuta:</label>
+      <input type="text" id="valuta" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+
+      <label for="saldo">Saldo:</label>
+      <input type="number" id="saldo" required>
+
+      <label for="dato">Oprettelsesdato:</label>
+      <input type="date" id="dato" required>
+
+      <label for="bank">Tilknyttet Bank:</label>
+      <input type="text" id="bank" required>
+
+      <button type="button" onclick="sendkonto()">Opret konto</button>
+    </form>
+  </aside>
+
+  <main class="content">
+    <h1>Eksisterende Konti</h1>
+    <div id="konto-container"></div>
+  </main>
+</div>
+
+<!-- Popup til indsættelse -->
+<div id="popup" style="display:none; border:1px solid black; padding:10px; margin-top:20px;">
+  <h3>Indsæt penge på konto</h3>
+  <label for="værdi">Beløb:</label>
+  <input type="text" id="værdi"><br>
+
+  <label for="valuta">Valuta:</label>
+  <select id="valuta">
+    <option value="DKK">DKK</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+  </select><br><br>
+
+  <button onclick="indsendData()">Indsend</button>
+  <button onclick="lukPopup()">Luk</button>
+</div>
+
+<div id="resultat"></div>
+
+<script>
+let valgtKontoId = null;
+
+// Opret ny konto
+async function sendkonto() {
+  let nyKonto = {
+    navn: document.getElementById("navn").value,
+    valuta: document.getElementById("valuta").value,
+    email: document.getElementById("email").value,
+    saldo: document.getElementById("saldo").value,
+    dato: document.getElementById("dato").value,
+    bank: document.getElementById("bank").value
+  };
+
+  const svar = await fetch('/portefoljestyring/kontoplysninger', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(nyKonto)
+  });
+
+  if (svar.ok) {
+    await hentKonti();
+  }
+}
+
+// Hent og vis konti
+async function hentKonti() {
+  const response = await fetch('/portefoljestyring/kontoplysninger');
+  const konti = await response.json();
+
+  const container = document.getElementById("konto-container");
+  container.innerHTML = "";
+
+  for (let i = 0; i < konti.length; i++) {
+    const kontoElement = document.createElement("div");
+    kontoElement.classList.add("konto-liste");
+
+    kontoElement.innerHTML = `
+      <p><strong>Navn:</strong> ${konti[i].navn}</p>
+      <p><strong>Valuta:</strong> ${konti[i].valuta}</p>
+      <p><strong>Email:</strong> ${konti[i].email}</p>
+      <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
+      <p><strong>Oprettelsesdato:</strong> ${konti[i].dato}</p>
+      <p><strong>Bank:</strong> ${konti[i].bank}</p>
+      <button onclick="gåTilKonto('${konti[i].id}')">Se detaljer</button>
+      <button onclick="åbnIndsendPopup('${konti[i].id}')">Indsæt penge</button>
+      <hr>
+    `;
+    container.appendChild(kontoElement);
+  }
+}
+
+// Indsæt penge
+function åbnIndsendPopup(kontoId) {
+  valgtKontoId = kontoId;
+  document.getElementById('popup').style.display = 'block';
+}
+
+function lukPopup() {
+  document.getElementById('popup').style.display = 'none';
+}
+
+// Send indsendelse
+async function indsendData() {
+  const data = {
+    værdi: document.getElementById("værdi").value,
+    valuta: document.getElementById("valuta").value,
+    konto: valgtKontoId
+  };
+
+  const svar = await fetch('/bruger/indsaender', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await svar.json();
+
+  if (result.success) {
+    const inds = result.indsendelse;
+    document.getElementById("resultat").innerHTML = `
+      <h3>Indsendelse oprettet!</h3>
+      <p>ID: ${inds.id}</p>
+      <p>Beløb: ${inds.værdi} ${inds.valuta}</p>
+      <p>Konto-ID: ${inds.konto}</p>
+      <p>Dato: ${inds.dato} kl. ${inds.tid}</p>
+    `;
+    lukPopup();
+  }
+}
+
+// Redirection til kontoside
+function gåTilKonto(id) {
+  window.location.href = `/konto/${id}`;
+}
+
+window.hentKonti = hentKonti;
+hentKonti();
+
+
+// TIL RUTERNE
+
+let næsteId = 1;
+const indsendelser = [];
+
+router.post('/indsaender', (req, res) => {
+  const { værdi, valuta, konto } = req.body;
+  const nu = new Date();
+  const dato = nu.toISOString().split('T')[0];
+  const tid = nu.toTimeString().split(' ')[0];
+  const id = næsteId++;
+
+  const indsendelse = {
+    id,
+    konto,
+    dato,
+    tid,
+    værdi,
+    valuta
+  };
+
+  indsendelser.push(indsendelse);
+
+  res.json({ success: true, indsendelse });
+});
+
+</script>
+
+</body>
+</html>
+
+
+

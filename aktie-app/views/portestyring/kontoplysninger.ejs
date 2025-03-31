@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    
     <div class="container">
         <!-- Sidebar til formular -->
         <aside class="sidebar">
@@ -42,8 +41,6 @@
             <div id="konto-container"></div>
         </main>
     </div>
-
-
 
     <script>
         // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
@@ -92,11 +89,19 @@
             <p><strong>Saldo:</strong> ${konti[i].saldo} DKK</p>
             <p><strong>Oprettelsesdato:</strong> ${konti[i].dato}</p>
             <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
+
+             <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
+
             <hr>
         `;
-      
+        container.appendChild(kontoElement)
     }
 }
+
+function gåTilKonto(id) {
+  window.location.href = `/konto/${id}`;
+}
+
 window.hentKonti = hentKonti;
 hentKonti();
 

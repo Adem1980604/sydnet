@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Popup</title>
+</head>
+<body>
+
+  <button  onclick="document.getElementById('popup').showModal()">Open Popup</button>
+
+  <dialog id="popup">
+    <p>This is a simple popup!</p>
+<div>
+  <button id="cancel" type="reset">Tilbage</button>
+</div>
+  
+
+  <div class="indsændelses-container">
+    <form id="opretIndsændels">
+
+        <label for="Værdi">Hvor mange penge skal der indsættes</label>
+        <input type="text" name="værdi" id="værdi"required>
+
+        <label for="valuta">Vælg imellem valuta</label>
+       <select id="valuta" name="valuta">
+        <option></option>
+        <option>DKK</option>
+        <option>EU</option>
+        <option>USD</option>
+       </select>
+
+       <label for="konto">Hvad konto skal indsændelsen tilknyttes til ? </label>
+        <input type="text" name="konto" id="konto"required>
+    </form> 
+  </dialog> 
+
+<script>
+
+  const popup = document.getElementById("popup");
+  const tilbageKnap = document.getElementById("cancel"); 
+
+  // når der klikkes tilbage luk dialogen
+tilbageKnap.addEventListener("click", () => {
+popup.close();
+});
+async function indsendData(){
+            let data = {
+        navn: document.getElementById("værdi").value,
+        valuta: document.getElementById("valuta").value, 
+    };
+
+    
+    const svar = await fetch('/bruger/indsaender', {
+        method: 'POST',
+        headers:{"Content-Type": "application/json"},
+        body: JSON.stringify(data) 
+            }); 
+
+    };
+
+    async function hentKonti() {
+    const response = await fetch('/portefoljestyring/kontoplysninger');
+    const svarData = await svar.json();
+
+  
+    for (let i = 0; i < svarData.length; i++) {
+        
+      //OBS. det med valuta vi skal nok lave n fuktion der gør at hvis brugeren vil sætte penge ind og vælger EU at det automatisk regner om det den rigtig kurs
+        kontoElement.innerHTML = `
+            <p><strong>Navn:</strong> ${svarData[i].værdi}</p>
+            <p><strong>Valuta:</strong> ${svarData[i].valuta}</p> 
+           <p><strong>Valuta:</strong> ${svarData[i].id}</p>
+            
+            <hr>
+        `;
+        let indsændelsesData =  svarData[i].id // OBS.senere hen skal vi udvikle det at indsændelses id skal knyttes til hvert kontoid altså at hver indsændese tilknyttes til hvad for en konto brugeren vil indsærte penge i 
+    }
+}
+
+</script>
+</body>
+</html>
