@@ -1,4 +1,6 @@
 <!--OBS hvis du vil se siden skal du skrive http://localhost:4000/portefoljestyring/kontoplysninger/view -->
+
+<!--find ud af hvorfor indsender knappen ikke virker muligvis forkert ruter -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,10 +43,33 @@
             <div id="konto-container"></div>
         </main>
     </div>
+<!-- Popup til indsættelse -->
+
+<div id="popup" style="display:none; border:1px solid black; padding:10px; margin-top:20px;">
+    <h3>Indsæt penge på konto</h3>
+    <label for="indsæt-værdi">Beløb:</label>
+    <input type="text" id="værdi"><br>
+  
+    <label for="valuta">Valuta:</label>
+    <select id="indsæt-valuta">
+      <option value="DKK">DKK</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+    </select><br><br>
+  
+    <button onclick="indsendData()">Indsend</button>
+    <button onclick="lukPopup()">Luk</button>
+  </div>
+
+<div id="resultat"></div>
 
     <script>
-        // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
-            
+
+// vi antager at der ikke er valgt en konto i starten
+    let valgtKontoId = null;
+
+        
+// opret ny konto       
     async function sendkonto(){
             let nyKonto = {
         navn: document.getElementById("navn").value,
@@ -67,7 +92,7 @@
             };
  
     };
-
+// hent konto og så vis den 
     async function hentKonti() {
     const response = await fetch('/portefoljestyring/kontoplysninger');
     const konti = await response.json();
@@ -91,19 +116,71 @@
             <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
 
              <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
+             <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].id)})">Indsæt penge</button>
 
+      
             <hr>
         `;
         container.appendChild(kontoElement)
     }
 }
 
+// Indsæt penge
+function åbnIndsendPopup(kontoId) {
+  valgtKontoId = kontoId;
+  document.getElementById('popup').style.display = 'block';
+}
+
+function lukPopup() {
+  document.getElementById('popup').style.display = 'none';
+}
+
+// Send indsendelse
+async function indsendData() {
+  const data = {
+    værdi: document.getElementById("indsæt-værdi").value,
+    valuta: document.getElementById("indsæt-valuta").value,
+    konto: valgtKontoId
+  };
+
+  console.log("📦 Sender til server:", data);
+
+  const svar = await fetch('/bruger/indsaender', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await svar.json();
+  console.log("✅ Server svar:", result);
+
+  if (result.success) {
+    const inds = result.indsendelse;
+
+    document.getElementById("resultat").innerHTML = `
+      <h3>Indsendelse oprettet!</h3>
+      <p>ID: ${inds.id}</p>
+      <p>Beløb: ${inds.værdi} ${inds.valuta}</p>
+      <p>Konto-ID: ${inds.konto}</p>
+      <p>Dato: ${inds.dato} kl. ${inds.tid}</p>
+    `;
+
+    lukPopup();
+  }
+}
+
+// Redirection til kontoside
 function gåTilKonto(id) {
   window.location.href = `/konto/${id}`;
 }
 
 window.hentKonti = hentKonti;
 hentKonti();
+
+
+window.åbnIndsendPopup = åbnIndsendPopup;
+window.lukPopup = lukPopup;
+window.indsendData = indsendData;
 
         </script>
 

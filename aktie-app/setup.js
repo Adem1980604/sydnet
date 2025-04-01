@@ -34,7 +34,7 @@ async function ventPåBrugerData(){
    await sql.connect(config) // skaber forbindelse med din database
    await sql.query(lavSchema);  // først schema
    await sql.query(lavBrugerTabel);   // så tabel
-  console.log('Klar')
+  
 };
 
 ventPåBrugerData()

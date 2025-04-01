@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { sql, forbindDatabase } = require('../db'); // eller './db' alt efter hvor din fil ligger
+const { sql, forbindDatabase } = require('../db'); 
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 
 
@@ -18,7 +18,7 @@ router.get('/kontoplysninger', function(req, res) {
 });
 
 router.get('/indsaender', function(req, res) { 
-    res.render('bruger-sider/indsaender'); 
+ res.render('bruger-sider/indsaender'); 
 });
 
 router.get('/log-ind', function(req, res) { 
@@ -73,6 +73,7 @@ router.get('/nulstill', function(req, res) {
 router.post('/nulstill',(req,res) => {
 
     console.log(req.body); // debugging
+
   const  { nyAdgangskode, nyAdgangskodeIgen } = req.body;
 
   if (nyAdgangskode === nyAdgangskodeIgen) { 
@@ -84,16 +85,32 @@ router.post('/nulstill',(req,res) => {
 }
 });
 
+let næsteId = 1  // obs muligvis kan dette laves om så databasen automatisk laver ider 
+const indsendelser = [];
+
+
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsædense der laves
-router.post('indsend',(req,res)=>{
-const oplysninger = req.body; // henter oplysninger som: id på indsændelsen, valuta og værdi
-const nu = newDate(); // tager fat i nutidens dato
+router.post('/indsaender',(req,res)=>{
+    const { værdi, valuta, konto } = req.body;
+const nu = new Date(); // tager fat i nutidens dato
 const dato = nu.toISOString() // gør det letsæsligt når vi skal bruge det 
 const tid = nu.toTimeString()
+const id = næsteId++;
 
-const indsendelse = { dato, tid, værdi, valuta };
+const indsendelse = {
+    id,
+    konto,
+    dato,
+    tid,
+    værdi,
+    valuta
+  };
 
-res.render({ indsendelse });
+  indsendelser.push(indsendelse);
+
+res.json({ success: true, indsendelse });
+console.log("Indsendelse modtaget:", req.body);
+
 }
 )
 
