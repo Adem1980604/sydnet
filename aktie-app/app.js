@@ -20,6 +20,7 @@ app.use(express.static('public'));
 app.get('/', function(req, res){ 
     res.render('Dashboard')
 }); 
+
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
 const portefoljeRuter = require('./routers/portefoljestyring');
