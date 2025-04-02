@@ -48,7 +48,7 @@
 <div id="popup" style="display:none; border:1px solid black; padding:10px; margin-top:20px;">
     <h3>Indsæt penge på konto</h3>
     <label for="indsæt-værdi">Beløb:</label>
-    <input type="text" id="værdi"><br>
+    <input type="text" id="indsæt-værdi"><br>
   
     <label for="valuta">Valuta:</label>
     <select id="indsæt-valuta">
@@ -143,7 +143,7 @@ async function indsendData() {
     konto: valgtKontoId
   };
 
-  console.log("📦 Sender til server:", data);
+  console.log(" Sender til server:", data);
 
   const svar = await fetch('/bruger/indsaender', {
     method: 'POST',
@@ -152,7 +152,7 @@ async function indsendData() {
   });
 
   const result = await svar.json();
-  console.log("✅ Server svar:", result);
+  console.log(" Server svar:", result);
 
   if (result.success) {
     const inds = result.indsendelse;
