@@ -18,7 +18,7 @@ app.use(express.static('public'));
 
 // vi sætter ROUTES op for MAIN PAGE.
 app.get('/', function(req, res){ 
-    res.render('index')
+    res.render('Dashboard')
 }); 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
