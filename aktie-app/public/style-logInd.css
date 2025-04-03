@@ -1,164 +1,143 @@
-
-
-
-.top-text {
-    font-size: 48px;
-    font-family: "Lora", serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #ffffff;
-    text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
-    letter-spacing: 2px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.under-text {
-    font-size: 20px;
-    font-family: "EB Garamond", serif;
-    font-weight: bold;
-    color: #ffffff;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
+/* Reset og basis */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 /* Body styling */
 body {
-    background-color: #0d0d0d;
-    color: white;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0; 
+  background-color: #0d0d0d;
+  color: white;
+  min-height: 100vh;
+  padding: 0;
 }
 
-/* Login container */
-.login-container {
-    background-color: #1a1a1a;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-    width: 350px;
-    text-align: center;
+/* Øverste tekst - Sydnet */
+.top-text {
+  font-size: 48px;
+  font-family: "Lora", serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Undertekst */
+.under-text {
+  font-size: 20px;
+  font-family: "EB Garamond", serif;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Container */
+.logindside {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Login formular */
+.log-ind-formual {
+  background-color: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
 /* Overskrift */
-.login-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: bold;
+.log-ind-formual h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-/* Input-boks */
-.log-ind-formual {
-    background-color: #2a2a2a;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
-}
-
-.log-ind-formual a {
-    display: inline-block; /* Sørger for at links opfører sig som knapper */
-    margin: 10px 10px; /* Giver mellemrum mellem links */
-    padding: 8px 15px;
-    background-color: #6200ea; /* Lilla farve som knappen */
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-   
-}
-/* Labels */
+/* Label styling */
 label {
-    display: block;
-    text-align: left;
-    font-size: 14px;
-    margin-top: 10px;
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 /* Input felter */
 input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    background-color: #3a3a3a;
-    border: 1px solid #555;
-    color: white;
-    border-radius: 5px;
-    font-size: 14px;
+  width: 100%;
+  padding: 10px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
 
-/* Login knap */
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #6200ea;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    font-weight: bold;
+/* Fælles knap-styling */
+button, a {
+  display: inline-block;
+  background-color: #8000ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-    background-color: #4500b0;
+/* Hover & klik-effekter */
+button:hover, a:hover {
+  background-color: #5f00c6;
+  transform: scale(1.05);
 }
 
-/* Gør linket til en pæn knap */
-a {
-    display: inline-block; /* Gør det til en blok, så padding virker */
-    text-decoration: none; /* Fjern standard understregning */
-    font-size: 16px;
- 
-    color: white; /* Hvid tekst */
-    background-color: #4500b0;
-    padding: 10px 20px; /* Gør knappen større */
-    border-radius: 5px; /* Afrundede kanter */
-    transition: background-color 0.3s, transform 0.2s; /* Glidende effekt */
-
-    margin-top: 20px; /* Giver lidt mere luft mellem inputfelt og knappen */
-    margin-bottom: 15px;
+button:active, a:active {
+  transform: scale(0.97);
 }
 
-
-.bruger-oprettelse {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
-    gap: 20px; /* Luft mellem elementer */
+/* Login-knappen med ekstra stil */
+#logind-knap {
+  width: 100%;
+  margin-top: 20px;
 }
 
-.logindside {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* centrering lodret */
-    padding: 20px;
-    gap: 20px;
-    min-height: 100vh; /* Gør at den bruger hele højden, men kan vokse hvis nødvendigt */
+/* Links til opret/nulstil som knapper */
+.log-ind-formual a {
+  margin: 10px 5px 0 0;
 }
 
+/* Justering af logind-form-container hvis nødvendigt */
+.login-container {
+  background-color: #1a1a1a;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+  width: 350px;
+  text-align: center;
+}
 
-
-.nulstilsiden {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* centrering lodret */
-    padding: 20px;
-    gap: 20px;
-    min-height: 100vh; /* Gør at den bruger hele højden, men kan vokse hvis nødvendigt */
+/* Sider som nulstil/opret */
+.nulstilsiden, .bruger-oprettelse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  gap: 20px;
 }

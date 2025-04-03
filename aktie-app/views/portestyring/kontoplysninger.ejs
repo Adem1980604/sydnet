@@ -15,20 +15,11 @@
         <aside class="sidebar">
             <h2>Opret Konto</h2>
             <form id="konto_form">
-                <label for="navn">Navn:</label>
+                <label for="navn">Navn på konto:</label>
                 <input type="text" id="navn" required>
-
-                <label for="valuta">Valuta:</label>
-                <input type="text" id="valuta" required>
-
+        
                 <label for="email">Email:</label>
                 <input type="email" id="email" required>
-
-                <label for="saldo">Saldo:</label>
-                <input type="number" id="saldo" required>
-
-                <label for="dato">Oprettelsesdato:</label>
-                <input type="date" id="dato" required>
 
                 <label for="bank">Tilknyttet Bank:</label>
                 <input type="text" id="bank" required>
@@ -45,7 +36,7 @@
     </div>
 <!-- Popup til indsættelse -->
 
-<div id="popup" style="display:none; border:1px solid black; padding:10px; margin-top:20px;">
+<div id="popup">
     <h3>Indsæt penge på konto</h3>
     <label for="indsæt-værdi">Beløb:</label>
     <input type="text" id="indsæt-værdi"><br>
@@ -61,7 +52,10 @@
     <button onclick="lukPopup()">Luk</button>
   </div>
 
-<div id="resultat"></div>
+<div id="resultat">
+  <button id="luk-resultat" class="luk-knap">Luk</button>
+
+</div>
 
     <script>
 
@@ -73,10 +67,7 @@
     async function sendkonto(){
             let nyKonto = {
         navn: document.getElementById("navn").value,
-        valuta: document.getElementById("valuta").value, 
         email: document.getElementById("email").value,
-        saldo: document.getElementById("saldo").value,
-        dato: document.getElementById("dato").value,
         bank: document.getElementById("bank").value 
     };
 
@@ -109,10 +100,7 @@
 
         kontoElement.innerHTML = `
             <p><strong>Navn:</strong> ${konti[i].navn}</p>
-            <p><strong>Valuta:</strong> ${konti[i].valuta}</p>
             <p><strong>Email:</strong> ${konti[i].email}</p>
-            <p><strong>Saldo:</strong> ${konti[i].saldo} DKK</p>
-            <p><strong>Oprettelsesdato:</strong> ${konti[i].dato}</p>
             <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
 
              <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
@@ -130,7 +118,7 @@ function åbnIndsendPopup(kontoId) {
   valgtKontoId = kontoId;
   document.getElementById('popup').style.display = 'block';
 }
-
+// funktionen til at lukke popup
 function lukPopup() {
   document.getElementById('popup').style.display = 'none';
 }
@@ -154,19 +142,30 @@ async function indsendData() {
   const result = await svar.json();
   console.log(" Server svar:", result);
 
+  
+  // kode til at vise indsendelsen 
+ 
   if (result.success) {
-    const inds = result.indsendelse;
+  const inds = result.indsendelse;
 
-    document.getElementById("resultat").innerHTML = `
-      <h3>Indsendelse oprettet!</h3>
-      <p>ID: ${inds.id}</p>
-      <p>Beløb: ${inds.værdi} ${inds.valuta}</p>
-      <p>Konto-ID: ${inds.konto}</p>
-      <p>Dato: ${inds.dato} kl. ${inds.tid}</p>
-    `;
+  const resultatDiv = document.getElementById("resultat");
+  resultatDiv.innerHTML = `
+    <button id="luk-resultat" class="luk-knap">Luk</button>
+    <h3>Indsendelse oprettet!</h3>
+    <p>ID: ${inds.id}</p>
+    <p>Beløb: ${inds.værdi} ${inds.valuta}</p>
+    <p>Konto-ID: ${inds.konto}</p>
+    <p>Dato og tid for oprettelse: ${inds.tid}</p>
+  `;
 
-    lukPopup();
-  }
+  resultatDiv.style.display = "block"; 
+
+  document.getElementById("luk-resultat").addEventListener("click", () => {
+    resultatDiv.style.display = "none";
+  });
+
+  lukPopup();
+}
 }
 
 // Redirection til kontoside
@@ -178,9 +177,6 @@ window.hentKonti = hentKonti;
 hentKonti();
 
 
-window.åbnIndsendPopup = åbnIndsendPopup;
-window.lukPopup = lukPopup;
-window.indsendData = indsendData;
 
         </script>
 

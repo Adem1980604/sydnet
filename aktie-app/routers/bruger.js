@@ -93,14 +93,24 @@ const indsendelser = [];
 router.post('/indsaender',(req,res)=>{
     const { værdi, valuta, konto } = req.body;
 const nu = new Date(); // tager fat i nutidens dato
-const dato = nu.toISOString() // gør det letsæsligt når vi skal bruge det 
-const tid = nu.toTimeString()
+const tid = nu.toLocaleString(); // gør det letsæsligt når vi skal bruge det 
+
+  // backendt delen vi vil indsætte værdier brugeren har indsendt til indsendelsen.       
+
+  // skaber en forbindelse med db
+ /* const db = await forbindDatabase();
+
+ await db.request()
+ .input('værdi', sql.Int, værdi)
+ .input('valuta',sql.Int, valuta)
+ .konto('konto',sql.NVarChar(100), konto)
+ .query('INSERT INTO indendelser.indoplysninger(værdi, valuta, konto)(@værdi, @valuta, @konto)')
+*/
 const id = næsteId++;
 
 const indsendelse = {
     id,
     konto,
-    dato,
     tid,
     værdi,
     valuta

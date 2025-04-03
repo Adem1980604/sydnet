@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Lora", serif;
     background-color: #121212;
     color: white;
     margin: 0;
@@ -47,7 +47,7 @@ body {
 .sidebar button {
     margin-top: 20px;
     padding: 10px;
-    background-color: purple;
+    background-color:  #6200ea;
     color: white;
     border: none;
     border-radius: 5px;
@@ -55,7 +55,7 @@ body {
 }
 
 .sidebar button:hover {
-    background-color: #9b59b6;
+    background-color:  #6200ea;
 }
 
 /* Hovedindhold */
@@ -86,3 +86,67 @@ body {
 hr {
     border: 0.5px solid #444;
 }
+/* Dette bruges til vores popup der kommer frem når brugeren vil sætte penge ind */
+#popup {
+    display: none; /*sørger for at skjule popup til at starte med*/
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e1e1e;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    
+  }
+
+  #popup label,
+#popup input,
+#popup select {
+
+  margin-bottom: 10px;
+}
+
+/* knap styling */
+ button {
+    background-color: #8000ff;   /* Lilla */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 10px;
+    
+  }
+  
+  /* Hover-effekt */
+  button:hover {
+    background-color: #5f00c6;   /* Mørkere lilla */
+    transform: scale(1.05);
+  }
+  
+  /* Klik-effekt */
+  button:active {
+    transform: scale(0.97);
+  }
+  
+  #resultat {
+    display: none; /* skjult som udgangspunkt */
+    font-family: "Lora", serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e1e1e;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* ligger ovenpå andet indhold */
+  }
+  
+
+  
