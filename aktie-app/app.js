@@ -21,18 +21,6 @@ app.get('/', function(req, res){
     res.render('Dashboard')
 }); 
 
-app.get('log-ind', function(req, res){ 
-    res.render('log-ind')
-}); 
-
-app.get('bruger-oprettelse', function(req, res){ 
-    res.render('bruger-oprettelse')
-}); 
-
-app.get('nulstill', function(req, res){ 
-    res.render('nulstill')
-}); 
-
 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
