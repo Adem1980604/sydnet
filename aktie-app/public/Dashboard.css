@@ -25,16 +25,21 @@ body {
 }
 
 .sidebar ul li {
-    margin: 10px 0;
+    margin: 20px 0;
 }
 
 .sidebar ul li a {
     color: white;
     text-decoration: none;
+    padding: 10px;
+    display: block;
+    background-color: #444;
+    border-radius: 5px;
 }
 
 .sidebar ul li a:hover {
     text-decoration: underline;
+    background-color: blue;
 }
 
 .main-content {
