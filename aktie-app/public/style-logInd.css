@@ -1,6 +1,4 @@
 
-
-
 .top-text {
     font-size: 48px;
     font-family: "Lora", serif;
@@ -96,23 +94,29 @@ input {
     font-size: 14px;
 }
 
-/* Login knap */
+/* alle knapper knap */
 button {
-    width: 100%;
-    padding: 12px;
-    background-color: #6200ea;
-    border: none;
+    background-color: #8000ff;   /* Lilla */
     color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: bold;
-}
-
-button:hover {
-    background-color: #4500b0;
-}
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
+  }
+  
+  /* Hover-effekt */
+  button:hover {
+    background-color: #5f00c6;   /* Mørkere lilla */
+    transform: scale(1.05);
+  }
+  
+  /* Klik-effekt */
+  button:active {
+    transform: scale(0.97);
+  }
 
 /* Gør linket til en pæn knap */
 a {
@@ -128,6 +132,67 @@ a {
 
     margin-top: 20px; /* Giver lidt mere luft mellem inputfelt og knappen */
     margin-bottom: 15px;
+
+    background-color: #8000ff;   /* Lilla */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    
+  }
+
+  #knap{
+    background-color: #8000ff;   /* Lilla */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px; /* Giver lidt mere luft mellem inputfelt og knappen */
+    margin-bottom: 15px;
+};
+
+/* Logind-knap*/
+#logind-knap{
+    margin-top: 20px;
+    background-color: #8000ff;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    
+      }
+      
+      /* Hover-effekt */
+      button:hover {
+        background-color: #5f00c6;   /* Mørkere lilla */
+        transform: scale(1.05);
+      }
+      
+      /* Klik-effekt */
+      button:active {
+        transform: scale(0.97);
+      }
+  
+  
+  /* Hover-effekt */
+  a:hover {
+    background-color: #5f00c6;   /* Mørkere lilla */
+    transform: scale(1.05);
+  }
+  
+  /* Klik-effekt */
+  a:active {
+    transform: scale(0.97);
+  
 }
 
 

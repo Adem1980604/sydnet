@@ -93,14 +93,13 @@ const indsendelser = [];
 router.post('/indsaender',(req,res)=>{
     const { værdi, valuta, konto } = req.body;
 const nu = new Date(); // tager fat i nutidens dato
-const dato = nu.toISOString() // gør det letsæsligt når vi skal bruge det 
-const tid = nu.toTimeString()
+const tid = nu.toLocaleString(); // gør det letsæsligt når vi skal bruge det 
+
 const id = næsteId++;
 
 const indsendelse = {
     id,
     konto,
-    dato,
     tid,
     værdi,
     valuta
