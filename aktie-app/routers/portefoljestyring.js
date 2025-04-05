@@ -31,7 +31,7 @@ router.get('/kontooplysninger/view', function(req, res) {
 
 router.get('/konto-detalje', function(req, res) { 
     res.render('portestyring/kontooplysninger');
-    // her skla vi på et eller andet måde tage fat i en id for hvert konto der lsaves ved brug af SQL, 
+    // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
 
 });
 
@@ -45,6 +45,7 @@ router.get('/konto-detalje', function(req, res) {
    
 
 const db = await forbindDatabase();  // skaber en forbindelse med db
+
 const resultater = await db.request()
  .input('navn', sql.NVarChar(100), navn)
  .input('email',sql.NVarChar(100), email)
@@ -56,7 +57,6 @@ const resultater = await db.request()
          `
 );
 
-// OBD spørge vejleder om man kan bruge denne metde 
 const konto_id = resultater.recordset[0].konto_id;
 
  
