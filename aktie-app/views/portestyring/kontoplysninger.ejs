@@ -13,17 +13,18 @@
     <div class="container">
         <!-- Sidebar til formular -->
         <aside class="sidebar">
-            <h2>Opret Konto</h2>
+          <h2>Opret konto</h2> 
 
             <form id="konto_form">
+      
                 <label for="navn">Navn på konto:</label>
-                <input type="text" id="navn" required>
+                <input type="text" id="navn" name="navn"  required>
         
                 <label for="email">Email:</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="email" required>
 
                 <label for="bank">Tilknyttet Bank:</label>
-                <input type="text" id="bank" required>
+                <input type="text" id="bank" name="bank" required>
 
                 <button type="button" onclick="sendkonto()">Opret konto</button>
             </form>
@@ -106,7 +107,7 @@
             <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
 
              <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
-             <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].id)})">Indsæt penge</button>
+             <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
 
       
             <hr>
@@ -130,7 +131,7 @@ async function indsendData() {
   const data = {
     værdi: document.getElementById("indsæt-værdi").value,
     valuta: document.getElementById("indsæt-valuta").value,
-    konto: valgtKontoId
+    konto_id: valgtKontoId
   };
 
   console.log(" Sender til server:", data);
@@ -142,6 +143,7 @@ async function indsendData() {
   });
 
   const result = await svar.json();
+ 
   console.log(" Server svar:", result);
 
   

@@ -46,7 +46,9 @@ router.post('/register', async(req, res) => {
   await db.request()
     .input('name', sql.NVarChar(100), username)
     .input('password', sql.NVarChar(100), password)
-    .query('INSERT INTO bruger.oplysninger (username, password) VALUES (@name, @password)');
+    .query(
+        `INSERT INTO bruger.oplysninger (username, password) 
+        VALUES (@name, @password)`);
 
   return res.redirect('/bruger/log-ind');
 });
@@ -85,44 +87,42 @@ router.post('/nulstill',(req,res) => {
 }
 });
 
-let næsteId = 1  // obs muligvis kan dette laves om så databasen automatisk laver ider 
-const indsendelser = [];
-
 
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsædense der laves
-router.post('/indsaender',(req,res)=>{
-    const { værdi, valuta, konto } = req.body;
-const nu = new Date(); // tager fat i nutidens dato
-const tid = nu.toLocaleString(); // gør det letsæsligt når vi skal bruge det 
+router.post('/indsaender', async function (req,res) {
+
+const { værdi, valuta, konto_id } = req.body;
+const nuværendeTid = new Date(); // tager fat i nutidens dato
+
 
   // backendt delen vi vil indsætte værdier brugeren har indsendt til indsendelsen.       
 
-  // skaber en forbindelse med db
- /* const db = await forbindDatabase();
+  const db = await forbindDatabase();  // skaber en forbindelse med db
 
  await db.request()
  .input('værdi', sql.Int, værdi)
- .input('valuta',sql.Int, valuta)
- .konto('konto',sql.NVarChar(100), konto)
- .query('INSERT INTO indendelser.indoplysninger(værdi, valuta, konto)(@værdi, @valuta, @konto)')
-*/
-const id = næsteId++;
+ .input('valuta',sql.NVarChar(100), valuta)
+ .input('tid',sql.DateTime, nuværendeTid)
+ .input('konto_id',sql.Int, konto_id)
+ .query(`
+         INSERT INTO indsadelse.indoplysninger(værdi, valuta, tid, konto_id)
+         VALUES (@værdi, @valuta, @tid, @konto_id)`
+);
+ 
 
-const indsendelse = {
-    id,
-    konto,
-    tid,
-    værdi,
-    valuta
-  };
+res.json({
+    success: true,
+    indsendelse: {
+      værdi,
+      valuta,
+      konto: konto_id,
+      tid: nuværendeTid.toLocaleString()
+    }
+  });
 
-  indsendelser.push(indsendelse);
+console.log("Indsendelse modtaget:", req.body); //tjek 
 
-res.json({ success: true, indsendelse });
-console.log("Indsendelse modtaget:", req.body);
-
-}
-)
+});
 
 
 module.exports = router; 
