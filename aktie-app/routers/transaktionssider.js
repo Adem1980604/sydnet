@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { sql, forbindDatabase } = require('../db'); // tager fat i db filen 
 
 // vi sætter vores ROUTES op for transaktion-sider
 
