@@ -13,19 +13,22 @@ router.get('/bruger-oprettelse', function(req, res) {
     res.render('bruger-sider/bruger-oprettelse'); 
 });
 
-router.get('/kontoplysninger', function(req, res) { 
-    res.render('bruger-sider/kontoplysninger'); 
+router.get('/kontooplysninger', function(req, res) { 
+    res.render('bruger-sider/kontooplysninger'); 
 });
 
 router.get('/indsaender', function(req, res) { 
  res.render('bruger-sider/indsaender'); 
 });
 
+//Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
+//Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
 router.get('/log-ind', function(req, res) { 
     res.render('bruger-sider/log-ind'); 
 });
 
-
+//****************************************************************/
+//************* REGISTER - OPRET BRUGER **************************/
 // HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
 router.post('/register', async(req, res) => {
     const { username, password, repeatPassword } = req.body;
@@ -34,37 +37,83 @@ router.post('/register', async(req, res) => {
     if (!username || !password || !repeatPassword) {
         return res.status(400).json({ success: false, message: "Udfyld alle felter" });
     }
-        // Tjek om adgangskoderne matcher
-        if (password !== repeatPassword) {
-            return res.status(400).json({ success: false, message: "Adgangskoderne matcher ikke" });
-        }
+    // Tjek om adgangskoderne matcher
+    if (password !== repeatPassword) {
+        return res.status(400).json({ success: false, message: "Adgangskoderne matcher ikke" });
+    }
         
-  // skaber en forbindelse med db
-  const db = await forbindDatabase();
+    // skaber en forbindelse med db
+    const db = await forbindDatabase();
+    await db.request()
+      .input('name', sql.NVarChar(100), username)
+      .input('password', sql.NVarChar(100), password)
+      .query(
+          `INSERT INTO bruger.oplysninger (username, password) 
+          VALUES (@name, @password)`);
 
-
-  await db.request()
-    .input('name', sql.NVarChar(100), username)
-    .input('password', sql.NVarChar(100), password)
-    .query(
-        `INSERT INTO bruger.oplysninger (username, password) 
-        VALUES (@name, @password)`);
-
-  return res.redirect('/bruger/log-ind');
+    return res.redirect('/bruger/log-ind');
 });
 
-//POST-rute vil håndeter vores Login-data 
-router.post('/log-ind',(req,res) => {
-    console.log(req.body); // debugging
-  const  {brugernavn, adgangskode} = req.body;
+//****************************************************************/
+//************* LOGIN - HÅNDTER LOGIN   **************************/
+//Denne post bliver sendt fra "log-ind.ejs" filen. Med den kommer information om et indtastet brugernavn og adgangskode
+router.post('/log-ind', async(req,res) => {
+    //console.log(req); // Se hele requesten
+    console.log(req.body); // Ser kun på den del af requesten som indeholde brugernavn og adgangskode
+    const {brugernavn, adgangskode} = req.body; //Sætter brugernavn og adgangskode "tilbage" ind i to variable(brugernavn og adgangskode)
+    
+    //Hvis brugernavn og adgangskode er tomt, så udskriv følgende besked.
+    if (!brugernavn || !adgangskode ) {
+        return res.status(400).json({ success: false, message: "Udfyld både bruger id og password" });
+    }
 
-  if (brugernavn === "m" && adgangskode === "f") { 
-    res.json({success: true, message: "Login Succesfuld"});
-} else { 
+    //Skaber en forbindelse med db
+    const db = await forbindDatabase();
 
-// dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK
-    res.status(400).json({success: false, message: "Forkert brugernavn eller adgangskode"});
-}
+    //Søger efter bruger i databasen baseret på brugernavn
+    db_result = 
+        await db.request()
+            .input('name', sql.NVarChar(100), brugernavn)
+            .input('password', sql.NVarChar(100), adgangskode)
+            .query(`SELECT username, password 
+                    FROM bruger.oplysninger 
+                    WHERE username=@name`)
+    
+    console.log(db_result)  
+    // Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen, 
+    //Catch bliver kun udløst hvis Try delen er "ulovlig"/programmet giver en rød fejl/crasher
+    try {
+        const db_username = db_result.recordset[0].username                        
+        console.log("db_username er : " + db_result.recordset[0].username + " and you entered : " + brugernavn)    
+    } catch {
+        return res.status(400).json({ success: false, message: "Bruger id findes ikke" });
+    }
+    
+    try {
+        const db_password = db_result.recordset[0].password                
+        console.log("db_password er : " + db_result.recordset[0].password  + " and you entered : " + adgangskode)    
+        if (db_password != adgangskode) {
+            return res.status(400).json({ success: false, message: "Password er forkert" });
+        } else {
+            return res.status(200).json({ success: true, message: "Password er korrekt" });
+        }
+    } catch {
+        return res.status(200).json({ success: true, message: "Password er tomt i db" });
+    }
+
+
+    //if (brugernavn === "m" && adgangskode === "f") { 
+    //    //if (brugernavn === "TestUser") { 
+    //    res.json({success: true, message: "Login Succesfuld"});
+    //    console.log(res.statusCode); // debugging
+    //    console.log(res.statusMessage); // debugging
+//
+//
+//
+    //} else { 
+    //    // dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK
+    //    res.status(400).json({success: false, message: "Forkert brugernavn eller adgangskode"});
+    //}
 });
 
 router.get('/nulstill', function(req, res) { 
@@ -73,18 +122,15 @@ router.get('/nulstill', function(req, res) {
 
 //POST-rute vil håndeter vores Login-data 
 router.post('/nulstill',(req,res) => {
-
     console.log(req.body); // debugging
+    const  { nyAdgangskode, nyAdgangskodeIgen } = req.body;
 
-  const  { nyAdgangskode, nyAdgangskodeIgen } = req.body;
-
-  if (nyAdgangskode === nyAdgangskodeIgen) { 
-    res.json({success: true, message: "Ændring af adgangskode var succesfuld"});
-} else { 
-
-// dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK.
-    res.status(400).json({success: false, message: "OBS. indtast samme adgangskode i begge felter "});
-}
+    if (nyAdgangskode === nyAdgangskodeIgen) { 
+        res.json({success: true, message: "Ændring af adgangskode var succesfuld"});
+    } else { 
+        // dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK.
+        res.status(400).json({success: false, message: "OBS. indtast samme adgangskode i begge felter "});
+    }
 });
 
 

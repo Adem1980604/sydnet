@@ -17,14 +17,14 @@
     <div class="login-container">
         <form id="opretForm">
 
-            <label for="Brugernavn">Indtast brugernavn(mindst 8 tegn)</label>
-            <input type="text" name="Brugernavn" id="1" minlength="8" required>
+            <label for="Brugernavn">Indtast brugernavn(mindst 2 tegn)</label>
+            <input type="text" name="Brugernavn" id="1" minlength="2" required>
     
-            <label for="Password">Indtast Password(Skal indeholde 8 eller flere tegn)</label>
-            <input type="password" name="Password" id="2" pattern=".{8,16}" required>
+            <label for="Password">Indtast Password(Skal indeholde 2 eller flere tegn)</label>
+            <input type="password" name="Password" id="2" pattern=".{2,16}" required>
     
-            <label for="Password">Repeat Password(Skal indeholde mellem 8 og 16 tegn)</label>
-            <input type="password" name="Repeat Password" id="3" pattern=".{8,16}" required>
+            <label for="Password">Repeat Password(Skal indeholde mellem 2 og 16 tegn)</label>
+            <input type="password" name="Repeat Password" id="3" pattern=".{2,16}" required>
     
             <button  type="submit" id = "knap">Opret Bruger</button>
           
@@ -43,10 +43,13 @@
         let password = document.getElementById("2").value;
         let repeatPassword = document.getElementById("3").value;
 
+        console.log("brugernavn:  " + document.getElementById("1").value)
+        console.log("adgangskode: " + document.getElementById("2").value)
+
         const svar = await fetch('/bruger/register', {
-    method: 'POST',
-    headers:{"Content-Type": "application/json"},
-    body: JSON.stringify({username, password,repeatPassword}) 
+            method: 'POST',
+            headers:{"Content-Type": "application/json"},
+            body: JSON.stringify({username, password,repeatPassword}) 
         }); 
 
        if(svar.redirected){

@@ -75,7 +75,7 @@ async function sendkonto() {
     bank: document.getElementById("bank").value
   };
 
-  const svar = await fetch('/portefoljestyring/kontoplysninger', {
+  const svar = await fetch('/portefoljestyring/kontooplysninger', {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(nyKonto)
@@ -88,7 +88,7 @@ async function sendkonto() {
 
 // Hent og vis konti
 async function hentKonti() {
-  const response = await fetch('/portefoljestyring/kontoplysninger');
+  const response = await fetch('/portefoljestyring/kontooplysninger');
   const konti = await response.json();
 
   const container = document.getElementById("konto-container");

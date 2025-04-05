@@ -25,7 +25,7 @@
         <label for ="brugernavn">Bruger Navn:</label>
         <input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn" required>
 
-        <label for = "adgangskode">Agangskode:</label>
+        <label for = "adgangskode">Adgangskode:</label>
         <input type="password" name="adgangskode"  title="Indtast din adgangskode"  id="adgangskode" required autocomplete="current-password">
 
         <a href="/bruger/bruger-oprettelse">Opret Bruger</a>
@@ -40,29 +40,35 @@
     // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
     document.getElementById("logind_form").addEventListener("submit", async function (event) {
         event.preventDefault();
+
+        //Vi sætter værdierne af det brugeren har indskrevet ind i en variable(logIndData)
         let logIndData = {
             brugernavn: document.getElementById("brugernavn").value,
             adgangskode: document.getElementById("adgangskode").value
         };
-        console.log('test')
+        //Udskriver både brugernavn og adgangskode for at kunne følge med i terminalen
+        console.log("brugernavn:  " + document.getElementById("brugernavn").value)
+        console.log("adgangskode: " + document.getElementById("adgangskode").value)
+        
+        //Her tager vi det "bruger data" vi lige har fået, altså brugernavn og password, og siger "Send dette til vores "bruger.js" fil(aka POST)"
+        //Og send info om brugernavn og adgangskode med via vores variable logIndData.
         const svar = await fetch('/bruger/log-ind', {
-    method: 'POST',
-    headers:{"Content-Type": "application/json"},
-    body: JSON.stringify(logIndData) 
+            method: 'POST',
+            headers:{"Content-Type": "application/json"},
+            body: JSON.stringify(logIndData) 
         }); 
+        
+        //Her venter vi så på tilbagemelding/den givne håndtering der sker i "bruger.js" filen
+        const resultat = await svar.json();
 
-const resultat = await svar.json(); // venter på,at serveren svarer
-
-// vi laver et if statment for at tjekke om bruger har en konto
-        if(svar.status === 200){
-// Hvis login er godkendt,send brugeren til forsiden (index.ejs)
+        //Hvis tilbagemeldingen var succesfuld, altså har en status 200, så vil vi gerne sende brugeren videre til vores Dashboard/forside
+        if (svar.status === 200){
             window.location.href = "/";
-        }  else {
-            alert(resultat.message) // Fejlmeddelse som vi skriver i vores bruger.js 
+        //Hvis ikke tilbagemeldingen var succesfuld, så udskriv en advarsel, med den givne fejl vi får grundet kriterierne givet i "bruger.js" filen
+        } else {
+            alert(resultat.message)
         }
     });
-        // SQL databsen: vi skal på en måde opfange den logind formular som 
-        // brugen skriver og sammenligne det med den konto som brugeren har oprettet
-    </script>
+  </script>
 </body>
 </html>
