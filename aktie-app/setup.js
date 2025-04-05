@@ -29,7 +29,7 @@ CREATE SCHEMA indsadelse
 
 
 
-// vi opretter en tabeller
+// vi opretter  tabeller
 
 const lavBrugerTabel =`
 CREATE TABLE bruger.oplysninger (
