@@ -38,15 +38,14 @@
 
  <script>
     // vi sætter en event listener op for at få fat i de oplysninger som brugen indsætter i log-indformen 
-        document.getElementById("logind_form").addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            let logIndData = {
-    brugernavn: document.getElementById("brugernavn").value,
-    adgangskode: document.getElementById("adgangskode").value 
-};
-
-const svar = await fetch('/bruger/log-ind', {
+    document.getElementById("logind_form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+        let logIndData = {
+            brugernavn: document.getElementById("brugernavn").value,
+            adgangskode: document.getElementById("adgangskode").value
+        };
+        console.log('test')
+        const svar = await fetch('/bruger/log-ind', {
     method: 'POST',
     headers:{"Content-Type": "application/json"},
     body: JSON.stringify(logIndData) 
