@@ -22,6 +22,7 @@ router.get('/indsaender', function(req, res) {
 });
 
 //Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
+// (Denne forespørgsel kommer f.eks. fra Dashboard)
 //Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
 router.get('/log-ind', function(req, res) { 
     res.render('bruger-sider/log-ind'); 
@@ -31,10 +32,10 @@ router.get('/log-ind', function(req, res) {
 //************* REGISTER - OPRET BRUGER **************************/
 // HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
 router.post('/register', async(req, res) => {
-    const { username, password, repeatPassword } = req.body;
+    const { username, password, repeatPassword, email} = req.body;
 
-    // Tjek for tomme felter først
-    if (!username || !password || !repeatPassword) {
+    // Tjek for tomme felter først. !!!Dette er dobbelt tjek, da det allerede sker i bruger-oprettelse.ejs HTML formen
+    if (!username || !password || !repeatPassword ) {
         return res.status(400).json({ success: false, message: "Udfyld alle felter" });
     }
     // Tjek om adgangskoderne matcher
@@ -44,12 +45,36 @@ router.post('/register', async(req, res) => {
         
     // skaber en forbindelse med db
     const db = await forbindDatabase();
+
+
+    
+    //************* FORSØG - Funktion: BRUGER FINDES ALLEREDE I DB **************************/
+    /*
+    //Check om bruger allerede findes i databasen, og derfor ikke kan "gen"oprette sig.
+    db_result = 
+        await db.request()
+            .input('name', sql.NVarChar(100), username)        
+            .query(`SELECT username
+                FROM bruger.oplysninger 
+                WHERE username=@name`)
+    try {
+        const db_username = db_result.recordset[0].username
+        console.log("db_username er : " + db_result.recordset[0].username + " Den findes allerede ")
+        //return res.status(200).json({ success: true, message: "OK" });
+        return res.status(400).json({ success: false, message: "Password er forkert" });
+        //return res.status(400).json({ success: false, message: "Bruger id findes allerede - kan ikke oprettes igen." });
+    } catch {
+        // Så findes brugeren ikke i forvejen og så skal vi bare fortsætte
+    }
+*/
+    //
     await db.request()
       .input('name', sql.NVarChar(100), username)
       .input('password', sql.NVarChar(100), password)
+      .input('email', sql.NVarChar(100), email)
       .query(
-          `INSERT INTO bruger.oplysninger (username, password) 
-          VALUES (@name, @password)`);
+          `INSERT INTO bruger.oplysninger (username, password, email) 
+          VALUES (@name, @password, @email)`);
 
     return res.redirect('/bruger/log-ind');
 });

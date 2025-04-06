@@ -35,7 +35,8 @@ const lavBrugerTabel =`
 CREATE TABLE bruger.oplysninger (
   id INT PRIMARY KEY IDENTITY(1,1),
   username NVARCHAR(100),
-  password NVARCHAR(255)
+  password NVARCHAR(255),
+  email NVARCHAR(255)
 );
 `;
 

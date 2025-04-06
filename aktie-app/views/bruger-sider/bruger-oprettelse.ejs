@@ -25,6 +25,10 @@
     
             <label for="Password">Repeat Password(Skal indeholde mellem 2 og 16 tegn)</label>
             <input type="password" name="Repeat Password" id="3" pattern=".{2,16}" required>
+
+            <!--Pattern skal være følgende: karakterer efter fuldt af et @, efter fuldt af karakterer, efter fuldt af ".", efter fuldt af mindst 2 bogstaver. -->
+            <label for="E-mail">Indtast din e-mail her</label>
+            <input type="email" name="E-mail" id="4"  pattern="[a-z0-9]+@[a-z0-9]+\.[a-z]{2,}$" required>
     
             <button  type="submit" id = "knap">Opret Bruger</button>
           
@@ -42,14 +46,16 @@
         let username = document.getElementById("1").value;
         let password = document.getElementById("2").value;
         let repeatPassword = document.getElementById("3").value;
+        let email = document.getElementById("4").value;
 
         console.log("brugernavn:  " + document.getElementById("1").value)
         console.log("adgangskode: " + document.getElementById("2").value)
+        console.log("email: " + document.getElementById("4").value)
 
         const svar = await fetch('/bruger/register', {
             method: 'POST',
             headers:{"Content-Type": "application/json"},
-            body: JSON.stringify({username, password,repeatPassword}) 
+            body: JSON.stringify({username, password, repeatPassword, email}) 
         }); 
 
        if(svar.redirected){
