@@ -16,11 +16,16 @@ app.use(express.json());
 // Gør det muligt for hjemmesiden at bruge filer som CSS og JavaScript.
 app.use(express.static('public'));
 
-// vi sætter ROUTES op for MAIN PAGE.
+// vi sætter ROUTES op for LOGIN page
 app.get('/', function(req, res){ 
-    res.render('Dashboard')
+    res.render('bruger-sider/log-ind')
 }); 
 
+
+// vi sætter ROUTE op for MAIN PAGE.
+app.get('/Dashboard', function(req, res){ 
+    res.render('Dashboard')
+}); 
 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
