@@ -21,6 +21,10 @@ router.get('/indsaender', function(req, res) {
  res.render('bruger-sider/indsaender'); 
 });
 
+router.get('/logoff', function(req, res) { 
+    res.render('bruger-sider/logoff'); 
+   });
+
 //Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
 // (Denne forespørgsel kommer f.eks. fra Dashboard)
 //Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
