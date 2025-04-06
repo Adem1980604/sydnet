@@ -18,8 +18,8 @@ router.get('/hentkontooplysninger', async function(req, res) {
     const db = await forbindDatabase(); // forbinder til databasen 
     
     const resultater = await db.request()
-
-    .query('SELECT * FROM konto.kontooplysninger') // henter alle konti fra databasen
+        .query('SELECT * FROM konto.kontooplysninger') // henter alle konti fra databasen
+    
     console.log(resultater.recordset);
     res.status(200).json(resultater.recordset); // recordset er en liste (array) med rækker, som du får fra databasen, når du bruger mssql 
 });

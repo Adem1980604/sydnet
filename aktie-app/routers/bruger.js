@@ -180,8 +180,8 @@ const nuværendeTid = new Date(); // tager fat i nutidens dato
  .input('tid',sql.DateTime, nuværendeTid)
  .input('konto_id',sql.Int, konto_id)
  .query(`
-         INSERT INTO indsadelse.indoplysninger(værdi, valuta, tid, konto_id)
-         VALUES (@værdi, @valuta, @tid, @konto_id)`
+         INSERT INTO konto.transaktioner(vaerdi, vaulta, datotid, konto_id)
+         VALUES (@vaerdi, @valuta, @tid, @konto_id)`
 );
  
 

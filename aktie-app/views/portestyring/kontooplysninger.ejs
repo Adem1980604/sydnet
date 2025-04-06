@@ -71,8 +71,8 @@
     async function sendkonto() {
       let nyKonto = {
         navn: document.getElementById("navn").value,
-        email: document.getElementById("email").value,
-        bank: document.getElementById("bank").value
+        //saldo: document.getElementById("saldo").value,
+        bank_ref: document.getElementById("bank_ref").value
       };
 
       const svar = await fetch('/portefoljestyring/kontooplysninger', {
@@ -102,8 +102,8 @@
         kontoElement.innerHTML =
           `
               <p><strong>Navn:</strong> ${konti[i].navn}</p>
-              <p><strong>Email:</strong> ${konti[i].email}</p>
-              <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank}</p>
+              <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
+              <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
               <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
               <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
               <hr>
