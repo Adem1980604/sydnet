@@ -108,7 +108,10 @@ router.post('/log-ind', async(req,res) => {
                     FROM bruger.oplysninger 
                     WHERE username=@name`)
     
+    //console.log("db_result: " + db_result)  
+    console.log("**********************")  
     console.log(db_result)  
+    console.log("**********************")  
     // Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen, 
     //Catch bliver kun udløst hvis Try delen er "ulovlig"/programmet giver en rød fejl/crasher
     try {
@@ -127,7 +130,7 @@ router.post('/log-ind', async(req,res) => {
             return res.status(200).json({ success: true, message: "Password er korrekt" });
         }
     } catch {
-        return res.status(200).json({ success: true, message: "Password er tomt i db" });
+        return res.status(200).json({ success: true, message: "Noget er gået helt galt" });
     }
 
 
@@ -175,12 +178,12 @@ const nuværendeTid = new Date(); // tager fat i nutidens dato
   const db = await forbindDatabase();  // skaber en forbindelse med db
 
  await db.request()
- .input('værdi', sql.Int, værdi)
+ .input('vaerdi', sql.Int, vaerdi)
  .input('valuta',sql.NVarChar(100), valuta)
  .input('tid',sql.DateTime, nuværendeTid)
  .input('konto_id',sql.Int, konto_id)
  .query(`
-         INSERT INTO konto.transaktioner(vaerdi, vaulta, datotid, konto_id)
+         INSERT INTO konto.transaktioner(vaerdi, valuta, datotid, konto_id)
          VALUES (@vaerdi, @valuta, @tid, @konto_id)`
 );
  
@@ -188,7 +191,7 @@ const nuværendeTid = new Date(); // tager fat i nutidens dato
 res.json({
     success: true,
     indsendelse: {
-      værdi,
+      vaerdi,
       valuta,
       konto: konto_id,
       tid: nuværendeTid.toLocaleString()

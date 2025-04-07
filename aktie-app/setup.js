@@ -18,10 +18,14 @@ const config = {
 
 
 const dropAllTables = `
+DROP table IF EXISTS vaerdipapir.vpkurs
+DROP table IF EXISTS vaerdipapir.vphandler
+DROP table IF EXISTS vaerdipapir.vpoplysninger
+DROP table IF EXISTS konto.portefoelje
 DROP table IF EXISTS konto.transaktioner;
 DROP table IF EXISTS konto.kontooplysninger;
 DROP table IF EXISTS bruger.oplysninger;
-DROP table IF EXISTS konto.portefoelje
+DROP table IF EXISTS konto.portefoelje;
 `;
 
 
@@ -59,7 +63,7 @@ const lavBrugerTabel =`
 `;
 
 const dataibrugertabel = `
---INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Emil', 'Emil', 'Emil@cbs.dk')
+INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Emil', 'Emil', 'Emil@cbs.dk')
 INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Meda', 'Meda', 'Meda@cbs.dk')
 INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Mads', 'Mads', 'Mads@cbs.dk')
 INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Nikola', 'Nikola', 'Nikola@cbs.dk')
@@ -72,7 +76,7 @@ const lavKontoTabel = `
     konto_id INT IDENTITY(1,1),
     bruger_id INT,
     navn NVARCHAR(100),
-    vaulta NVARCHAR(50),
+    valuta NVARCHAR(50),
     saldo DECIMAL(15,2),
     bank_ref NVARCHAR(255),
     oprettet DATETIME,
@@ -84,10 +88,10 @@ const lavKontoTabel = `
 `;
 
 const dataikontotabel = `
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, vaulta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, vaulta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, vaulta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, vaulta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
 `;
 
 
@@ -176,10 +180,10 @@ async function ventPåDatabase(){
    
 
   //Drop all TABLES
-  //console.log('Drop all tabels');
-  //await sql.query(dropAllTables);
+  console.log('Drop all tabels');
+  await sql.query(dropAllTables);
 
-  /*
+  
   //Drop all SCHEMA
   console.log('Drop all schemas');
   await sql.query(dropAllSchemas);
@@ -190,9 +194,9 @@ async function ventPåDatabase(){
   await sql.query(lavSchemaBruger);  
   await sql.query(lavSchemaKonto);
   await sql.query(lavSchemaVaerdipapir);
-  */
+  
 
-  /*
+  
   // opretter tabeller 
   console.log('Create all tables');
   await sql.query(lavBrugerTabel);
@@ -202,13 +206,12 @@ async function ventPåDatabase(){
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
   await sql.query(lavVPKurs);
-  */
-
-
-  //await sql.query(dataibrugertabel);
   
-  //await sql.query(dataikontotabel);
-  //await sql.query(dataitransaktionstabel);
+
+
+  await sql.query(dataibrugertabel);
+  await sql.query(dataikontotabel);
+  await sql.query(dataitransaktionstabel);
   
 
   console.log('alt oprettet') // tjek
