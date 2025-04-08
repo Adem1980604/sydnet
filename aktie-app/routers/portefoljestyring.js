@@ -12,8 +12,6 @@ router.get('/zoom-på-1-portefølje', function(req, res) {
     res.render('portestyring/zoom-på-1-portefølje'); 
 });
 
-
-
 router.get('/hentkontooplysninger', async function(req, res) {     
     const db = await forbindDatabase(); // forbinder til databasen 
     
@@ -34,8 +32,6 @@ router.get('/konto-detalje', function(req, res) {
     // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
 
 });
-
- 
 
   // Opretter en POST til tilføjelse af konto 
 
@@ -64,6 +60,33 @@ res.status(201).json({ konto_id });
 
      
 });
+
+// dette er opretelse af konto id siden (konto-detaljer), altså npr der bliver trykket på se detaljer komme siden frem afhængig af id
+router.get('/konto/:id' , async function(req,res){
+const db = await forbindDatabase();
+const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøg
+
+const kontoResultater = await db.request()
+.input('id', sql.Int, konto_id)
+.query('SELECT * FROM konto.kontooplysninger WHERE konto_id = @id');
+
+const indsendelserResultater = await db.request()
+.input('id', sql.Int, konto_id)
+.query('SELECT * FROM konto.transaktioner WHERE konto_id = @id');
+
+// Gem første række fra kontodata 
+const konto = kontoResultater.recordset[0];
+
+// Hent alle transaktioner 
+  const indsendelser = indsendelserResultater.recordset;
+
+// render siden med data 
+  res.render('portestyring/konto-detalje', {
+    konto,
+    indsendelser
+  });
+});
+
 
 
 
