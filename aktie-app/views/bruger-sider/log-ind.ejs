@@ -26,7 +26,7 @@
         <input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn" required>
 
         <label for = "adgangskode">Adgangskode:</label>
-        <input type="password" name="adgangskode"  title="Indtast din adgangskode"  id="adgangskode" required autocomplete="current-password">
+        <input type="password" name="adgangskode"  title="Indtast din adgangskode" id="adgangskode" required>
 
         <a href="/bruger/bruger-oprettelse">Opret Bruger</a>
         <a href="/bruger/nulstill">Glemt adgangskode?</a>
@@ -51,7 +51,7 @@
         console.log("adgangskode: " + document.getElementById("adgangskode").value)
         
         //Her tager vi det "bruger data" vi lige har fået, altså brugernavn og password, og siger "Send dette til vores "bruger.js" fil(aka POST)"
-        //Og send info om brugernavn og adgangskode med via vores variable logIndData.
+        //Og send info om brugernavn og adgangskode med via vores variable logIndData. Afventer svar fra "bruger.js" filen
         const svar = await fetch('/bruger/log-ind', {
             method: 'POST',
             headers:{"Content-Type": "application/json"},
@@ -63,7 +63,7 @@
 
         //Hvis tilbagemeldingen var succesfuld, altså har en status 200, så vil vi gerne sende brugeren videre til vores Dashboard/forside
         if (svar.status === 200){
-            window.location.href = "/";
+            window.location.href = "/Dashboard";
         //Hvis ikke tilbagemeldingen var succesfuld, så udskriv en advarsel, med den givne fejl vi får grundet kriterierne givet i "bruger.js" filen
         } else {
             alert(resultat.message)
