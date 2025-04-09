@@ -26,7 +26,7 @@
         <input type="email" id="email" name="email" required>
 
         <label for="bank">Tilknyttet Bank:</label>
-        <input type="text" id="bank" name="bank" required>
+        <input type="text" id="bank_ref" name="bank" required>
 
         <button type="button" onclick="sendkonto()">Opret konto</button>
       </form>
@@ -89,6 +89,7 @@
 
     // hent konto og så vis den 
     async function hentKonti() {
+
       console.log("Henter Konti fra database");
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
       const konti = await response.json();
@@ -104,7 +105,7 @@
               <p><strong>Navn:</strong> ${konti[i].navn}</p>
               <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
               <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
-              <button onclick="gåTilKonto(${konti[i].id})">Se detaljer</button>
+              <button onclick="gåTilKonto(${konti[i].konto_id})">Se detaljer</button>
               <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
               <hr>
             `;
