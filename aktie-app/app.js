@@ -27,15 +27,22 @@ app.get('/Dashboard', function(req, res){
     res.render('Dashboard')
 }); 
 
+
+
+
+
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
 const portefoljeRuter = require('./routers/portefoljestyring');
 const transaktionsRuter = require('./routers/transaktionssider');
+const kontoRouter = require('./routers/portefoljestyring'); // konto id ting ting 
+
 
 
 app.use('/bruger', brugerRuter);
 app.use('/portefoljestyring', portefoljeRuter);
 app.use('/transaktionssider', transaktionsRuter);
+app.use('/', kontoRouter);  // konto ting ting ting 
 
 
 
