@@ -2,6 +2,8 @@
 const express = require('express'); 
 const path = require('path');
 const app = express(); 
+const session = require('express-session');
+
 const port = 4000;
 
 
@@ -9,6 +11,13 @@ const port = 4000;
 app.set('view engine', 'ejs'); 
 app.set('views', path.join(__dirname, 'views'));
 
+// session sørger for at der huskes hvem brugeren er så du kan knytte dem til fx en konto eller en indsendelse
+app.use(session({
+    secret: 'sydnet123',  // Hemmelig nøgle til at kryptere sessions
+    resave: false,         // Gem ikke sessioner igen, hvis de ikke er ændret
+    saveUninitialized: true, // Gem nye tomme sessioner (bruges ved login)
+    cookie: { secure: false } // Tillad cookies uden HTTPS (til lokal udvikling (tror jeg))
+  }));
 
 // dette håndere vores JSON-data altså POST request
 app.use(express.json()); 
@@ -26,10 +35,6 @@ app.get('/', function(req, res){
 app.get('/Dashboard', function(req, res){ 
     res.render('Dashboard')
 }); 
-
-
-
-
 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');

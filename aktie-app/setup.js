@@ -77,7 +77,7 @@ const lavKontoTabel = `
     bruger_id INT,
     navn NVARCHAR(100),
     valuta NVARCHAR(50),
-    saldo DECIMAL(15,2),
+    saldo DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     bank_ref NVARCHAR(255),
     oprettet DATETIME,
     nedlagt DATETIME,
@@ -88,10 +88,10 @@ const lavKontoTabel = `
 `;
 
 const dataikontotabel = `
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'JyskeBank','2025-04-06 20:00:00','',1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
 `;
 
 
@@ -104,16 +104,15 @@ CREATE TABLE konto.transaktioner(
   transaktionstype NVARCHAR(20),
   valuta NVARCHAR(50),
   datotid DATETIME,
-  CONSTRAINT ind_PK PRIMARY KEY (transaktions_id),
   CONSTRAINT konto1_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
 );
   `;
 
   const dataitransaktionstabel = `
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, transaktionstype, valuta, datotid) VALUES (2,100,'indsaet','DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, transaktionstype, valuta, datotid) VALUES (2,200,'indsaet','DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, transaktionstype, valuta, datotid) VALUES (2,500,'indsaet','DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, transaktionstype, valuta, datotid) VALUES (2,-50,'Haev','DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
 `;
 
 

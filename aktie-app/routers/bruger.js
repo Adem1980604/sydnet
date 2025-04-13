@@ -104,7 +104,7 @@ router.post('/log-ind', async(req,res) => {
         await db.request()
             .input('name', sql.NVarChar(100), brugernavn)
             .input('password', sql.NVarChar(100), adgangskode)
-            .query(`SELECT username, password 
+            .query(`SELECT bruger_id, username, password
                     FROM bruger.oplysninger 
                     WHERE username=@name`)
     
@@ -127,6 +127,10 @@ router.post('/log-ind', async(req,res) => {
         if (db_password != adgangskode) {
             return res.status(400).json({ success: false, message: "Password er forkert" });
         } else {
+
+            const db_bruger_id = db_result.recordset[0].bruger_id;
+            req.session.bruger_id = db_bruger_id; // gemmer brugerens ID i session
+
             return res.status(200).json({ success: true, message: "Password er korrekt" });
         }
     } catch {
@@ -169,7 +173,7 @@ router.post('/nulstill',(req,res) => {
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsædense der laves
 router.post('/indsaender', async function (req,res) {
 
-const { værdi, valuta, konto_id } = req.body;
+const { vaerdi, valuta, konto_id } = req.body;
 const nuværendeTid = new Date(); // tager fat i nutidens dato
 
 
@@ -177,24 +181,45 @@ const nuværendeTid = new Date(); // tager fat i nutidens dato
 
   const db = await forbindDatabase();  // skaber en forbindelse med db
 
- await db.request()
- .input('vaerdi', sql.Int, vaerdi)
+  const transResult = await db.request()
+ .input('vaerdi', sql.Decimal(10,2), vaerdi)
  .input('valuta',sql.NVarChar(100), valuta)
- .input('tid',sql.DateTime, nuværendeTid)
+ .input('datotid',sql.DateTime, nuværendeTid)
  .input('konto_id',sql.Int, konto_id)
+
  .query(`
          INSERT INTO konto.transaktioner(vaerdi, valuta, datotid, konto_id)
-         VALUES (@vaerdi, @valuta, @tid, @konto_id)`
+          OUTPUT INSERTED.transaktions_id
+         VALUES (@vaerdi, @valuta, @datotid, @konto_id)`
 );
- 
 
+const transaktions_id = transResult.recordset[0].transaktions_id;
+
+// vi opdater saldoen hvis bruger indsætter penge på konto 
+
+if (vaerdi == null || isNaN(vaerdi)) {
+    return res.status(400).json({ success: false, message: "Ugyldig værdi sendt til serveren" });
+  }
+  
+await db.request()
+.input('vaerdi', sql.Decimal(10, 2), vaerdi )
+.input('konto_id', sql.Int, konto_id)
+    .query(`
+      UPDATE konto.kontooplysninger
+      SET saldo = saldo + @vaerdi
+      WHERE konto_id = @konto_id 
+    `);
+ 
+    // sender svar tilbage ved brug af json
 res.json({
     success: true,
     indsendelse: {
+      transaktions_id,
       vaerdi,
       valuta,
       konto: konto_id,
-      tid: nuværendeTid.toLocaleString()
+      tid: nuværendeTid.toLocaleString(),
+     
     }
   });
 
@@ -202,8 +227,11 @@ console.log("Indsendelse modtaget:", req.body); //tjek
 
 });
 
+  
+
 
 module.exports = router; 
+
 
 
 

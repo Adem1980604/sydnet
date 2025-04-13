@@ -22,8 +22,8 @@
         <label for="navn">Navn på konto:</label>
         <input type="text" id="navn" name="navn" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <!--<label for="email">Email:</label>
+        <input type="email" id="email" name="email" required> -->
 
         <label for="bank">Tilknyttet Bank:</label>
         <input type="text" id="bank_ref" name="bank" required>
@@ -93,7 +93,8 @@
       console.log("Henter Konti fra database");
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
       const konti = await response.json();
-      console.log(konti);
+
+
       const container = document.getElementById("konto-container");
       container.innerHTML = ""; // Ryd gammel liste
       
@@ -110,6 +111,8 @@
               <hr>
             `;
         container.appendChild(kontoElement)
+       
+
       }
     }
 
@@ -126,8 +129,9 @@
 
     // Send indsendelse
     async function indsendData() {
+
       const data = {
-        værdi: document.getElementById("indsæt-værdi").value,
+        vaerdi: (document.getElementById("indsæt-værdi").value),
         valuta: document.getElementById("indsæt-valuta").value,
         konto_id: valgtKontoId
       };
@@ -143,9 +147,12 @@
       const result = await svar.json();
       console.log(" Server svar:", result);
 
+   
+
       // kode til at vise indsendelsen 
 
       if (result.success) {
+        hentKonti(); // opdater listen med ny saldo
         const inds = result.indsendelse;
 
         const resultatDiv = document.getElementById("resultat");
@@ -153,8 +160,7 @@
           `
             <button id="luk-resultat" class="luk-knap">Luk</button>
             <h3>Indsendelse oprettet!</h3>
-            <p>ID: ${inds.id}</p>
-            <p>Beløb: ${inds.værdi} ${inds.valuta}</p>
+            <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
             <p>Konto-ID: ${inds.konto}</p>
             <p>Dato og tid for oprettelse: ${inds.tid}</p>
           `;
