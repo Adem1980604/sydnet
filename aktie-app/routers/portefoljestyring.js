@@ -202,21 +202,35 @@ const portefoelje_id = result.recordset[0].portefoelje_id;
 // ruten til at gå ind på den individuelle portefølje for en bruger 
 
 router.get('/porteside/:id', async function(req, res) {
-
   const db = await forbindDatabase();
+  const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
-  const portefoljeId = req.params.id;
-   
+  // Hent den specifikke portefølje
   const result = await db.request()
     .input('id', sql.Int, portefoljeId)
     .query(`SELECT * FROM konto.portefoelje WHERE portefoelje_id = @id`);
 
-  const portefolje = result.recordset[0].portefoelje_id;
+  const portefolje = result.recordset[0]; // Her tager vi den første række i svaret – altså den portefølje brugeren har klikket på
 
+  const konto_id = portefolje.konto_id; // Hver portefølje tilhører en konto – derfor henter vi konto_id fra porteføljen
+
+  // Hent alle porteføljer for den samme konto
+   // Nu henter vi alle porteføljer, der tilhører samme konto – så sidebar kan vise dem alle
+  const allePortefoljer = await db.request()
+    .input('konto_id', sql.Int, konto_id)
+    .query(`SELECT * FROM konto.portefoelje WHERE konto_id = @konto_id`);
+
+
+  const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
+  
+  // Send dem alle til din EJS-side
   res.render('portestyring/portefoelje-detaljer', {
-    portefolje
+    portefolje, // den vagte portefølje
+    portefoljer, // alle porteføljer for kontoen 
+    konto_id // så vi kan linke tilbage 
   });
 });
+
 
 
 // ruten til at genaktiverer konto 

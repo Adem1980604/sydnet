@@ -1,11 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portefølje detaljer</title>
+  <link rel="stylesheet" href="/portefoljeDetalje.css">
 </head>
 <body>
-    <h1>Ole elsker kage </h1>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h3>SYDNET</h3>
+    </div>
+
+    <ul>
+      <li><a href="/dashboard">Dashboard</a></li>
+
+      <li><a href="/portefoljestyring/konto/<%= konto_id %>">Min porteføljeoversigt</a></li>
+
+      <li><a href="/portefoljestyring/kontooplysninger">Accounts</a></li>
+
+    </ul>
+   
+    
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <h1><%= portefolje.navn %></h1>
+      <div>
+        <button>Handels Historik</button>
+        <button>Registrer Handel</button>
+      </div>
+    </header>
+
+    <div class="grid-layout">
+      <!-- Line Chart Placeholder -->
+      <div class="chart-card">
+        <h3>Samlet Værdi af portefølje</h3>
+        <div class="chart-placeholder" id="line-chart"></div>
+      </div>
+
+      <!-- Donut Chart og Total værdi -->
+      <div class="summary-card">
+        <div class="chart-placeholder" id="donut-chart"></div>
+        <ul class="legend">
+          <li><span></span> AAPL - 35%</li>
+          <li><span></span> MSFT - 24%</li>
+          <li><span></span> GOOGL - 12%</li>
+          <li><span></span> AMZN - 14%</li>
+        </ul>
+        <div class="total-value">
+          <p>Total værdi i DKK</p>
+          <h2>100.000 DKK</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aktie tabel -->
+    <section class="stock-table">
+      <h3>Aktier i portefølje</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Navn</th>
+            <th>Volume</th>
+            <th>24h Change</th>
+            <th>Pris</th>
+            <th>Værdi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+             <!-- Dummy data der skal erstates med live data -->
+            <td>Apple<br><small>AAPL</small></td>
+            <td>1 stk.</td>
+            <td class="positive">+1.27%</td>
+            <td>100 DKK</td>
+            <td>3.000 DKK</td>
+          </tr>
+          <tr>
+            <td>Apple<br><small>AAPL</small></td>
+            <td>1 stk.</td>
+            <td class="positive">+1.27%</td>
+            <td>100 DKK</td>
+            <td>3.000 DKK</td>
+          </tr>
+          <tr>
+            <td>Apple<br><small>AAPL</small></td>
+            <td>1 stk.</td>
+            <td class="positive">+1.27%</td>
+            <td>100 DKK</td>
+            <td>3.000 DKK</td>
+          </tr>
+          <tr>
+            <td>Apple<br><small>AAPL</small></td>
+            <td>1 stk.</td>
+            <td class="negative">+1.27%</td>
+            <td>100 DKK</td>
+            <td>3.000 DKK</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
 </body>
 </html>
