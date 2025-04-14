@@ -3,7 +3,13 @@ const router = express.Router();
 router.use(express.json());
 const { sql, forbindDatabase } = require('../db');  // tager fat i db filen 
 
-// vi sætter vores ROUTES op for PORTEFØLJESTYRING.
+
+
+
+
+//********************* ROUTES for PORTEFØLJESTYRING ******************
+
+
 router.get('/kontooplysninger', function(req, res) { 
     res.render('portestyring/kontooplysninger'); 
 });
@@ -12,7 +18,8 @@ router.get('/zoom-på-1-portefølje', function(req, res) {
     res.render('portestyring/zoom-på-1-portefølje'); 
 });
 
-router.get('/hentkontooplysninger', async (req, res) => {
+
+router.get('/hentkontooplysninger', async function(req, res) {
 
   const db = await forbindDatabase(); // forbinder til databasen 
 
@@ -22,8 +29,7 @@ router.get('/hentkontooplysninger', async (req, res) => {
     WHERE aktiv = 1 
   `);
   res.json(result.recordset);
-});2
-
+});
 
 router.get('/kontooplysninger/view', function(req, res) { 
     res.render('portestyring/kontooplysninger');
@@ -86,7 +92,7 @@ console.log("konto oprettet:", req.body); //tjek
 });
 
 
-// dette er opretelse af konto id siden (konto-detaljer), altså npr der bliver trykket på se detaljer komme siden frem afhængig af id
+// dette er opretelse af konto id siden (konto-detaljer), altså når der bliver trykket på se detaljer komme siden frem afhængig af id
 router.get('/konto/:id' , async function(req,res){
 const db = await forbindDatabase();
 
@@ -129,7 +135,7 @@ const portefoljer = portefoljeResultater.recordset;
 
 // ruten til at slette konto 
 
-router.delete('/slet-konto/:id', async (req, res) => {
+router.delete('/slet-konto/:id', async function(req, res) {
   const kontoId = req.params.id; // tager fat i den tilhørende konto man er inde på 
   const nuværendeTid = new Date(); // tager fat i nutidens dato
 
@@ -160,8 +166,6 @@ router.delete('/slet-konto/:id', async (req, res) => {
     });
 
    
-    
-
 // ruten til oprettels af portefølje  
 router.post('/opret-portefolje', async function(req, res) {
   const { navn, konto_id } = req.body; // vi får data, som blev sendt fra fetch()
@@ -193,6 +197,37 @@ const portefoelje_id = result.recordset[0].portefoelje_id;
 
      });
 
+});
+
+// ruten til at genaktiverer konto 
+
+router.post('/genaktiver-konto/:id', async function(req, res) {
+
+  const kontoId = req.params.id; // tager fat i den tilhørende konto id som brugeren vil genåbne
+  const db = await forbindDatabase(); // forbinder til databasen 
+  await db.request()
+  .input('Id', sql.Int, kontoId)
+    // vi tager fat i alle lukkede konti 
+  . query(` 
+    UPDATE konto.kontooplysninger
+    SET aktiv = 1, nedlagt = NULL 
+     WHERE konto_id = @Id
+  `);
+
+  res.json({ success: true});
+});
+
+// ruten til at hente lukkede konto fra db 
+
+router.get('/hent-lukkede-konti', async function(req, res) {
+  const db = await forbindDatabase();
+
+  const result = await db.request().query(`
+    SELECT * FROM konto.kontooplysninger
+    WHERE aktiv = 0
+  `);
+
+  res.json(result.recordset);
 });
 
 

@@ -28,14 +28,28 @@
         <button type="button" onclick="sendkonto()">Opret konto</button>
       </form>
 
+  <!-- Bruges til at vise alle konti der er lukkede  -->
+  <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
+  <div id="lukkede-konti-knap"></div>
+
     </aside>
 
     <!-- Hovedsektion til kontoliste -->
     <main class="content">
       <h1>Eksisterende Konti</h1>
       <div id="konto-container"></div>
+
+      <section  id="lukkede-konti-sektion" class="lukkede-konti-sektion" style="display: none;">
+        <h2>Lukkede konti</h2>
+        <div id="lukkede-konti-container"></div>
+      </section>
     </main>
   </div>
+
+ 
+  
+
+
   <!-- Popup til indsættelse -->
 
   <div id="popup">
@@ -68,7 +82,11 @@
     <button onclick="lukPopup()">Luk</button>
   </div>
 
+
+
+
   <!-- **************************** SCRIPT START ********************** -->
+
   <script>
 
     // vi antager at der ikke er valgt en konto i starten
@@ -217,13 +235,70 @@ async function bekræftLukning() {
       window.location.href = `/konto/${id}`;
     }
 
-    window.hentKonti = hentKonti;
-    hentKonti();
+  
+
+    // funtionen til at åbne en lukkede konti. 
+
+    async function hentLukkedeKonti() {
+const response = await fetch('/portefoljestyring/hent-lukkede-konti');
+const konti = await response.json();
 
 
+const container = document.getElementById("lukkede-konti-container");
+const sektion = document.getElementById("lukkede-konti-sektion"); // vi tager fati sektions elementet fordi vi kun vil have den vist når der er lukkede konti
+
+container.innerHTML = ""; 
+
+ // Vis sektionen, fordi der er mindst én lukket konto
+ sektion.style.display = "block";
+for (let i = 0; i < konti.length; i++) {
+
+  const lukKontoElement = document.createElement("div");
+  lukKontoElement.classList.add("konto-liste");
+
+  lukKontoElement.innerHTML =
+    `
+        <p><strong>Navn:</strong> ${konti[i].navn}</p>
+        <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
+        <button onclick="genaktiverKonto(${konti[i].konto_id})">Genaktiver</button>
+        <hr>
+      `;
+  container.appendChild(lukKontoElement)
+}
+// hvis igen konti findes 
+if (konti.length === 0) {
+  container.innerHTML = "<p>Ingen lukkede konti.</p>";
+  sektion.style.display = "none"; // Skjul sektionen
+  return;
+}
+
+}
+
+// Bekræft genoprettelse af konto 
+
+async function genaktiverKonto(kontoId) {
+  const lukSvar = await fetch(`/portefoljestyring/genaktiver-konto/${kontoId}`, {
+    method: 'POST'
+  });
+
+  const lukkeResultater = await lukSvar.json();
+
+  if (lukkeResultater.success) {
+    alert("Konto er genaktiveret.");
+    hentKonti(); // vi konto igen blandt aktive konti 
+    hentLukkedeKonti() // vi opdatere listen af konti der er lukket 
+
+  } else {
+    alert("Noget gik galt.");
+  }
+}
+
+window.hentKonti = hentKonti;
+
+hentKonti();
+hentLukkedeKonti();
 
   </script>
 
 </body>
-
 </html>
