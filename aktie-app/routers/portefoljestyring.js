@@ -14,8 +14,8 @@ router.get('/kontooplysninger', function(req, res) {
     res.render('portestyring/kontooplysninger'); 
 });
 
-router.get('/zoom-på-1-portefølje', function(req, res) { 
-    res.render('portestyring/zoom-på-1-portefølje'); 
+router.get('/portefoelje-detaljer', function(req, res) { 
+    res.render('portestyring/portefoelje-detaljer'); 
 });
 
 
@@ -199,6 +199,26 @@ const portefoelje_id = result.recordset[0].portefoelje_id;
 
 });
 
+// ruten til at gå ind på den individuelle portefølje for en bruger 
+
+router.get('/porteside/:id', async function(req, res) {
+
+  const db = await forbindDatabase();
+
+  const portefoljeId = req.params.id;
+   
+  const result = await db.request()
+    .input('id', sql.Int, portefoljeId)
+    .query(`SELECT * FROM konto.portefoelje WHERE portefoelje_id = @id`);
+
+  const portefolje = result.recordset[0].portefoelje_id;
+
+  res.render('portestyring/portefoelje-detaljer', {
+    portefolje
+  });
+});
+
+
 // ruten til at genaktiverer konto 
 
 router.post('/genaktiver-konto/:id', async function(req, res) {
@@ -229,6 +249,7 @@ router.get('/hent-lukkede-konti', async function(req, res) {
 
   res.json(result.recordset);
 });
+
 
 
 module.exports = router 

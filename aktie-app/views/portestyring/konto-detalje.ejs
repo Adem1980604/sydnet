@@ -35,18 +35,18 @@
   </div>
 
   <!-- Portefølje liste -->
-    <div class="portefolje-box">
-      <h3><%= konto.navn %></h3>
-      <% for (let i = 0; i < portefoljer.length; i++) { %>
-        <div class="port-liste">
-          <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
-        </div>
-      <% } %>
-    </div>
+  <div class="portefolje-box">
+    <h3><%= konto.navn %></h3>
+    <% for (let i = 0; i < portefoljer.length; i++) { %>
+      <div class="port-liste">
+        <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
+        <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
+      </div>
+    <% } %>
+  </div>
+  <div id="kontoData" data-konto-id="<%= konto_id %>" style="display:none;"></div>
 
-
-  <div id="kontoData" data-konto-id="<%= konto_id %>"></div>
-
+  
   <!-- Popup form -->
   <div id="popup1" style="display: none;">
     <h3>Tilføj Portefølje</h3>
@@ -57,6 +57,7 @@
   </div>
 
    <!-- **************************** SCRIPT START ********************** -->
+
   <script>
     function åbnPopup1() {
       document.getElementById('popup1').style.display = 'block';
@@ -81,17 +82,40 @@
       const data = await svar.json();
 
       if (data.success) {
-        const container = document.querySelector(".portefolje-box");
-        const portElement = document.createElement("div");
-        portElement.classList.add("port-liste");
-        portElement.innerHTML = `<p><strong>Portefølje:</strong> ${data.portefolje_oprettelse.navn}</p>`;
-        container.appendChild(portElement);
-        lukPopup1();
-      } else {
-        alert("Noget gik galt!");
-      }
+  const container = document.querySelector(".portefolje-box");
+
+  const portElement = document.createElement("div");
+  portElement.classList.add("port-liste");
+
+  // Tilføj HTML 
+  portElement.innerHTML = `
+    <p><strong>Portefølje:</strong> ${data.portefolje_oprettelse.navn}</p>
+    <button class="se-port">Se portefølje</button>
+  `;
+
+  container.appendChild(portElement);
+
+  // Bind funktionalitet til knappen
+  const knap = portElement.querySelector(".se-port");
+  knap.addEventListener("click", () => {
+  sePortefolje(data.portefolje_oprettelse.portefoelje_id);
+});
+
+
+  lukPopup1();
+} else {
+  alert("Noget gik galt!");
+}
     }
+
+      // Redirection til den individuelle portefølje
+    // Redirection til den individuelle portefølje
+function sePortefolje(id) {
+  window.location.href = `/porteside/${id}`;
+}
   </script>
 
 </body>
 </html>
+
+  
