@@ -22,9 +22,6 @@
         <label for="navn">Navn på konto:</label>
         <input type="text" id="navn" name="navn" required>
 
-        <!--<label for="email">Email:</label>
-        <input type="email" id="email" name="email" required> -->
-
         <label for="bank">Tilknyttet Bank:</label>
         <input type="text" id="bank_ref" name="bank" required>
 
@@ -62,16 +59,34 @@
 
   </div>
 
+  
+  <!-- popup til at lukke konto  -->
+  <div id="lukPopup">
+    <h3>Er du sikker på at du vil lukke kontoen ? </h3>
+   
+    <button onclick="bekræftLukning()">Ja</button>
+    <button onclick="lukPopup()">Luk</button>
+  </div>
+
   <!-- **************************** SCRIPT START ********************** -->
   <script>
+
     // vi antager at der ikke er valgt en konto i starten
     let valgtKontoId = null;
+    let kontoIdTilSletning = null;
+
+    
+// Åbn popup og husk kontoId
+function LukKonto(kontoId) {
+  kontoIdTilSletning = kontoId;
+  document.getElementById('lukPopup').style.display = 'block';
+}
+
 
     // opret ny konto       
     async function sendkonto() {
       let nyKonto = {
         navn: document.getElementById("navn").value,
-        //saldo: document.getElementById("saldo").value,
         bank_ref: document.getElementById("bank_ref").value
       };
 
@@ -86,6 +101,24 @@
       };
 
     };
+    
+// Bekræft sletning
+async function bekræftLukning() {
+  const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
+    method: 'DELETE'
+  });
+
+  const resultat = await svar.json();
+
+  if (resultat.success) {
+    alert("Konto lukket.");
+    hentKonti();
+  } else {
+    alert("Noget gik galt.");
+  }
+
+  lukPopup(); // Skjul popup igen
+}
 
     // hent konto og så vis den 
     async function hentKonti() {
@@ -108,6 +141,7 @@
               <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
               <button onclick="gåTilKonto(${konti[i].konto_id})">Se detaljer</button>
               <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
+              <button onclick="LukKonto(${JSON.stringify(konti[i].konto_id)})">Luk konto</button>
               <hr>
             `;
         container.appendChild(kontoElement)
@@ -124,8 +158,11 @@
 
     // funktionen til at lukke popup
     function lukPopup() {
-      document.getElementById('popup').style.display = 'none';
-    }
+  // Lukker begge popups, hvis de er synlige
+  document.getElementById('popup').style.display = 'none';
+  document.getElementById('lukPopup').style.display = 'none';
+}
+
 
     // Send indsendelse
     async function indsendData() {

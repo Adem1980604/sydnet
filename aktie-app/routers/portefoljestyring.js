@@ -12,15 +12,18 @@ router.get('/zoom-på-1-portefølje', function(req, res) {
     res.render('portestyring/zoom-på-1-portefølje'); 
 });
 
-router.get('/hentkontooplysninger', async function(req, res) {     
-    const db = await forbindDatabase(); // forbinder til databasen 
-    
-    const resultater = await db.request()
-        .query('SELECT * FROM konto.kontooplysninger') // henter alle konti fra databasen
-    
-    console.log(resultater.recordset);
-    res.status(200).json(resultater.recordset); // recordset er en liste (array) med rækker, som du får fra databasen, når du bruger mssql 
-});
+router.get('/hentkontooplysninger', async (req, res) => {
+
+  const db = await forbindDatabase(); // forbinder til databasen 
+
+  // sørger for at vi kun få vist de aktive konti på siden
+  const result = await db.request().query(`
+    SELECT * FROM konto.kontooplysninger
+    WHERE aktiv = 1 
+  `);
+  res.json(result.recordset);
+});2
+
 
 router.get('/kontooplysninger/view', function(req, res) { 
     res.render('portestyring/kontooplysninger');
@@ -123,6 +126,41 @@ const portefoljer = portefoljeResultater.recordset;
     portefoljer // sendes til EJS
   });
 });
+
+// ruten til at slette konto 
+
+router.delete('/slet-konto/:id', async (req, res) => {
+  const kontoId = req.params.id; // tager fat i den tilhørende konto man er inde på 
+  const nuværendeTid = new Date(); // tager fat i nutidens dato
+
+
+
+    const db = await forbindDatabase();
+ 
+    // slette selve konto 
+    await db.request()
+      .input('kontoId', sql.Int, kontoId)
+      .input('nedlagt', sql.DateTime, nuværendeTid) 
+      .query(`
+       UPDATE konto.kontooplysninger 
+      SET aktiv = 0, nedlagt = @nedlagt
+      WHERE konto_id = @kontoId
+
+      `);
+      res.json({ 
+        success: true, 
+        konto_slettet: {
+          tid: nuværendeTid.toLocaleString(),
+          nedlagt: nuværendeTid.toLocaleString(),
+          aktiv: false
+        }
+      });
+
+
+    });
+
+   
+    
 
 // ruten til oprettels af portefølje  
 router.post('/opret-portefolje', async function(req, res) {

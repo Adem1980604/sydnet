@@ -9,7 +9,6 @@
 <body>
 
   <div class="sidebar">
-    <h2>Porteføljeoversigt for "<%= konto.navn %>"</h2>
     <ul>
       <li><a href="/Dashboard">Dashboard</a></li>
       <li>Accounts</li>
@@ -36,15 +35,15 @@
   </div>
 
   <!-- Portefølje liste -->
-  <% if (portefoljer.length > 0) { %>
     <div class="portefolje-box">
+      <h3><%= konto.navn %></h3>
       <% for (let i = 0; i < portefoljer.length; i++) { %>
         <div class="port-liste">
           <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
         </div>
       <% } %>
     </div>
-  <% } %>
+
 
   <div id="kontoData" data-konto-id="<%= konto_id %>"></div>
 
@@ -58,7 +57,6 @@
   </div>
 
    <!-- **************************** SCRIPT START ********************** -->
-    
   <script>
     function åbnPopup1() {
       document.getElementById('popup1').style.display = 'block';

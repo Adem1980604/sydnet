@@ -1,0 +1,297 @@
+/* Sidebar styling */
+.sidebar {
+    width: 300px;
+    background-color: #1e1e1e;
+    padding: 20px;
+    box-shadow: 2px 0px 10px rgba(0,0,0,0.5);
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.sidebar form {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar label {
+    margin-top: 10px;
+}
+
+.sidebar input {
+    padding: 8px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #292929;
+    color: white;
+}
+
+.sidebar button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color:  #6200ea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background-color:  #6200ea;
+}
+
+
+/* Reset og basis */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Body styling */
+  body {
+    background-color: #0d0d0d;
+    color: white;
+    min-height: 100vh;
+    padding: 0;
+  }
+  
+  /* Øverste tekst - Sydnet */
+  .top-text {
+    font-size: 48px;
+    font-family: "Lora", serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  /* Undertekst */
+  .under-text {
+    font-size: 20px;
+    font-family: "EB Garamond", serif;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  /* Container */
+  .logindside {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  /* Login formular */
+  .log-ind-formual {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Overskrift */
+  .log-ind-formual h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Label styling */
+  label {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  
+  /* Input felter */
+  input {
+    width: 100%;
+    padding: 10px;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  /* Fælles knap-styling */
+  button, a {
+    display: inline-block;
+    background-color: #8000ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Hover & klik-effekter */
+  button:hover, a:hover {
+    background-color: #5f00c6;
+    transform: scale(1.05);
+  }
+  
+  button:active, a:active {
+    transform: scale(0.97);
+  }
+  
+  /* Login-knappen med ekstra stil */
+  #logind-knap {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Links til opret/nulstil som knapper */
+  .log-ind-formual a {
+    margin: 10px 5px 0 0;
+  }
+  
+  /* Justering af logind-form-container hvis nødvendigt */
+  .login-container {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+  
+  /* Sider som nulstil/opret */
+  .nulstilsiden, .bruger-oprettelse {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  #skift-adgangskode{
+    width: 100%;
+    margin-top: 20px
+  
+  }
+  
+
+  /* Dashboard layout container */
+.container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Hovedindhold */
+  .content {
+    flex: 1;
+    padding: 30px;
+    background-color: #0d0d0d;
+    color: #fff;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    background-color: #1e1e1e;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    margin-bottom: 15px;
+  }
+  
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    padding: 10px;
+    background-color: #292929;
+    border-radius: 8px;
+    transition: 0.3s ease;
+  }
+  
+  .sidebar a:hover {
+    background-color: #6200ea;
+  }
+  
+  /* Dashboard cards */
+  .top-cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .card {
+    flex: 1;
+    background-color: #2a2a2d;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    text-align: left;
+  }
+  
+  .card h3 {
+    font-size: 14px;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  .card h2 {
+    font-size: 28px;
+    color: #fff;
+  }
+  
+  .positive {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  
+  .negative {
+    color: #f44336;
+    font-weight: bold;
+  }
+  
+  /* Brug fx i .content */
+  .table-section {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .table-card {
+    flex: 1;
+    background-color: #2a2a2d;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  

@@ -108,6 +108,29 @@ hr {
   margin-bottom: 10px;
 }
 
+/* Dette bruges til vores lukke popup*/
+#lukPopup {
+    display: none; /*sørger for at skjule popup til at starte med*/
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1e1e1e;
+    padding: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    
+  }
+
+  #lukPopup label,
+#lukPopup input,
+#lukPopup select {
+
+  margin-bottom: 10px;
+}
+
+
 /* knap styling */
  button {
     background-color: #8000ff;   /* Lilla */
