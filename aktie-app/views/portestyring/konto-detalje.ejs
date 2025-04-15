@@ -97,11 +97,9 @@
 
   // Bind funktionalitet til knappen
   const knap = portElement.querySelector(".se-port");
-  knap.addEventListener("click", () => {
+  knap.addEventListener("click", function() {
   sePortefolje(data.portefolje_oprettelse.portefoelje_id);
 });
-
-
   lukPopup1();
 } else {
   alert("Noget gik galt!");

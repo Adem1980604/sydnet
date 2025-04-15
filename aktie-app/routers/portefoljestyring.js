@@ -201,8 +201,8 @@ router.post('/opret-portefolje', async function (req, res) {
 });
 
 // ruten til at gå ind på den individuelle portefølje for en bruger 
-
-router.get('/porteside/:id', async function (req, res) {
+// altså ruten sørger for at vise siden 
+router.get('/porteside/:id', async function(req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
@@ -231,6 +231,74 @@ router.get('/porteside/:id', async function (req, res) {
     konto_id // så vi kan linke tilbage 
   });
 });
+
+// ruten som gemmer handlen for den specifikke portefølje 
+
+router.post('/portesiden/:id/handel', async function(req, res){
+  const db = await forbindDatabase();
+  const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
+  const {
+    konto_id,
+    vaerditype,
+    antal,
+    pris,
+    valuta,
+    type, // køb eller salg
+    vpoplysninger_id 
+  } = req.body;
+
+  const datotid = new Date();
+  const gebyr = pris * 0.001; // 0.1 % gebyr 
+  let salg_koeb;
+
+
+  if (type === "salg") {
+    salg_koeb = 1; // hvis det er salg sæt den til 1
+  } else {
+    salg_koeb = 0;
+  }
+  
+
+
+  await db.request()
+  .input('vpoplysninger_id', sql.Int, vpoplysninger_id)
+    .input('portefoelje_id', sql.Int, portefoelje_id)
+    .input('konto_id', sql.Int, konto_id)
+    .input('vaerditype', sql.NVarChar(50), vaerditype)
+    .input('salg_koeb', sql.Bit, salg_koeb)
+    .input('antal', sql.Int, antal)
+    .input('pris', sql.Decimal(10,2), pris)
+    .input('valuta', sql.NVarChar(50), valuta)
+    .input('type', sql.NVarChar(50), type)
+    .input('gebyr', sql.Decimal(10,2), gebyr)
+    .input('datotid', sql.DateTime, datotid)
+    .query(`
+      INSERT INTO vaerdipapir.vphandler
+      (vpoplysninger_id,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, valuta, gebyr, datotid)
+      VALUES
+      (@vpoplysninger_id, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
+    `);
+
+
+    res.json({ success: true,
+      handel: {
+        vpoplysninger_id,
+        portefoelje_id,
+        konto_id, 
+        vaerditype,
+        salg_koeb, 
+        antal, 
+        pris, 
+        valuta, 
+        gebyr, 
+        datotid:datotid.toLocaleString()
+      }
+
+     });
+
+});
+
+
 
 
 
@@ -264,6 +332,10 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 
   res.json(result.recordset);
 });
+
+
+
+
 
 
 

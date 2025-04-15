@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { sql, forbindDatabase } = require('../db');
+const { sql, forbindDatabase } = require('../db'); 
+const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 
 
@@ -137,37 +138,42 @@ router.post('/log-ind', async (req, res) => {
         return res.status(200).json({ success: true, message: "Noget er gået helt galt" });
     }
 
-
-    //if (brugernavn === "m" && adgangskode === "f") { 
-    //    //if (brugernavn === "TestUser") { 
-    //    res.json({success: true, message: "Login Succesfuld"});
-    //    console.log(res.statusCode); // debugging
-    //    console.log(res.statusMessage); // debugging
-    //
-    //
-    //
-    //} else { 
-    //    // dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK
-    //    res.status(400).json({success: false, message: "Forkert brugernavn eller adgangskode"});
-    //}
 });
 
 router.get('/nulstill', function (req, res) {
     res.render('bruger-sider/nulstill');
 });
 
-//POST-rute vil håndeter vores Login-data 
-router.post('/nulstill', (req, res) => {
-    console.log(req.body); // debugging
-    const { nyAdgangskode, nyAdgangskodeIgen } = req.body;
+//POST-rute vil håndeter vores Login-data, vi sørger for at brugeren kan nustille udgangskoden, og opdaterer den i DB.
+router.post('/nulstill', async function (req,res) {
 
-    if (nyAdgangskode === nyAdgangskodeIgen) {
-        res.json({ success: true, message: "Ændring af adgangskode var succesfuld" });
-    } else {
-        // dette sørger for at API ikke returnerer 200 som vil indikere at logind er OK.
-        res.status(400).json({ success: false, message: "OBS. indtast samme adgangskode i begge felter " });
+    console.log(req.body); // debugging
+    const  {  username ,email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
+ 
+    if (nyAdgangskode !== nyAdgangskodeIgen){
+        // Hvis adgangkode ikke matcher stop og send fejl til klienten
+         return res.status(400).json({success: false, message: "OBS. Der er sket en fejl prøv igen "});
     }
-});
+
+    // db skal forbindes 
+    const db = await forbindDatabase();
+    
+ // opdatrer adgangskode direkte ud fra email og brugernavn
+    
+ await db.request()
+    .input('email', sql.NVarChar(255), email)
+    .input('username', sql.NVarChar(100), username)
+    .input('password', sql.NVarChar(255), nyAdgangskode)
+
+    .query(`
+        UPDATE bruger.oplysninger
+        SET password = @password
+        WHERE email = @email AND username = @username
+        `);
+        
+
+        return res.status(200).json({success: true});
+    });
 
 
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsættelse der laves

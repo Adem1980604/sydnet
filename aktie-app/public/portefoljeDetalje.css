@@ -77,6 +77,27 @@
   .header button:hover {
     background-color: #5e35b1;
   }
+
+  .header-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .handels-knap {
+    background-color: #7c4dff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .handels-knap:hover {
+    background-color: #5e35b1;
+  }
+  
   
   /* === Grid Layout === */
   .grid-layout {
@@ -101,26 +122,7 @@
     margin-top: 15px;
   }
   
-  /* Donut chart legend */
-  .legend {
-    list-style: none;
-    margin: 15px 0;
-  }
-  
-  .legend li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 14px;
-  }
-  
-  .legend span {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
+ 
   
   /* Total Value */
   .total-value {
@@ -171,3 +173,124 @@
     color: #f44336;
   }
   
+  /* === Opret Handel Knap === */
+.opret-handel-knap {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #7c4dff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.opret-handel-knap:hover {
+  background-color: #5e35b1;
+  transform: scale(1.05);
+}
+
+/* === Popup Styling === */
+#popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  transform: translate(-50%, -50%);
+  background-color: #1f1f1f;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  z-index: 1100;
+}
+
+.popup-indhold h2 {
+  margin-top: 0;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+#popup input,
+#popup select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: #2c2c2c;
+  color: white;
+}
+
+#popup label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+  color: #ccc;
+}
+
+/* === Switch Styling === */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider.round {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #444;
+  border-radius: 34px;
+  transition: .4s;
+}
+
+.slider.round:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+input:checked + .slider.round {
+  background-color: #7c4dff;
+}
+
+input:checked + .slider.round:before {
+  transform: translateX(25px);
+}
+
+
+.popup-knap {
+  background-color: #7c4dff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.popup-knap:hover {
+  background-color: #5e35b1;
+}
