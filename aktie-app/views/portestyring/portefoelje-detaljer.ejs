@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portefølje detaljer</title>
   <link rel="stylesheet" href="/portefoljeDetalje.css">
 </head>
+
 <body>
 
   <!-- Sidebar -->
@@ -22,19 +24,21 @@
       <li><a href="/portefoljestyring/kontooplysninger">Accounts</a></li>
 
     </ul>
-   
-    
+
+
   </aside>
 
   <main class="main-content">
     <div class="header">
-      <h1><%= portefolje.navn %></h1>
+      <h1>
+        <%= portefolje.navn %>
+      </h1>
       <div class="header-buttons">
         <button class="handels-knap">Handels Historik</button>
         <button class="handels-knap" onclick="åbnPopup()">Opret Handel</button>
       </div>
     </div>
-    
+
 
     <div class="grid-layout">
       <!-- Line Chart Placeholder -->
@@ -74,7 +78,7 @@
         </thead>
         <tbody>
           <tr>
-             <!-- Dummy data der skal erstates med live data -->
+            <!-- Dummy data der skal erstates med live data -->
             <td>Apple<br><small>AAPL</small></td>
             <td>1 stk.</td>
             <td class="positive">+1.27%</td>
@@ -107,114 +111,115 @@
     </section>
   </main>
 
- <!--pop up-->
- <div id="popup" class="popup" style="display:none;">
-  <div class="popup-indhold">
+  <!--pop up-->
+  <div id="popup" class="popup" style="display:none;">
+    <div class="popup-indhold">
 
-    <h2>Opret Handel</h2>
+      <h2>Opret Handel</h2>
 
-  <!--vi laver en switch mulighed så brugeren kan vælge om de vil sælge eller købe værdipapir-->
-  
-  <label>Vælg handelstype:</label>
-  <label class="switch">
-    <input type="checkbox" id="handelstype-toggle">
-    <span class="slider round"></span>
-  </label>
-  <span id="handelstype-label">Køb</span>
-  
+      <!--vi laver en switch mulighed så brugeren kan vælge om de vil sælge eller købe værdipapir-->
 
-  <!--Handels form-->
-   
-  <form id="handelForm">
-  
-    <input type="number" id="antal" placeholder="antal" required>
-    <input type="number" id="samlet_pris" placeholder="Samlet pris" required>
+      <label>Vælg handelstype:</label>
+      <label class="switch">
+        <input type="checkbox" id="handelstype-toggle">
+        <span class="slider round"></span>
+      </label>
+      <span id="handelstype-label">Køb</span>
 
 
-    <label>Værdi-type:</label>
-    <select id="værditype" name="værditype" required>
-      <option value="aktie">Aktie</option>
-      <option value="obligation">Obligation</option>
-      <option value="ETF">ETF</option>
-    </select>
+      <!--Handels form-->
 
-    <button class="popup-knap" type="submit">Bekræft Handel</button>
-  </form>
-  <button class="popup-knap" onclick="lukPopup()">Luk</button>
-  
-</div>
-</div>
-<script>
-// tager fat i id for konti og portefølje 
+      <form id="handelForm">
 
-  const konti_id = "<%= konto_id %>";
-  const portefolje_id = "<%= portefolje.id %>";
+        <input type="number" id="antal" placeholder="antal" required>
+        <input type="number" id="samlet_pris" placeholder="Samlet pris" required>
 
 
-   let handelstype = "køb" // vi antager at brugeren vil købr
+        <label>Værdi-type:</label>
+        <select id="værditype" name="værditype" required>
+          <option value="aktie">Aktie</option>
+          <option value="obligation">Obligation</option>
+          <option value="ETF">ETF</option>
+        </select>
+
+        <button class="popup-knap" type="submit">Bekræft Handel</button>
+      </form>
+      <button class="popup-knap" onclick="lukPopup()">Luk</button>
+
+    </div>
+  </div>
+  <script>
+    // tager fat i id for konti og portefølje 
+
+    const konti_id = "<%= konto_id %>";
+    const portefolje_id = "<%= portefolje.id %>";
 
 
-
-  // funktion til at åbne popup
-   function åbnPopup() {
-  document.getElementById("popup").style.display = "block";
-};
-
-  // funktionen til at lukke popup
-      function lukPopup() {
-  // Lukker begge popup, hvis den er synlig
-  document.getElementById('popup').style.display = 'none';
-
-};
-
-// funktion til at opdatere handelstype
-const toggle = document.getElementById("handelstype-toggle");
-const label = document.getElementById("handelstype-label");
-
-toggle.addEventListener("change", function () {
-  if (toggle.checked) {
-    label.textContent = "Salg";
-    handelstype = "salg";
-  } else {
-    label.textContent = "Køb";
-    handelstype = "køb";
-  }
-});
-
-// nu tager vi fat i vores data
-
-document.getElementById("handelForm").addEventListener("submit", async function (element) {
-  element.preventDefault();
-
-  const data = {
-    konto_id,
-    vaerditype: document.getElementById("værditype").value,
-    antal: document.getElementById("antal").value,
-    pris: document.getElementById("samlet_pris").value,
-    valuta: "DKK", 
-    type: handelstype,
-    vpoplysninger_id: 1 // fx midlertidigt test-id 
-  };
-
-  const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-
-  const resultat = await svar.json();
-
-  if (resultat.success) {
-    alert("Handel oprettet!");
-    lukPopup();
-  } else {
-    alert("Noget gik galt");
-  }
-});
+    let handelstype = "køb" // vi antager at brugeren vil købr
 
 
 
-</script>
+    // funktion til at åbne popup
+    function åbnPopup() {
+      document.getElementById("popup").style.display = "block";
+    };
+
+    // funktionen til at lukke popup
+    function lukPopup() {
+      // Lukker begge popup, hvis den er synlig
+      document.getElementById('popup').style.display = 'none';
+
+    };
+
+    // funktion til at opdatere handelstype
+    const toggle = document.getElementById("handelstype-toggle");
+    const label = document.getElementById("handelstype-label");
+
+    toggle.addEventListener("change", function () {
+      if (toggle.checked) {
+        label.textContent = "Salg";
+        handelstype = "salg";
+      } else {
+        label.textContent = "Køb";
+        handelstype = "køb";
+      }
+    });
+
+    // nu tager vi fat i vores data
+
+    document.getElementById("handelForm").addEventListener("submit", async function (element) {
+      element.preventDefault();
+
+      const data = {
+        konto_id,
+        vaerditype: document.getElementById("værditype").value,
+        antal: document.getElementById("antal").value,
+        pris: document.getElementById("samlet_pris").value,
+        valuta: "DKK",
+        type: handelstype,
+        vpoplysninger_id: 1 // fx midlertidigt test-id 
+      };
+
+      const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const resultat = await svar.json();
+
+      if (resultat.success) {
+        alert("Handel oprettet!");
+        lukPopup();
+      } else {
+        alert("Noget gik galt");
+      }
+    });
+
+
+
+  </script>
 
 </body>
+
 </html>

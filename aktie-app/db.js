@@ -14,13 +14,13 @@ const config = {
 };
 
 // vi forbinder nu vores database 
-async function forbindDatabase(){
+async function forbindDatabase() {
   return await sql.connect(config);
 }
 
 module.exports = {
   sql,
- forbindDatabase
+  forbindDatabase
 
 };
 

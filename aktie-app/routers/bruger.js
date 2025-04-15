@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { sql, forbindDatabase } = require('../db'); 
+const { sql, forbindDatabase } = require('../db');
 const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 
@@ -145,35 +145,35 @@ router.get('/nulstill', function (req, res) {
 });
 
 //POST-rute vil håndeter vores Login-data, vi sørger for at brugeren kan nustille udgangskoden, og opdaterer den i DB.
-router.post('/nulstill', async function (req,res) {
+router.post('/nulstill', async function (req, res) {
 
     console.log(req.body); // debugging
-    const  {  username ,email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
- 
-    if (nyAdgangskode !== nyAdgangskodeIgen){
+    const { username, email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
+
+    if (nyAdgangskode !== nyAdgangskodeIgen) {
         // Hvis adgangkode ikke matcher stop og send fejl til klienten
-         return res.status(400).json({success: false, message: "OBS. Der er sket en fejl prøv igen "});
+        return res.status(400).json({ success: false, message: "OBS. Der er sket en fejl prøv igen " });
     }
 
     // db skal forbindes 
     const db = await forbindDatabase();
-    
- // opdatrer adgangskode direkte ud fra email og brugernavn
-    
- await db.request()
-    .input('email', sql.NVarChar(255), email)
-    .input('username', sql.NVarChar(100), username)
-    .input('password', sql.NVarChar(255), nyAdgangskode)
 
-    .query(`
+    // opdatrer adgangskode direkte ud fra email og brugernavn
+
+    await db.request()
+        .input('email', sql.NVarChar(255), email)
+        .input('username', sql.NVarChar(100), username)
+        .input('password', sql.NVarChar(255), nyAdgangskode)
+
+        .query(`
         UPDATE bruger.oplysninger
         SET password = @password
         WHERE email = @email AND username = @username
         `);
-        
 
-        return res.status(200).json({success: true});
-    });
+
+    return res.status(200).json({ success: true });
+});
 
 
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsættelse der laves

@@ -52,7 +52,7 @@ CREATE SCHEMA vaerdipapir
 
 // vi opretter tabeller
 
-const lavBrugerTabel =`
+const lavBrugerTabel = `
   CREATE TABLE bruger.oplysninger (
     bruger_id INT IDENTITY(1,1),
     username NVARCHAR(100),
@@ -108,7 +108,7 @@ CREATE TABLE konto.transaktioner(
 );
   `;
 
-  const dataitransaktionstabel = `
+const dataitransaktionstabel = `
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
@@ -117,7 +117,7 @@ CREATE TABLE konto.transaktioner(
 
 
 
-  const lavPortefoeljeTabel = `
+const lavPortefoeljeTabel = `
   CREATE TABLE konto.portefoelje(
     portefoelje_id INT IDENTITY(1,1),
     konto_id INT,
@@ -130,7 +130,7 @@ CREATE TABLE konto.transaktioner(
 
 
 
-    const lavVPOplysninger = `
+const lavVPOplysninger = `
     CREATE TABLE vaerdipapir.vpoplysninger(
       vpoplysninger_id INT IDENTITY(1,1),
       navn NVARCHAR(50),
@@ -138,9 +138,9 @@ CREATE TABLE konto.transaktioner(
       CONSTRAINT portefoelje_PK PRIMARY KEY (vpoplysninger_id),
     );
       `;
-  
 
-      const lavVPHandler = `
+
+const lavVPHandler = `
       CREATE TABLE vaerdipapir.vphandler(
         vphandler_id INT IDENTITY(1,1),
         vpoplysninger_id INT,
@@ -156,9 +156,9 @@ CREATE TABLE konto.transaktioner(
         CONSTRAINT vpoplysninger1_FK FOREIGN KEY (vpoplysninger_id) REFERENCES vaerdipapir.vpoplysninger(vpoplysninger_id)
       );
         `;
-    
 
-        const lavVPKurs = `
+
+const lavVPKurs = `
         CREATE TABLE vaerdipapir.vpkurs(
           vpkurs_id INT IDENTITY(1,1),
           vpoplysninger_id INT,
@@ -172,30 +172,30 @@ CREATE TABLE konto.transaktioner(
 
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
-async function ventPåDatabase(){
+async function ventPåDatabase() {
   //forbinder til databasen
   console.log('Connet to database');
   await sql.connect(config); // skaber forbindelse med din database
-   
+
 
   //Drop all TABLES
   console.log('Drop all tabels');
   await sql.query(dropAllTables);
 
-  
+
   //Drop all SCHEMA
   console.log('Drop all schemas');
   await sql.query(dropAllSchemas);
-  
+
 
   // opretter SCHEMA 
   console.log('Create all schemas');
-  await sql.query(lavSchemaBruger);  
+  await sql.query(lavSchemaBruger);
   await sql.query(lavSchemaKonto);
   await sql.query(lavSchemaVaerdipapir);
-  
 
-  
+
+
   // opretter tabeller 
   console.log('Create all tables');
   await sql.query(lavBrugerTabel);
@@ -205,13 +205,13 @@ async function ventPåDatabase(){
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
   await sql.query(lavVPKurs);
-  
+
 
 
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
   await sql.query(dataitransaktionstabel);
-  
+
 
   console.log('alt oprettet') // tjek
 };
@@ -223,4 +223,3 @@ ventPåDatabase();
 
 
 
-    

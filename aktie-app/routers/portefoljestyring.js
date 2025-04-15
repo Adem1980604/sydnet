@@ -202,7 +202,7 @@ router.post('/opret-portefolje', async function (req, res) {
 
 // ruten til at gå ind på den individuelle portefølje for en bruger 
 // altså ruten sørger for at vise siden 
-router.get('/porteside/:id', async function(req, res) {
+router.get('/porteside/:id', async function (req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
@@ -234,7 +234,7 @@ router.get('/porteside/:id', async function(req, res) {
 
 // ruten som gemmer handlen for den specifikke portefølje 
 
-router.post('/portesiden/:id/handel', async function(req, res){
+router.post('/portesiden/:id/handel', async function (req, res) {
   const db = await forbindDatabase();
   const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
   const {
@@ -244,7 +244,7 @@ router.post('/portesiden/:id/handel', async function(req, res){
     pris,
     valuta,
     type, // køb eller salg
-    vpoplysninger_id 
+    vpoplysninger_id
   } = req.body;
 
   const datotid = new Date();
@@ -257,20 +257,20 @@ router.post('/portesiden/:id/handel', async function(req, res){
   } else {
     salg_koeb = 0;
   }
-  
+
 
 
   await db.request()
-  .input('vpoplysninger_id', sql.Int, vpoplysninger_id)
+    .input('vpoplysninger_id', sql.Int, vpoplysninger_id)
     .input('portefoelje_id', sql.Int, portefoelje_id)
     .input('konto_id', sql.Int, konto_id)
     .input('vaerditype', sql.NVarChar(50), vaerditype)
     .input('salg_koeb', sql.Bit, salg_koeb)
     .input('antal', sql.Int, antal)
-    .input('pris', sql.Decimal(10,2), pris)
+    .input('pris', sql.Decimal(10, 2), pris)
     .input('valuta', sql.NVarChar(50), valuta)
     .input('type', sql.NVarChar(50), type)
-    .input('gebyr', sql.Decimal(10,2), gebyr)
+    .input('gebyr', sql.Decimal(10, 2), gebyr)
     .input('datotid', sql.DateTime, datotid)
     .query(`
       INSERT INTO vaerdipapir.vphandler
@@ -280,21 +280,22 @@ router.post('/portesiden/:id/handel', async function(req, res){
     `);
 
 
-    res.json({ success: true,
-      handel: {
-        vpoplysninger_id,
-        portefoelje_id,
-        konto_id, 
-        vaerditype,
-        salg_koeb, 
-        antal, 
-        pris, 
-        valuta, 
-        gebyr, 
-        datotid:datotid.toLocaleString()
-      }
+  res.json({
+    success: true,
+    handel: {
+      vpoplysninger_id,
+      portefoelje_id,
+      konto_id,
+      vaerditype,
+      salg_koeb,
+      antal,
+      pris,
+      valuta,
+      gebyr,
+      datotid: datotid.toLocaleString()
+    }
 
-     });
+  });
 
 });
 
