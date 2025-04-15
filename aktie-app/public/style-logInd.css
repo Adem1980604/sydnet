@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Lora", serif;
 }
 
 /* Body styling */
@@ -88,26 +88,19 @@ input {
 
 /* Fælles knap-styling */
 button, a {
-  display: inline-block;
-  background-color: #8000ff;
+  background-color: #7c4dff;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 20px;
   cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 /* Hover & klik-effekter */
 button:hover, a:hover {
-  background-color: #5f00c6;
-  transform: scale(1.05);
-}
-
-button:active, a:active {
-  transform: scale(0.97);
+  background-color: #5e35b1;
 }
 
 /* Login-knappen med ekstra stil */

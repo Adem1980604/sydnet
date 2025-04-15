@@ -1,9 +1,9 @@
-/* === Reset og basis === */
+/*  Reset og basis */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Lora", serif;
 }
 
 body {
@@ -48,96 +48,24 @@ body {
   transition: 0.3s ease;
 }
 
-.sidebar a:hover {
-  background-color: #6200ea;
-}
 
-.sidebar input {
-  padding: 8px;
-  margin-top: 5px;
-  border: none;
-  border-radius: 5px;
-  background-color: #292929;
-  color: white;
-}
-
-.sidebar button {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #6200ea;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.sidebar button:hover {
-  background-color: #6200ea;
-}
-
-/* === Login og formularer === */
-.logindside {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
-  gap: 20px;
-}
-
-.log-ind-formual {
-  background-color: #2a2a2a;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.log-ind-formual h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-label {
-  display: block;
-  text-align: left;
-  font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  color: white;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
+/* knapperne */
 button,
 a {
-  display: inline-block;
-  background-color: #8000ff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
+    background-color: #7c4dff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
 
 button:hover,
 a:hover {
-  background-color: #5f00c6;
-  transform: scale(1.05);
+  background-color: #5e35b1
 }
 
 button:active,
@@ -145,48 +73,8 @@ a:active {
   transform: scale(0.97);
 }
 
-#logind-knap {
-  width: 100%;
-  margin-top: 20px;
-}
 
-.login-container {
-  background-color: #1a1a1a;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-  width: 350px;
-  text-align: center;
-}
 
-.nulstilsiden,
-.bruger-oprettelse {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  padding: 20px;
-  gap: 20px;
-}
-
-#skift-adgangskode {
-  width: 100%;
-  margin-top: 20px;
-}
-
-/* === Tekst styling === */
-.top-text {
-  font-size: 48px;
-  font-family: "Lora", serif;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #ffffff;
-  text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
-  letter-spacing: 2px;
-  text-align: center;
-  margin-bottom: 10px;
-}
 
 .under-text {
   font-size: 20px;
@@ -197,7 +85,7 @@ a:active {
   margin-bottom: 30px;
 }
 
-/* === Dashboard layout === */
+/* Dashboard layout  */
 .container {
   display: flex;
   min-height: 100vh;
@@ -210,7 +98,7 @@ a:active {
   color: #fff;
 }
 
-/* === Dashboard cards === */
+/* Dashboard cards  */
 .top-cards {
   display: flex;
   gap: 20px;
@@ -238,7 +126,7 @@ a:active {
   color: #fff;
 }
 
-/* === Positiv og negativ styling === */
+/* Positiv og negativ styling */
 .positive {
   color: #4caf50;
   font-weight: bold;
@@ -249,13 +137,13 @@ a:active {
   font-weight: bold;
 }
 
-/* === Tabelsektion (side om side) === */
+/*  Tabelsektion (side om side)  */
 .table-section {
   display: flex;
   gap: 20px;
 }
 
-/* === Tabeller for aktier === */
+/*  Tabeller for aktier  */
 .stock-table {
   flex: 1;
   background-color: #1f1f1f;

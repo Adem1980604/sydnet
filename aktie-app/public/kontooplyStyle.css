@@ -1,6 +1,6 @@
 body {
     font-family: "Lora", serif;
-    background-color: #121212;
+    background-color: #0d0d0d;
     color: white;
     margin: 0;
     padding: 0;
@@ -45,17 +45,18 @@ body {
 }
 
 .sidebar button {
-    margin-top: 20px;
-    padding: 10px;
-    background-color:  #6200ea;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #7c4dff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar button:hover {
-    background-color:  #6200ea;
+  background-color: #5e35b1
 }
 
 /* Hovedindhold */
@@ -133,29 +134,24 @@ hr {
 
 /* knap styling */
  button {
-    background-color: #8000ff;   /* Lilla */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-bottom: 10px;
+  background-color: #7c4dff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
     
   }
   
   /* Hover-effekt */
   button:hover {
-    background-color: #5f00c6;   /* Mørkere lilla */
-    transform: scale(1.05);
+
+    background-color: #5e35b1
   }
   
-  /* Klik-effekt */
-  button:active {
-    transform: scale(0.97);
-  }
-  
+
   #resultat {
     display: none; /* skjult som udgangspunkt */
     font-family: "Lora", serif;

@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: "Lora", serif;
-    background-color: #1c1c1e;
+    background-color:#0d0d0d;
     color: #f5f5f5;
   }
 
@@ -54,27 +54,18 @@ body {
  
   /* Dette bruges til vores popup der kommer frem når brugeren vil sætte penge ind */
 #popup1 {
-  display: none; /*sørger for at skjule popup til at starte med*/
+  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
+  width: 200px;
   transform: translate(-50%, -50%);
-  background: #1e1e1e;
-  padding: 20px;
-  border: 2px solid black;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  
+  background-color: #1f1f1f;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  z-index: 1100;
 }
-
-#popup1 label,
-#popup1 input,
-#popup1 select {
-
-margin-bottom: 10px;
-}
-
-
 
 /* knap styling */
 button {
