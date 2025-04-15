@@ -11,7 +11,7 @@ const port = 4000;
 app.set('view engine', 'ejs'); 
 app.set('views', path.join(__dirname, 'views'));
 
-// session sørger for at der huskes hvem brugeren er så du kan knytte dem til fx en konto eller en indsendelse
+// session sørger for at der huskes hvem brugeren er så du kan knytte dem til fx en konto eller en indsættelse
 app.use(session({
     secret: 'sydnet123',  // Hemmelig nøgle til at kryptere sessions
     resave: false,         // Gem ikke sessioner igen, hvis de ikke er ændret

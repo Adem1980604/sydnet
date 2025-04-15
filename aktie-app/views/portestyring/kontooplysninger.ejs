@@ -28,9 +28,9 @@
         <button type="button" onclick="sendkonto()">Opret konto</button>
       </form>
 
-  <!-- Bruges til at vise alle konti der er lukkede  -->
-  <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
-  <div id="lukkede-konti-knap"></div>
+      <!-- Bruges til at vise alle konti der er lukkede  -->
+      <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
+      <div id="lukkede-konti-knap"></div>
 
     </aside>
 
@@ -39,19 +39,15 @@
       <h1>Eksisterende Konti</h1>
       <div id="konto-container"></div>
 
-      <section  id="lukkede-konti-sektion" class="lukkede-konti-sektion" style="display: none;">
+      <section id="lukkede-konti-sektion" class="lukkede-konti-sektion" style="display: none;">
         <h2>Lukkede konti</h2>
         <div id="lukkede-konti-container"></div>
       </section>
     </main>
   </div>
 
- 
-  
-
 
   <!-- Popup til indsættelse -->
-
   <div id="popup">
     <h3>Indsæt penge på konto</h3>
     <label for="indsæt-værdi">Beløb:</label>
@@ -64,7 +60,7 @@
       <option value="EUR">EUR</option>
     </select><br><br>
 
-    <button onclick="indsendData()">Indsend</button>
+    <button onclick="indsaetData()">Indsæt</button>
     <button onclick="lukPopup()">Luk</button>
   </div>
 
@@ -73,13 +69,13 @@
 
   </div>
 
-  
+
   <!-- popup til at lukke konto  -->
   <div id="lukPopup">
-    <h3>Er du sikker på at du vil lukke kontoen ? </h3>
-   
-    <button onclick="bekræftLukning()">Ja</button>
-    <button onclick="lukPopup()">Luk</button>
+    <h3>Er du sikker på at du vil lukke kontoen? </h3>
+
+    <button onclick="bekraeftLukning()">Ja, jeg vil gerne lukke denne konto</button>
+    <button onclick="lukPopup()">Fortryd lukning</button>
   </div>
 
 
@@ -93,12 +89,12 @@
     let valgtKontoId = null;
     let kontoIdTilSletning = null;
 
-    
-// Åbn popup og husk kontoId
-function LukKonto(kontoId) {
-  kontoIdTilSletning = kontoId;
-  document.getElementById('lukPopup').style.display = 'block';
-}
+
+    // Åbn popup og husk kontoId
+    function LukKonto(kontoId) {
+      kontoIdTilSletning = kontoId;
+      document.getElementById('lukPopup').style.display = 'block';
+    }
 
 
     // opret ny konto       
@@ -107,198 +103,180 @@ function LukKonto(kontoId) {
         navn: document.getElementById("navn").value,
         bank_ref: document.getElementById("bank_ref").value
       };
-
       const svar = await fetch('/portefoljestyring/kontooplysninger', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nyKonto)
       });
-      
+
       if (svar.ok) {
         await hentKonti();
       };
-
     };
-    
-// Bekræft sletning
-async function bekræftLukning() {
-  const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
-    method: 'DELETE'
-  });
 
-  const resultat = await svar.json();
+    // Bekræft sletning
+    async function bekraeftLukning() {
+      const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
+        method: 'DELETE'
+      });
 
-  if (resultat.success) {
-    alert("Konto lukket.");
-    hentKonti();
-  } else {
-    alert("Noget gik galt.");
-  }
+      const resultat = await svar.json();
 
-  lukPopup(); // Skjul popup igen
-}
+      if (resultat.success) {
+        alert("Konto lukket.");
+        hentKonti();
+      } else {
+        alert("Noget gik galt.");
+      }
+      lukPopup(); // Skjul popup igen
+    }
 
     // hent konto og så vis den 
     async function hentKonti() {
-
       console.log("Henter Konti fra database");
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
       const konti = await response.json();
-
-
       const container = document.getElementById("konto-container");
       container.innerHTML = ""; // Ryd gammel liste
-      
+
       for (let i = 0; i < konti.length; i++) {
         const kontoElement = document.createElement("div");
         kontoElement.classList.add("konto-liste");
         kontoElement.innerHTML =
           `
-              <p><strong>Navn:</strong> ${konti[i].navn}</p>
-              <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
-              <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
-              <button onclick="gåTilKonto(${konti[i].konto_id})">Se detaljer</button>
-              <button onclick="åbnIndsendPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
-              <button onclick="LukKonto(${JSON.stringify(konti[i].konto_id)})">Luk konto</button>
-              <hr>
-            `;
+          <p><strong>Navn:</strong> ${konti[i].navn}</p>
+          <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
+          <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
+          <button onclick="gaaTilKonto(${konti[i].konto_id})">Se detaljer</button>
+          <button onclick="aabnIndsaetPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
+          <button onclick="LukKonto(${JSON.stringify(konti[i].konto_id)})">Luk konto</button>
+          <hr>
+        `;
         container.appendChild(kontoElement)
-       
 
       }
     }
 
     // Indsæt penge
-    function åbnIndsendPopup(kontoId) {
+    function aabnIndsaetPopup(kontoId) {
       valgtKontoId = kontoId;
       document.getElementById('popup').style.display = 'block';
     }
 
     // funktionen til at lukke popup
     function lukPopup() {
-  // Lukker begge popups, hvis de er synlige
-  document.getElementById('popup').style.display = 'none';
-  document.getElementById('lukPopup').style.display = 'none';
-}
+      // Lukker begge popups, hvis de er synlige
+      document.getElementById('popup').style.display = 'none';
+      document.getElementById('lukPopup').style.display = 'none';
+    }
 
 
-    // Send indsendelse
-    async function indsendData() {
-
+    // Send indsættelse
+    async function indsaetData() {
       const data = {
         vaerdi: (document.getElementById("indsæt-værdi").value),
         valuta: document.getElementById("indsæt-valuta").value,
         konto_id: valgtKontoId
       };
-
       console.log(" Sender til server:", data);
-
-      const svar = await fetch('/bruger/indsaender', {
+      const svar = await fetch('/bruger/indsaetter', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
-
       const result = await svar.json();
       console.log(" Server svar:", result);
 
-   
-
-      // kode til at vise indsendelsen 
-
+      // kode til at vise indsættelsen 
       if (result.success) {
         hentKonti(); // opdater listen med ny saldo
-        const inds = result.indsendelse;
-
+        const inds = result.indsaettelse;
         const resultatDiv = document.getElementById("resultat");
-        resultatDiv.innerHTML = 
+        resultatDiv.innerHTML =
           `
-            <button id="luk-resultat" class="luk-knap">Luk</button>
-            <h3>Indsendelse oprettet!</h3>
-            <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
-            <p>Konto-ID: ${inds.konto}</p>
-            <p>Dato og tid for oprettelse: ${inds.tid}</p>
-          `;
-
+        <button id="luk-resultat" class="luk-knap">Luk</button>
+        <h3>Indsættelse oprettet!</h3>
+        <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
+        <p>Konto-ID: ${inds.konto}</p>
+        <p>Dato og tid for oprettelse: ${inds.tid}</p>
+      `;
         resultatDiv.style.display = "block";
-
         document.getElementById("luk-resultat").addEventListener("click", () => {
           resultatDiv.style.display = "none";
         });
-
         lukPopup();
       }
     }
 
     // Redirection til kontoside
-    function gåTilKonto(id) {
+    function gaaTilKonto(id) {
       window.location.href = `/konto/${id}`;
     }
 
-  
+
 
     // funtionen til at åbne en lukkede konti. 
 
     async function hentLukkedeKonti() {
-const response = await fetch('/portefoljestyring/hent-lukkede-konti');
-const konti = await response.json();
+      const response = await fetch('/portefoljestyring/hent-lukkede-konti');
+      const konti = await response.json();
 
 
-const container = document.getElementById("lukkede-konti-container");
-const sektion = document.getElementById("lukkede-konti-sektion"); // vi tager fat i sektions elementet fordi vi kun vil have den vist når der er lukkede konti
+      const container = document.getElementById("lukkede-konti-container");
+      const sektion = document.getElementById("lukkede-konti-sektion"); // vi tager fat i sektions elementet fordi vi kun vil have den vist når der er lukkede konti
 
-container.innerHTML = ""; 
+      container.innerHTML = "";
 
- // Vis sektionen, fordi der er mindst én lukket konto
- sektion.style.display = "block";
-for (let i = 0; i < konti.length; i++) {
+      // Vis sektionen, fordi der er mindst én lukket konto
+      sektion.style.display = "block";
+      for (let i = 0; i < konti.length; i++) {
 
-  const lukKontoElement = document.createElement("div");
-  lukKontoElement.classList.add("konto-liste");
+        const lukKontoElement = document.createElement("div");
+        lukKontoElement.classList.add("konto-liste");
 
-  lukKontoElement.innerHTML =
-    `
+        lukKontoElement.innerHTML =
+          `
         <p><strong>Navn:</strong> ${konti[i].navn}</p>
         <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
         <button onclick="genaktiverKonto(${konti[i].konto_id})">Genaktiver</button>
         <hr>
       `;
-  container.appendChild(lukKontoElement)
-}
-// hvis igen konti findes 
-if (konti.length === 0) {
-  container.innerHTML = "<p>Ingen lukkede konti.</p>";
-  sektion.style.display = "none"; // Skjul sektionen
-  return;
-}
+        container.appendChild(lukKontoElement)
+      }
+      // hvis igen konti findes 
+      if (konti.length === 0) {
+        container.innerHTML = "<p>Ingen lukkede konti.</p>";
+        sektion.style.display = "none"; // Skjul sektionen
+        return;
+      }
 
-}
+    }
 
-// Bekræft genoprettelse af konto 
+    // Bekræft genoprettelse af konto 
+    async function genaktiverKonto(kontoId) {
+      const lukSvar = await fetch(`/portefoljestyring/genaktiver-konto/${kontoId}`, {
+        method: 'POST'
+      });
 
-async function genaktiverKonto(kontoId) {
-  const lukSvar = await fetch(`/portefoljestyring/genaktiver-konto/${kontoId}`, {
-    method: 'POST'
-  });
+      const lukkeResultater = await lukSvar.json();
 
-  const lukkeResultater = await lukSvar.json();
+      if (lukkeResultater.success) {
+        alert("Konto er genaktiveret.");
+        hentKonti(); // vi konto igen blandt aktive konti 
+        hentLukkedeKonti() // vi opdatere listen af konti der er lukket 
 
-  if (lukkeResultater.success) {
-    alert("Konto er genaktiveret.");
-    hentKonti(); // vi konto igen blandt aktive konti 
-    hentLukkedeKonti() // vi opdatere listen af konti der er lukket 
+      } else {
+        alert("Noget gik galt.");
+      }
+    }
 
-  } else {
-    alert("Noget gik galt.");
-  }
-}
+    window.hentKonti = hentKonti;
 
-window.hentKonti = hentKonti;
-
-hentKonti();
-hentLukkedeKonti();
+    hentKonti();
+    hentLukkedeKonti();
 
   </script>
 
 </body>
+
 </html>
