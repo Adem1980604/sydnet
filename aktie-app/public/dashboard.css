@@ -1,9 +1,9 @@
-/*  Reset og basis */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lora", serif;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 body {
@@ -13,12 +13,12 @@ body {
   padding: 0;
 }
 
-/* === Sidebar === */
+/*  Sidebar */
 .sidebar {
   width: 220px;
   background-color: #1e1e1e;
   padding: 20px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+ 
 }
 
 .sidebar h2 {
@@ -68,22 +68,6 @@ a:hover {
   background-color: #5e35b1
 }
 
-button:active,
-a:active {
-  transform: scale(0.97);
-}
-
-
-
-
-.under-text {
-  font-size: 20px;
-  font-family: "EB Garamond", serif;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 30px;
-}
 
 /* Dashboard layout  */
 .container {
@@ -112,18 +96,6 @@ a:active {
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   text-align: left;
-}
-
-.card h3 {
-  font-size: 14px;
-  color: #aaa;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.card h2 {
-  font-size: 28px;
-  color: #fff;
 }
 
 /* Positiv og negativ styling */
@@ -169,4 +141,11 @@ a:active {
 
 .stock-table small {
   color: #999;
+}
+
+.sidebar .logo {
+  color: #c792ea;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }

@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lora", serif;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 /* Body styling */
@@ -17,8 +17,7 @@ body {
 /* Øverste tekst - Sydnet */
 .top-text {
   font-size: 48px;
-  font-family: "Lora", serif;
-  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
   text-transform: uppercase;
   color: #ffffff;
   text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
@@ -30,7 +29,7 @@ body {
 /* Undertekst */
 .under-text {
   font-size: 20px;
-  font-family: "EB Garamond", serif;
+  font-family: 'Segoe UI', sans-serif;
   font-weight: bold;
   color: #ffffff;
   text-align: center;
