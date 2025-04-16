@@ -88,10 +88,10 @@ const lavKontoTabel = `
 `;
 
 const dataikontotabel = `
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'JyskeBank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
 `;
 
 
