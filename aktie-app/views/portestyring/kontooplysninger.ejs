@@ -81,38 +81,18 @@
 
 
 
-  <!-- **************************** SCRIPT START ********************** -->
+  <!-- **************************** JS-SCRIPT START ********************** -->
 
   <script>
-
-    //Vi antager at der ikke er valgt en konto i starten
-    let valgtKontoId = null;
+    // Her oprettes globale variable som kan anvendes på tværs af funktioner
+    let valgtKontoId = null;        //Vi antager at der ikke er valgt en konto i starten
     let kontoIdTilSletning = null;
-
 
     // Åbn popup og husk kontoId
     function LukKonto(kontoId) {
       kontoIdTilSletning = kontoId;
       document.getElementById('lukPopup').style.display = 'block';
     }
-
-
-    // opret ny konto       
-    async function sendkonto() {
-      let nyKonto = {
-        navn: document.getElementById("navn").value,
-        bank_ref: document.getElementById("bank_ref").value
-      };
-      const svar = await fetch('/portefoljestyring/kontooplysninger', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nyKonto)
-      });
-
-      if (svar.ok) {
-        await hentKonti();
-      };
-    };
 
     // Bekræft sletning
     async function bekraeftLukning() {
@@ -131,6 +111,24 @@
       lukPopup(); // Skjul popup igen
     }
 
+    // opret ny konto       
+    async function sendkonto() {
+      let nyKonto = {
+        navn: document.getElementById("navn").value,
+        bank_ref: document.getElementById("bank_ref").value
+      };
+      const svar = await fetch('/portefoljestyring/kontooplysninger', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nyKonto)
+      });
+
+      if (svar.ok) {
+        await hentKonti();
+      };
+    };
+
+    
     // hent konto og så vis den 
     async function hentKonti() {
       console.log("Henter Konti fra database");
@@ -194,12 +192,12 @@
         const resultatDiv = document.getElementById("resultat");
         resultatDiv.innerHTML =
           `
-        <button id="luk-resultat" class="luk-knap">Luk</button>
-        <h3>Indsættelse oprettet!</h3>
-        <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
-        <p>Konto-ID: ${inds.konto}</p>
-        <p>Dato og tid for oprettelse: ${inds.tid}</p>
-      `;
+          <button id="luk-resultat" class="luk-knap">Luk</button>
+          <h3>Indsættelse oprettet!</h3>
+          <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
+          <p>Konto-ID: ${inds.konto}</p>
+          <p>Dato og tid for oprettelse: ${inds.tid}</p>
+          `;
         resultatDiv.style.display = "block";
         document.getElementById("luk-resultat").addEventListener("click", () => {
           resultatDiv.style.display = "none";
