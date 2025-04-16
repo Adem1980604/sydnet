@@ -10,8 +10,17 @@ const { sql, forbindDatabase } = require('../db');  // tager fat i db filen
 //********************* ROUTES for PORTEFØLJESTYRING ******************
 
 
-router.get('/kontooplysninger', function (req, res) {
-  res.render('portestyring/kontooplysninger');
+router.get('/kontooplysninger', async function (req, res) {
+  const db = await forbindDatabase();
+
+  const result = await db.request().query(`
+    SELECT * FROM konto.kontooplysninger
+    WHERE aktiv = 1
+  `);
+
+  const konti = result.recordset;
+
+  res.render('portestyring/kontooplysninger', { konti });
 });
 
 router.get('/portefoelje-detaljer', function (req, res) {
@@ -237,29 +246,69 @@ router.get('/porteside/:id', async function (req, res) {
 router.post('/portesiden/:id/handel', async function (req, res) {
   const db = await forbindDatabase();
   const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
+  
+  // tager fat i værdierne fra ejs filen
   const {
     konto_id,
     vaerditype,
-    antal,
-    pris,
     valuta,
     type, // køb eller salg
-    vpoplysninger_id
   } = req.body;
 
+// så vi ikke får fetch fejl 500 
+   let pris = parseFloat(req.body.pris);
+   let antal = parseInt(req.body.antal);
+
+  // tilkobler dato og beregner gebyr 
   const datotid = new Date();
   const gebyr = pris * 0.001; // 0.1 % gebyr 
-  let salg_koeb;
+  const total = (pris * antal) + gebyr;
 
+// her tjekker vi om brugeren vil sælge eller handle 
 
+let salg_koeb
   if (type === "salg") {
     salg_koeb = 1; // hvis det er salg sæt den til 1
   } else {
     salg_koeb = 0;
   }
 
+    // 1: tjek saldo om brugeren har nok penge på den specifikke konto 
+const saldoResultat = await db.request()
+.input('konto_id', sql.Int, konto_id)
+.query(`
+  SELECT saldo FROM konto.kontooplysninger
+  WHERE konto_id = @konto_id
+`);
+const saldo = saldoResultat.recordset[0].saldo;
 
 
+
+// 2. hvis det er køb og saldoen er for lav så send fejl 
+if (type === "kob" && saldo < total) {
+return res.status(400).json({ success: false, message: "Ikke nok penge på kontoen" });
+}
+
+// vi tager fat i id for værdipapir som skal bruges i handlen 
+const symbol = req.body.symbol;
+
+// Find vpoplysninger_id baseret på symbol
+const vpResultat = await db.request()
+  .input('symbol', sql.NVarChar(20), symbol)
+  .query(`
+    SELECT vpoplysninger_id 
+    FROM vaerdipapir.vpoplysninger 
+    WHERE symbol = @symbol
+  `);
+
+if (vpResultat.recordset.length === 0) {
+  return res.status(404).json({ success: false, message: "Værdipapir ikke fundet." });
+}
+
+vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
+
+
+// 3. indsæt handel hvis brugeren har nok penge 
   await db.request()
     .input('vpoplysninger_id', sql.Int, vpoplysninger_id)
     .input('portefoelje_id', sql.Int, portefoelje_id)
@@ -269,7 +318,6 @@ router.post('/portesiden/:id/handel', async function (req, res) {
     .input('antal', sql.Int, antal)
     .input('pris', sql.Decimal(10, 2), pris)
     .input('valuta', sql.NVarChar(50), valuta)
-    .input('type', sql.NVarChar(50), type)
     .input('gebyr', sql.Decimal(10, 2), gebyr)
     .input('datotid', sql.DateTime, datotid)
     .query(`
@@ -279,7 +327,43 @@ router.post('/portesiden/:id/handel', async function (req, res) {
       (@vpoplysninger_id, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
     `);
 
+  // 4. opret transkation ( dette er vigtigt for opdatering af konto tabel og dens værdier)
 
+
+  // vi tjekker hvad for en type transkation det er 
+  let transaktionsVaerdi;
+
+  if (type === "kob") {
+    transaktionsVaerdi = -total;
+  } else {
+    transaktionsVaerdi = total;
+  }
+  
+// vi indsætter de nye værdier i transkationstablen 
+  await db.request()
+    .input('konto_id', sql.Int, konto_id)
+    .input('vaerdi', sql.Decimal(10, 2), transaktionsVaerdi)
+    .input('transaktionstype', sql.NVarChar(20), `handel-${type}`)
+    .input('valuta', sql.NVarChar(50), valuta)
+    .input('datotid', sql.DateTime, datotid)
+    .query(`
+      INSERT INTO konto.transaktioner (konto_id, vaerdi, transaktionstype, valuta, datotid)
+      VALUES (@konto_id, @vaerdi, @transaktionstype, @valuta, @datotid)
+    `);
+
+    // 5. Opdater kontoens saldo
+await db.request()
+.input('konto_id', sql.Int, konto_id)
+.input('ændring', sql.Decimal(10, 2), transaktionsVaerdi)
+.query(`
+  UPDATE konto.kontooplysninger
+  SET saldo = saldo + @ændring
+  WHERE konto_id = @konto_id
+`);
+
+  
+ 
+// send svar 
   res.json({
     success: true,
     handel: {
@@ -298,10 +382,6 @@ router.post('/portesiden/:id/handel', async function (req, res) {
   });
 
 });
-
-
-
-
 
 // ruten til at genaktiverer konto 
 

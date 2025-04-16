@@ -78,7 +78,10 @@
     <button onclick="lukPopup()">Fortryd lukning</button>
   </div>
 
-
+  <% for (let i = 0; i < konti.length; i++) { %>
+    <p><strong>Saldo:</strong> <%= konti[i].saldo %></p>
+  <% } %>
+  
 
 
   <!-- **************************** JS-SCRIPT START ********************** -->

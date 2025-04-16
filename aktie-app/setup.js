@@ -1,8 +1,6 @@
 
-
 const sql = require('mssql'); // vi importerer mssql-pakken, som forbinder med SQL server
 require('dotenv').config();
-
 
 // forbindens konfiguraiton 
 const config = {
@@ -107,7 +105,7 @@ CREATE TABLE konto.transaktioner(
   CONSTRAINT konto1_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
 );
   `;
-
+  
 const dataitransaktionstabel = `
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
@@ -134,10 +132,20 @@ const lavVPOplysninger = `
     CREATE TABLE vaerdipapir.vpoplysninger(
       vpoplysninger_id INT IDENTITY(1,1),
       navn NVARCHAR(50),
+      symbol NVARCHAR(20),
       type NVARCHAR(50),
-      CONSTRAINT portefoelje_PK PRIMARY KEY (vpoplysninger_id),
+      CONSTRAINT portefoelje_PK PRIMARY KEY (vpoplysninger_id)
     );
       `;
+
+const dataOmVP =
+`INSERT INTO vaerdipapir.vpoplysninger (navn, symbol, type)
+VALUES 
+('Apple Inc.', 'AAPL', 'aktie'),
+('Tesla Inc.', 'TSLA', 'aktie'),
+('Microsoft', 'MSFT', 'aktie');
+`
+
 
 
 const lavVPHandler = `
@@ -145,6 +153,7 @@ const lavVPHandler = `
         vphandler_id INT IDENTITY(1,1),
         vpoplysninger_id INT,
         portefoelje_id INT,
+        konto_id INT,
         vaerditype NVARCHAR(50),
         salg_koeb BIT,
         antal INT,
@@ -153,7 +162,8 @@ const lavVPHandler = `
         gebyr DECIMAL(10,2),
         datotid DATETIME,
         CONSTRAINT vphandler_PK PRIMARY KEY (vphandler_id),
-        CONSTRAINT vpoplysninger1_FK FOREIGN KEY (vpoplysninger_id) REFERENCES vaerdipapir.vpoplysninger(vpoplysninger_id)
+        CONSTRAINT vpoplysninger1_FK FOREIGN KEY (vpoplysninger_id) REFERENCES vaerdipapir.vpoplysninger(vpoplysninger_id),
+        CONSTRAINT fk_vphandler_konto FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
       );
         `;
 
@@ -211,6 +221,8 @@ async function ventPåDatabase() {
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
   await sql.query(dataitransaktionstabel);
+  await sql.query(dataOmVP); 
+
 
 
   console.log('alt oprettet') // tjek

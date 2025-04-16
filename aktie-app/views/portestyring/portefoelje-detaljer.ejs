@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portefølje detaljer</title>
   <link rel="stylesheet" href="/portefoljeDetalje.css">
+
+    <!-- link til charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -44,12 +48,25 @@
       <!-- Line Chart Placeholder -->
       <div class="chart-card">
         <h3>Samlet Værdi af portefølje</h3>
-        <div class="chart-placeholder" id="line-chart"></div>
+        <div class="chart-placeholder" id="line-chart">
+
+          <canvas id="accountChart"> 
+
+          </canvas>
+
+
+        </div>
       </div>
 
       <!-- Donut Chart og Total værdi -->
       <div class="summary-card">
-        <div class="chart-placeholder" id="donut-chart"></div>
+        <div class="chart-placeholder" id="donut-chart">
+
+          <canvas id="portfolioPieChart">
+
+          </canvas>
+
+        </div>
         <ul class="legend">
           <li><span></span> AAPL - 35%</li>
           <li><span></span> AAPL - 35%</li>
@@ -161,16 +178,17 @@
   </div>
 
     <!-- **************************** SCRIPT START ********************** -->
-     
+
   <script>
 
 
     // tager fat i id for konti og portefølje ( jeg tror det skla bruges til backedt senere hen) 
-    const konti_id = "<%= konto_id %>";
-    const portefolje_id = "<%= portefolje.id %>";
+    const konto_id = "<%= konto_id %>";
+    const portefolje_id = "<%= portefolje.portefoelje_id %>";
 
 
-    let handelstype = "køb" // vi antager at brugeren vil køber
+
+    let handelstype = "kob" // vi antager at brugeren vil køber
 
 
 
@@ -195,8 +213,8 @@
         label.textContent = "Salg";
         handelstype = "salg";
       } else {
-        label.textContent = "Køb";
-        handelstype = "køb";
+        label.textContent = "Kob";
+        handelstype = "kob";
       }
     });
 
@@ -212,7 +230,7 @@
         pris: document.getElementById("samlet_pris").value,
         valuta: "DKK",
         type: handelstype,
-        vpoplysninger_id: 1 // fx midlertidigt test-id 
+        symbol: valgtAktie.symbol
       };
 
       const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
@@ -283,6 +301,7 @@ if(symbol.includes(søg)|| navn.includes(søg)){
   }
 }
 });
+//*********************************************chart for line ********************************
 
 
 // opertter en funktion der ganger antallet af de valgte aktier med prisen 
@@ -305,6 +324,159 @@ const antal = parseFloat(document.getElementById("antal").value);
 document.getElementById("antal").addEventListener("input", function () {
   beregnSamletPris();
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('accountChart').getContext('2d');
+    
+    // Dummy data - kan erstattes med rigtige data senere
+    const data = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
+        datasets: [{
+            label: 'Portfolio Værdi',
+            data: [100000, 120000, 115000, 130000, 140000, 135000, 150000, 160000, 165000, 175000, 180000],
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#fff'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#fff'
+                    },
+                    // Tilføj dette for at give overhead i grafen
+                    suggestedMax: function(context) {
+                        const maxValue = Math.max(...context.chart.data.datasets[0].data);
+                        return maxValue * 1.15; // Giver 15% overhead over højeste værdi
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#fff'
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+});
+
+
+//*********************************************chart for donut chart ********************************
+
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx = document.getElementById('portfolioPieChart').getContext('2d');
+
+    // Rå labels og værdier
+    const rawLabels = ['Growth Tech', 'Tech Leaders', 'ETF', 'Space & Defence', 'E-com'];
+    const values = [35, 12, 24, 14, 15];
+
+    // 1. Beregn totalen manuelt
+    let total = 0;
+    for (let i = 0; i < values.length; i++) {
+        total = total + values[i];
+    }
+
+    // 2. Lav labels med procent
+    let labels = [];
+    for (let i = 0; i < rawLabels.length; i++) {
+        let procent = (values[i] / total) * 100;
+        procent = procent.toFixed(1); // Vis kun 1 decimal
+        let labelMedProcent = rawLabels[i] + ' (' + procent + '%)';
+        labels.push(labelMedProcent);
+    }
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            data: values,
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.8)',   // Blå
+                'rgba(75, 192, 192, 0.8)',   // Turkis
+                'rgba(255, 159, 64, 0.8)',   // Orange
+                'rgba(153, 102, 255, 0.8)',  // Lilla
+                'rgba(201, 203, 207, 0.8)'   // Grå
+            ],
+            borderColor: '#ffffff', // Hvid kant
+            borderWidth: 2,
+            cutout: '65%' // Donut-udskæring
+        }]
+    };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: '#ffffff', // Hvid tekst
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif'
+                        },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Fordeling af værdi i portefølje',
+                    color: '#ffffff', // Hvid titel
+                    font: {
+                        size: 18,
+                        weight: 'bold',
+                        family: 'Arial, sans-serif'
+                    },
+                    padding: {
+                        bottom: 20
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20
+                }
+            }
+        }
+    };
+
+    const myChart = new Chart(ctx, config);
+});
+
 
   </script>
 
