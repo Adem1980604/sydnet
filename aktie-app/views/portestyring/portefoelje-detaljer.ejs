@@ -115,6 +115,8 @@
   <div id="popup" class="popup" style="display:none;">
     <div class="popup-indhold">
 
+   
+
       <h2>Opret Handel</h2>
 
       <!--vi laver en switch mulighed så brugeren kan vælge om de vil sælge eller købe værdipapir-->
@@ -126,14 +128,23 @@
       </label>
       <span id="handelstype-label">Køb</span>
 
+<!--search bar-->
+<input type="text" id="aktieSøg" placeholder="Søg værdipapir">
+<ul id="vaerdiResultat"></ul>
 
       <!--Handels form-->
 
       <form id="handelForm">
 
-        <input type="number" id="antal" placeholder="antal" required>
-        <input type="number" id="samlet_pris" placeholder="Samlet pris" required>
 
+        <input type="number" id="antal" placeholder="Antal" required>
+
+        <!-- Pris per aktie (udfyldes automatisk) -->
+        <label for="samlet_pris"> Pris</label> 
+        <input type="number" id="samlet_pris" placeholder="pris" readonly>
+       
+        <!-- Beregnet pris vises her -->
+        <p id="beregnet_pris">Samlet</p>
 
         <label>Værdi-type:</label>
         <select id="værditype" name="værditype" required>
@@ -148,14 +159,18 @@
 
     </div>
   </div>
-  <script>
-    // tager fat i id for konti og portefølje 
 
+    <!-- **************************** SCRIPT START ********************** -->
+     
+  <script>
+
+
+    // tager fat i id for konti og portefølje ( jeg tror det skla bruges til backedt senere hen) 
     const konti_id = "<%= konto_id %>";
     const portefolje_id = "<%= portefolje.id %>";
 
 
-    let handelstype = "køb" // vi antager at brugeren vil købr
+    let handelstype = "køb" // vi antager at brugeren vil køber
 
 
 
@@ -216,7 +231,80 @@
       }
     });
 
+    
+    //**************************** SEARCHBAR FUNKTIONALITET ********************** -->
 
+    // Dette er til searchbar her bruges der dummy data lige nu, men skal udvides med live data
+
+
+  let valgtAktie = null; // vi antager at  brugeren ikke har valgt en aktie 
+
+const aktier = [
+  { symbol: "AAPL", navn: "Apple Inc.", pris: 145 },
+  { symbol: "TSLA", navn: "Tesla", pris: 215 },
+  { symbol: "MSFT", navn: "Microsoft", pris: 320 },
+  { symbol: "NFLX", navn: "Netflix", pris: 405 }
+];
+
+
+const input = document.getElementById("aktieSøg");
+const resultatListe = document.getElementById("vaerdiResultat");
+
+// når brugeren søger 
+input.addEventListener("input", function () {
+  let søg = input.value
+
+  resultatListe.innerHTML = ""; // fjern gamle resultater
+
+
+  // loop gennem alle aktier (dummy data)
+  for (let i = 0; i < aktier.length; i++) {
+    let aktie = aktier[i];
+    let symbol = aktie.symbol.toLowerCase();
+    let navn = aktie.navn.toLowerCase();
+
+// tjek om søg findes i symbol eller navn 
+if(symbol.includes(søg)|| navn.includes(søg)){
+  let li = document.createElement("li"); // vi laver en liste element som viser aktien
+  li.textContent = `${aktie.symbol} - ${aktie.navn}`; // her stiller vi dem op
+ 
+
+  // opretter klikke funktionaliteten 
+  li.addEventListener("click", function () {
+  input.value = aktie.symbol;  // ticker-symbolet automatisk bliver sat ind i søgefeltet,
+  resultatListe.innerHTML = ""; // luk listen
+
+  // vi tager fat i prisen for den pågældende aktie og udfylder pris feltet på popup automatisk
+  document.getElementById("samlet_pris").value = aktie.pris 
+  valgtAktie = aktie // nu har brugeren valgt en aktie og vi husker den
+
+  });
+  resultatListe.appendChild(li);
+  }
+}
+});
+
+
+// opertter en funktion der ganger antallet af de valgte aktier med prisen 
+  function  beregnSamletPris(){
+
+// henter antalet af aktier vagt 
+const antal = parseFloat(document.getElementById("antal").value);
+ const visning = document.getElementById("beregnet_pris")
+
+
+      if(antal > 0) {
+      let samlet = valgtAktie.pris * antal; 
+
+    visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
+  
+      };
+    };
+
+  // Når brugeren skriver antal så kalder vi på funktionen der beregner prisen
+document.getElementById("antal").addEventListener("input", function () {
+  beregnSamletPris();
+});
 
   </script>
 
