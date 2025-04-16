@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 /* Body styling */
@@ -17,8 +17,7 @@ body {
 /* Øverste tekst - Sydnet */
 .top-text {
   font-size: 48px;
-  font-family: "Lora", serif;
-  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
   text-transform: uppercase;
   color: #ffffff;
   text-shadow: 0px 0px 20px rgba(100, 100, 255, 0.8);
@@ -30,7 +29,7 @@ body {
 /* Undertekst */
 .under-text {
   font-size: 20px;
-  font-family: "EB Garamond", serif;
+  font-family: 'Segoe UI', sans-serif;
   font-weight: bold;
   color: #ffffff;
   text-align: center;
@@ -88,26 +87,19 @@ input {
 
 /* Fælles knap-styling */
 button, a {
-  display: inline-block;
-  background-color: #8000ff;
+  background-color: #7c4dff;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 20px;
   cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 /* Hover & klik-effekter */
 button:hover, a:hover {
-  background-color: #5f00c6;
-  transform: scale(1.05);
-}
-
-button:active, a:active {
-  transform: scale(0.97);
+  background-color: #5e35b1;
 }
 
 /* Login-knappen med ekstra stil */
