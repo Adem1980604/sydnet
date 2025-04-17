@@ -5,84 +5,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/kontoDetalje.css">
-  <title>Portfølje oversigt</title>
+  <title>Konto-oversigt</title>
 </head>
 
 <body>
-
-  <div class="sidebar">
-    <ul>
-      <li><a href="/Dashboard">Dashboard</a></li>
-      <li>Accounts</li>
-      <li>Portfølje</li>
-    </ul>
-  </div>
-
-  <div class="header-div">
-    <h1>Porteføljeoversigt for konto <%= konto_id %>
-    </h1>
-    <button onclick="åbnPopup1()">Tilføj Portefølje</button>
-  </div>
-
-  <!-- Kort med total værdi -->
-  <div class="dashboard-grid">
-    <div class="card">
-      <h3>Total portefølje-værdi i DKK</h3>
-      <h2>224.543 DKK</h2>
-      <div class="performance-bar">
-        <div class="positive">+1.4%</div>
-        <div class="negative">-1.7%</div>
-        <div class="positive">+2.4%</div>
+  <div class="container">
+    <!-- Navigation Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h3>SYDNET</h3>
       </div>
-    </div>
-  </div>
+      <ul>
+        <li><a href="/Dashboard">Dashboard</a></li>
+        <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
+        <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
+      </ul>
 
-  <!-- Saldo -->
-  <div class="dashboard-grid">
-    <div class="card">
-      <h2>Konto: <%= konto.navn %></h2>      
-      <h3>Saldo: <%= konto.valuta %> <%= konto.saldo %></h3>
-      <h3>Bank:  <%= konto.bank_ref %></h3>      
-      
-      <table>
-        <tr>
-          <th>Transaktioner</th>
-        </tr>
-        <tr>
-          <td>Dato</td>
-          <td>ID</td>
-          <td>Valuta</td>
-          <td>Værdi</td>
-        </tr>
-          <% for (let j=0; j < transaktioner.length; j++) { %>
+    </aside>
+
+    <main class = "content">
+      <div class="header-div">
+        <h1>Kontooversigt for konto <%= konto.konto_id %></h1>
+      </div>
+    
+          
+      <!-- Saldo -->
+      <div class="dashboard-grid">
+        <div class="card">
+          <h2>Konto: <%= konto.navn %></h2>      
+          <h3>Saldo: <%= konto.valuta %> <%= konto.saldo %></h3>
+          <h3>Bank:  <%= konto.bank_ref %></h3>      
+
+          <table>
             <tr>
-              <td><%= transaktioner[j].datotid.toString().substring(3,15) %></td>
-              <td><%= transaktioner[j].transaktions_id%></td>
-              <td><%= transaktioner[j].valuta %></td>
-              <td><%= transaktioner[j].vaerdi %></td>
+              <th>Transaktioner</th>
             </tr>
-          <% } %>
-      </table>
-
-    </div>
-  </div>
-
-
-  <!-- Portefølje liste -->
-  <div class="portefolje-box">
-    <h3>
-      <%= konto.navn %>
-    </h3>
-    <% for (let i=0; i < portefoljer.length; i++) { %>
-      <div class="port-liste">
-        <p><strong>Portefølje:</strong>
-          <%= portefoljer[i].navn %>
-        </p>
-        <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
+            <tr>
+              <td>Dato</td>
+              <td>ID</td>
+              <td>Valuta</td>
+              <td>Værdi</td>
+            </tr>
+              <% for (let j=0; j < transaktioner.length; j++) { %>
+                <tr>
+                  <td><%= transaktioner[j].datotid.toString().substring(3,15) %></td>
+                  <td><%= transaktioner[j].transaktions_id%></td>
+                  <td><%= transaktioner[j].valuta %></td>
+                  <td><%= transaktioner[j].vaerdi %></td>
+                </tr>
+              <% } %>
+          </table>
+        
+        </div>
       </div>
-      <% } %>
-  </div>
-  <div id="kontoData" data-konto-id="<%= konto_id %>" style="display:none;"></div>
+    
+    
+      
+    </main>
+</div>
 
 
   <!-- Popup form -->

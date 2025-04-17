@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/kontoDetalje.css">
+  <title>Portefølje-oversigt</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Navigation Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h3>SYDNET</h3>
+      </div>
+      <ul>
+        <li><a href="/Dashboard">Dashboard</a></li>
+        <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
+        <li><a>Portefoljeoplysninger</a></li>
+      </ul>
+    </aside>
+    
+    <main class = "content">
+      <div class="header-div">
+        <h1>Porteføljeoversigt </h1>
+        <button onclick="åbnPopup1()">Tilføj Portefølje</button>
+      </div>
+
+      <!-- Kort med total værdi -->
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Total portefølje-værdi i DKK</h3>
+          <h2>224.543 DKK</h2>
+          <div class="performance-bar">
+            <div class="positive">+1.4%</div>
+            <div class="negative">-1.7%</div>
+            <div class="positive">+2.4%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portefølje liste -->
+
+      <div class="portefolje-box">
+        <h3>
+         Given konto
+        </h3>
+        <% for (let i=0; i < portefoljer.length; i++) { %>
+          <div class="port-liste">
+            <p><strong>Portefølje:</strong>
+              <%= portefoljer[i].navn %>
+            </p>
+            <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
+          </div>
+          <% } %>
+      </div>
+     
+    
+  
+</body>
+
+</html>

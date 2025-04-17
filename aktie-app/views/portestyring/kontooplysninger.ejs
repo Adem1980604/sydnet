@@ -11,22 +11,17 @@
 
 <body>
   <div class="container">
-    <!-- Sidebar til formular -->
+    <!-- Navigation Sidebar -->
     <aside class="sidebar">
-      <h2>Opret konto</h2>
-      <form id="konto_form">
-        <label for="navn">Navn på konto:</label>
-        <input type="text" id="navn" name="navn" required>
+      <div class="logo">
+        <h3>SYDNET</h3>
+      </div>
+      <ul>
+        <li><a href="/Dashboard">Dashboard</a></li>
+        <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
+        <li><a>Portefoljeoplysninger</a></li>
+      </ul>
 
-        <label for="bank">Tilknyttet Bank:</label>
-        <input type="text" id="bank_ref" name="bank" required>
-
-        <button type="button" onclick="sendkonto()">Opret konto</button>
-      </form>
-
-      <!-- Bruges til at vise alle konti der er lukkede  -->
-      <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
-      <div id="lukkede-konti-knap"></div>
     </aside>
 
     <!-- Hovedsektion til kontoliste -->
@@ -39,7 +34,25 @@
         <div id="lukkede-konti-container"></div>
       </section>
     </main>
-  </div>
+
+    <!-- Rightsidebar til handlinger -->
+    <aside class="sidebar2" id="opretKontoSidebar">
+      <h2>Opret konto</h2>
+      <form id="konto_form">
+        <label for="navn">Navn på konto:</label>
+        <input type="text" id="navn" name="navn" required>
+    
+        <label for="bank">Tilknyttet Bank:</label>
+        <input type="text" id="bank_ref" name="bank" required>
+    
+        <button type="button" onclick="sendkonto()">Opret konto</button>
+      </form>
+    
+      <!-- Bruges til at vise alle konti der er lukkede  -->
+      <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
+      <div id="lukkede-konti-knap"></div>
+    </aside>
+    </div>
 
 
   <!-- Popup til indsættelse -->
@@ -78,11 +91,14 @@
 -->
 
 
+
+
   <!-- **************************** JS-SCRIPT START ********************** -->
   <script>
     // Her oprettes globale variable som kan anvendes på tværs af funktioner
     let valgtKontoId = null;        //Vi antager at der ikke er valgt en konto i starten
     let kontoIdTilSletning = null;
+    let nuvaerendeSaldo = null;
 
     // Åbn popup og husk kontoId
     function LukKonto(kontoId) {
@@ -142,18 +158,22 @@
           <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
           <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
           <button onclick="gaaTilKonto(${konti[i].konto_id})">Se detaljer</button>
-          <button onclick="aabnIndsaetPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt eller hæv penge</button>
+          <button onclick="aabenIndsaetPopup(${JSON.stringify(konti[i].konto_id)},${JSON.stringify(konti[i].saldo)})">Indsæt eller hæv penge</button>
           <button onclick="LukKonto(${JSON.stringify(konti[i].konto_id)})">Luk konto</button>
           <hr>
         `;
+
+        console.log("DEBUG 060  ***************");
         container.appendChild(kontoElement)
 
       }
     }
 
     // Indsæt penge
-    function aabnIndsaetPopup(kontoId) {
-      valgtKontoId = kontoId;
+    function aabenIndsaetPopup(konto_id,saldo) {
+      valgtKontoId = JSON.stringify(konto_id);
+      nuvaerendeSaldo = saldo
+
       document.getElementById('popup').style.display = 'block';
     }
 
@@ -221,6 +241,11 @@
       if (data.vaerdi >= 0) {
         console.log("Beløb til hævning skal være mindre end nul.", data);
         return alert("Beløb til hævning skal være mindre end nul.");
+      }
+
+      if(nuvaerendeSaldo < data.vaerdi*-1) {
+        console.log("Der er ikke dækning på kontoen til at hæve dette beløb");
+        return alert("Der er ikke dækning på kontoen til at hæve dette beløb");
       }
 
       console.log(" Sender til server:", data);
@@ -326,5 +351,6 @@
   </script>
 
 </body>
+
 
 </html>

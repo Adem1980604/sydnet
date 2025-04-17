@@ -1,37 +1,79 @@
-body {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/*body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color:#0d0d0d;
     color: #f5f5f5;
-  }
+  }*/
 
-  .sidebar {
-    width: 200px;
-    background-color: #111;
-    height: 100vh;
-    float: left;
-    padding: 20px;
-    box-sizing: border-box;
-  }
 
-  .sidebar h2 {
-    color: #fff;
-    font-size: 20px;
-  }
-
-  .sidebar ul {
-    list-style: none;
+  body {
+    background-color: #0d0d0d;
+    color: white;
+    min-height: 100vh;
     padding: 0;
   }
 
-  .sidebar ul li {
-    padding: 10px 0;
-    cursor: pointer;
-  }
+/* Navigation Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #1e1e1e;
+  padding: 20px;
+ 
+}
+
+.sidebar h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 15px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  display: block;
+  padding: 10px;
+  background-color: #292929;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.sidebar .logo {
+  color: #c792ea;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+/* Dashboard layout  */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
 
   .content {
-    margin-left: 200px;
+    flex: 1;
     padding: 30px;
+    background-color: #0d0d0d;
+    color: #fff;
   }
 
   .content h1 {

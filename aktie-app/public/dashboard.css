@@ -13,7 +13,7 @@ body {
   padding: 0;
 }
 
-/*  Sidebar */
+/* Navigation Sidebar */
 .sidebar {
   width: 220px;
   background-color: #1e1e1e;
@@ -37,6 +37,49 @@ body {
 }
 
 .sidebar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  display: block;
+  padding: 10px;
+  background-color: #292929;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.sidebar .logo {
+  color: #c792ea;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+/*  RightSidebar */
+.sidebar2 {
+  width: 220px;
+  background-color: #1e1e1e;
+  padding: 20px;
+  right: 0px;
+ 
+}
+
+.sidebar2 h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.sidebar2 ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar2 li {
+  margin-bottom: 15px;
+}
+
+.sidebar2 a {
   color: white;
   text-decoration: none;
   font-weight: bold;
@@ -143,9 +186,3 @@ a:hover {
   color: #999;
 }
 
-.sidebar .logo {
-  color: #c792ea;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 30px;
-}

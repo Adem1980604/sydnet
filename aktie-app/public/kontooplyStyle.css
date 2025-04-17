@@ -12,51 +12,46 @@ body {
     height: 100vh;
 }
 
-/* Sidebar styling */
+/*  Sidebar */
 .sidebar {
-    width: 300px;
-    background-color: #1e1e1e;
-    padding: 20px;
-    box-shadow: 2px 0px 10px rgba(0,0,0,0.5);
+  width: 220px;
+  background-color: #1e1e1e;
+  padding: 20px;
+ 
 }
 
 .sidebar h2 {
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
 }
 
-.sidebar form {
-    display: flex;
-    flex-direction: column;
+.sidebar ul {
+  list-style: none;
+  padding: 0;
 }
 
-.sidebar label {
-    margin-top: 10px;
+.sidebar li {
+  margin-bottom: 15px;
 }
 
-.sidebar input {
-    padding: 8px;
-    margin-top: 5px;
-    border: none;
-    border-radius: 5px;
-    background-color: #292929;
-    color: white;
-}
-
-.sidebar button {
-  background-color: #7c4dff;
+.sidebar a {
   color: white;
-  border: none;
-  margin-top: 10px;
-  border-radius: 20px;
-  cursor: pointer;
+  text-decoration: none;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-size: 14px;
+  display: block;
+  padding: 10px;
+  background-color: #292929;
+  border-radius: 8px;
+  transition: 0.3s ease;
 }
 
-.sidebar button:hover {
-  background-color: #5e35b1
+.sidebar .logo {
+  color: #c792ea;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
 /* Hovedindhold */
@@ -168,4 +163,50 @@ hr {
   }
   
 
-  
+  /* Sidebar styling */
+.sidebar2 {
+  width: 300px;
+  background-color: #1e1e1e;
+  padding: 20px;
+  box-shadow: 2px 0px 10px rgba(0,0,0,0.5);
+  right: 0px;
+}
+
+.sidebar2 h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.sidebar2 form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar2 label {
+  margin-top: 10px;
+}
+
+.sidebar2 input {
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #292929;
+  color: white;
+}
+
+.sidebar2 button {
+background-color: #7c4dff;
+color: white;
+border: none;
+margin-top: 10px;
+border-radius: 20px;
+cursor: pointer;
+font-weight: bold;
+transition: background-color 0.3s ease;
+}
+
+.sidebar2 button:hover {
+background-color: #5e35b1
+}

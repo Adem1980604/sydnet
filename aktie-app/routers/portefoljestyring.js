@@ -105,13 +105,15 @@ router.get('/konto/:id', async function (req, res) {
     .query('SELECT saldo FROM konto.kontooplysninger WHERE konto_id = @id')
   const minSaldo = kontoSaldo.recordset;
 
-  const testVar = "Just testing";
-
+  
   // Hent alle transaktioner 
   const transaktionerResultater = await db.request()
     .input('id', sql.Int, konto_id)
     //.query('SELECT * FROM konto.transaktioner WHERE transaktions_id = @id');
-    .query('SELECT * FROM konto.transaktioner WHERE konto_id = @id');
+    .query(`SELECT * 
+            FROM konto.transaktioner 
+            WHERE konto_id = @id
+            ORDER BY transaktions_id`);
   const transaktioner = transaktionerResultater.recordset;
 
     // Hent porteføljer
@@ -119,14 +121,12 @@ router.get('/konto/:id', async function (req, res) {
     .input('id', sql.Int, konto_id)
     .query('SELECT * FROM konto.portefoelje WHERE konto_id = @id');
   const portefoljer = portefoljeResultater.recordset;
- 
-  console.log("*******************TRANSAKTIONER****")
-  console.log(transaktioner)
+   
+  //console.log("DEBUG: 055 ********");
+  //console.log(konto);
   // render siden med data 
   res.render('portestyring/konto-detalje', {
-    konto,
-    testVar,
-    konto_id, // vi sender konti_id til konto_detalje.ejs
+    konto, // vi sender konti object til konto_detalje.ejs
     transaktioner, // hvis vi vil sende indsættelsesdata til ejs siden
     portefoljer // sendes til EJS
   });
@@ -190,6 +190,32 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 //*********************************************************************
 //********************* ROUTES for PORTEFØLJESTYRING ******************
 //*********************************************************************
+router.get('/portefoeljeoversigt', async function (req, res) {
+  console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
+
+  const db = await forbindDatabase();
+  //const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
+  ///const kontoResultater = await db.request()
+  ///  .input('id', sql.Int, konto_id)
+  ///  .query('SELECT * FROM konto.kontooplysninger WHERE konto_id = @id')
+  ///// Gem første række fra kontodata 
+  ///const konto = kontoResultater.recordset[0];
+  
+    // Hent porteføljer
+  const portefoljeResultater = await db.request()    
+    .query('SELECT * FROM konto.portefoelje');
+  const portefoljer = portefoljeResultater.recordset;
+
+  ///console.log("DEBUG: 085 ********");
+  ///console.log(konto);
+
+  res.render('portestyring/portefoeljeoversigt', {
+    //konto, // vi sender konti object til konto_detalje.ejs    
+    portefoljer // sendes til EJS
+  });
+});
+
+
 router.get('/portefoelje-detaljer', function (req, res) {
   res.render('portestyring/portefoelje-detaljer');
 });
