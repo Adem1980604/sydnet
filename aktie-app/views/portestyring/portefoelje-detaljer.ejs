@@ -38,14 +38,14 @@
         <%= portefolje.navn %>
       </h1>
       <div class="header-buttons">
-        <button class="handels-knap">Handels Historik</button>
+        <button class="handels-knap" onclick="åbnHistorikPopup()">Handels Historik</button>
         <button class="handels-knap" onclick="åbnPopup()">Opret Handel</button>
       </div>
     </div>
 
 
     <div class="grid-layout">
-      <!-- Line Chart Placeholder -->
+      <!-- Line Chart Placeholder (test) -->
       <div class="chart-card">
         <h3>Samlet Værdi af portefølje</h3>
         <div class="chart-placeholder" id="line-chart">
@@ -58,16 +58,23 @@
         </div>
       </div>
 
-      <!-- Donut Chart og Total værdi -->
+      <!-- Donut Chart og Total værdi (test) -->
       <div class="summary-card">
         <div class="chart-placeholder" id="donut-chart">
-
           <canvas id="portfolioPieChart">
-
           </canvas>
-
         </div>
-        <ul class="legend">
+
+        
+      <!-- udrgning til samlet værdi ag alle værdipapir i porteføljen -->
+        <% 
+        let totalVaerdi = 0; 
+     for (let i = 0; i < handler.length; i++) {
+    const h = handler[i];
+    totalVaerdi += h.antal * h.pris;
+      }
+        %>
+        <ul class="egend">
           <li><span></span> AAPL - 35%</li>
           <li><span></span> AAPL - 35%</li>
           <li><span></span> AAPL - 35%</li>
@@ -75,8 +82,8 @@
         </ul>
         <div class="total-value">
           <p>Total værdi i DKK</p>
-          <h2>100.000 DKK</h2>
-        </div>
+          <h2><%= totalVaerdi.toFixed(2) %> DKK</h2>
+        </div>        
       </div>
     </div>
 
@@ -94,46 +101,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <!-- Dummy data der skal erstates med live data -->
-            <td>Apple<br><small>AAPL</small></td>
-            <td>1 stk.</td>
-            <td class="positive">+1.27%</td>
-            <td>100 DKK</td>
-            <td>3.000 DKK</td>
-          </tr>
-          <tr>
-            <td>Apple<br><small>AAPL</small></td>
-            <td>1 stk.</td>
-            <td class="positive">+1.27%</td>
-            <td>100 DKK</td>
-            <td>3.000 DKK</td>
-          </tr>
-          <tr>
-            <td>Apple<br><small>AAPL</small></td>
-            <td>1 stk.</td>
-            <td class="positive">+1.27%</td>
-            <td>100 DKK</td>
-            <td>3.000 DKK</td>
-          </tr>
-          <tr>
-            <td>Apple<br><small>AAPL</small></td>
-            <td>1 stk.</td>
-            <td class="negative">+1.27%</td>
-            <td>100 DKK</td>
-            <td>3.000 DKK</td>
-          </tr>
+          
+            <!-- Tabel for akter brugern ejer Dummy data der skal erstates med live data -->
+            <% for (let i = 0; i < handler.length; i++) { 
+              const h = handler[i]; %>
+         <tr>
+           <td><%= h.navn %><br><small><%= h.symbol %></small></td>
+           <td><%= h.antal %> stk.</td>
+           <td class="positive">+1.27%</td> <!-- dummy data -->
+           <td><%= h.pris %> DKK</td>
+           <td><%= (h.antal * h.pris).toFixed(2) %> DKK</td>
+         </tr>
+         <% } %>         
         </tbody>
       </table>
     </section>
   </main>
 
-  <!--pop up-->
+  <!--pop up til opret handel eller salg-->
   <div id="popup" class="popup" style="display:none;">
     <div class="popup-indhold">
-
-   
-
       <h2>Opret Handel</h2>
 
       <!--vi laver en switch mulighed så brugeren kan vælge om de vil sælge eller købe værdipapir-->
@@ -177,6 +164,47 @@
     </div>
   </div>
 
+    <!--pop up til handels historik-->
+  <div id="historikPopup" class="popup" style="display: none;">
+    <div class="popup-indhold">
+      <h2>Handelshistorik</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Dato</th>
+            <th>Type</th>
+            <th>Symbol</th>
+            <th>Antal</th>
+            <th>Pris</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i = 0; i < handler.length; i++) {
+              const h = handler[i];
+              const total = (h.antal * h.pris).toFixed(2);
+          %>
+            <tr>
+              <td><%= new Date(h.datotid).toLocaleDateString() %></td>
+              <td>
+                <% if (h.salg_koeb) { %>
+                  Salg
+                <% } else { %>
+                  Køb
+                <% } %>
+              </td>              
+              <td><%= h.symbol %></td>
+              <td><%= h.antal %></td>
+              <td><%= h.pris %> DKK</td>
+              <td><%= total %> DKK</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <button onclick="lukPopup()">Luk</button>
+    </div>
+  </div>
+
     <!-- **************************** SCRIPT START ********************** -->
 
   <script>
@@ -192,16 +220,22 @@
 
 
 
-    // funktion til at åbne popup
+    // funktion til at åbne popup for opret handel eller salg
     function åbnPopup() {
       document.getElementById("popup").style.display = "block";
     };
+
+     // funktion til at åbne popup for handels historik
+    function åbnHistorikPopup() {
+  document.getElementById("historikPopup").style.display = "block";
+}
+
 
     // funktionen til at lukke popup
     function lukPopup() {
       // Lukker begge popup, hvis den er synlig
       document.getElementById('popup').style.display = 'none';
-
+      document.getElementById('historikPopup').style.display = 'none';
     };
 
     // funktion til at opdatere handelstype
@@ -244,6 +278,7 @@
       if (resultat.success) {
         alert("Handel oprettet!");
         lukPopup();
+        location.reload(); // Genindlæser siden
       } else {
         alert("Noget gik galt");
       }
@@ -335,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
         datasets: [{
             label: 'Portfolio Værdi',
-            data: [100000, 120000, 115000, 130000, 140000, 135000, 150000, 160000, 165000, 175000, 180000],
+            data: [100000, 120000, 115000, 130000, 140000, 135000, 150000, 160000, 165000, 175000, 180000,190000],
             borderColor: '#007bff',
             backgroundColor: 'rgba(0, 123, 255, 0.1)',
             fill: true,

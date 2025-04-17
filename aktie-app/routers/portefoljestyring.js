@@ -233,11 +233,26 @@ router.get('/porteside/:id', async function (req, res) {
 
   const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
 
+// VI hent handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
+const handlerResultat = await db.request()
+  .input('id', sql.Int, portefoljeId)
+  .query(`
+    SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
+           v.symbol, v.navn
+    FROM vaerdipapir.vphandler h
+    JOIN vaerdipapir.vpoplysninger v ON h.vpoplysninger_id = v.vpoplysninger_id
+    WHERE h.portefoelje_id = @id
+  `);
+
+const handler = handlerResultat.recordset;
+
+
   // Send dem alle til din EJS-side
   res.render('portestyring/portefoelje-detaljer', {
     portefolje, // den vagte portefølje
     portefoljer, // alle porteføljer for kontoen 
-    konto_id // så vi kan linke tilbage 
+    konto_id, // så vi kan linke tilbage 
+    handler // vi sender brugerens Værdipapir historik tilbage
   });
 });
 
