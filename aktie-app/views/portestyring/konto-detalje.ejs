@@ -14,7 +14,7 @@
     <ul>
       <li><a href="/Dashboard">Dashboard</a></li>
       <li>Accounts</li>
-      <li>Portfolios</li>
+      <li>Portfølje</li>
     </ul>
   </div>
 
@@ -27,7 +27,7 @@
   <!-- Kort med total værdi -->
   <div class="dashboard-grid">
     <div class="card">
-      <h3>Total værdi i DKK</h3>
+      <h3>Total portefølje-værdi i DKK</h3>
       <h2>224.543 DKK</h2>
       <div class="performance-bar">
         <div class="positive">+1.4%</div>
@@ -36,6 +36,37 @@
       </div>
     </div>
   </div>
+
+  <!-- Saldo -->
+  <div class="dashboard-grid">
+    <div class="card">
+      <h2>Konto: <%= konto.navn %></h2>      
+      <h3>Saldo: <%= konto.valuta %> <%= konto.saldo %></h3>
+      <h3>Bank:  <%= konto.bank_ref %></h3>      
+      
+      <table>
+        <tr>
+          <th>Transaktioner</th>
+        </tr>
+        <tr>
+          <td>Dato</td>
+          <td>ID</td>
+          <td>Valuta</td>
+          <td>Værdi</td>
+        </tr>
+          <% for (let j=0; j < transaktioner.length; j++) { %>
+            <tr>
+              <td><%= transaktioner[j].datotid.toString().substring(3,15) %></td>
+              <td><%= transaktioner[j].transaktions_id%></td>
+              <td><%= transaktioner[j].valuta %></td>
+              <td><%= transaktioner[j].vaerdi %></td>
+            </tr>
+          <% } %>
+      </table>
+
+    </div>
+  </div>
+
 
   <!-- Portefølje liste -->
   <div class="portefolje-box">

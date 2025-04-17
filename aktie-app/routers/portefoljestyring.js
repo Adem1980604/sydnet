@@ -4,65 +4,56 @@ router.use(express.json());
 const { sql, forbindDatabase } = require('../db');  // tager fat i db filen 
 
 
+//*********************************************************************
+//********************* ROUTES for KONTO ******************************
+//*********************************************************************
 
-
-
-//********************* ROUTES for PORTEFØLJESTYRING ******************
-
-
+// Venstre side af kontooplysninger (under opret konto)
 router.get('/kontooplysninger', async function (req, res) {
+  console.log("DEBUG: 000 - initiated route get /kontooplysninger");
   const db = await forbindDatabase();
-
   const result = await db.request().query(`
     SELECT * FROM konto.kontooplysninger
     WHERE aktiv = 1
   `);
-
   const konti = result.recordset;
-
   res.render('portestyring/kontooplysninger', { konti });
+  console.log("DEBUG: 002 - get Kontooplysninger");
 });
 
-router.get('/portefoelje-detaljer', function (req, res) {
-  res.render('portestyring/portefoelje-detaljer');
-});
-
-
+// Henter alle konti og viser dem på Eksisterende Konti siden
 router.get('/hentkontooplysninger', async function (req, res) {
-
+  console.log("DEBUG: 010 - initiated route get /hentkontooplysninger");
   const db = await forbindDatabase(); // forbinder til databasen 
-
   // sørger for at vi kun få vist de aktive konti på siden
   const result = await db.request().query(`
     SELECT * FROM konto.kontooplysninger
     WHERE aktiv = 1 
   `);
   res.json(result.recordset);
-});
-
-router.get('/kontooplysninger/view', function (req, res) {
-  res.render('portestyring/kontooplysninger');
+  console.log("DEBUG: 012 - get hentkontoooplysninger");
 });
 
 
-router.get('/konto-detalje', function (req, res) {
-  res.render('portestyring/kontooplysninger');
-  // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
-
-});
+//router.get('/kontooplysninger/view', function (req, res) {
+//  res.render('portestyring/kontooplysninger');
+//  console.log("DEBUG: 020 - get kontoooplysninger");
+//});
+//
+//router.get('/konto-detalje', function (req, res) {
+//  res.render('portestyring/kontooplysninger');
+//  console.log("DEBUG: 030 - get konto-detalje");
+//  // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
+//});
 
 // Opretter en POST til tilføjelse af konto 
-
 router.post('/kontooplysninger', async function (req, res) {
-
   const { navn, bank_ref } = req.body
   const saldo = 0.00;
-
+  //Nedenstående linje virker ikke //
   const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet hved hvem brugeren er når man skifter imellem forskellige sider
   const nuværendeTid = new Date(); // tager fat i nutidens dato
-
   const db = await forbindDatabase();  // skaber en forbindelse med db
-
   const resultater = await db.request()
     .input('navn', sql.NVarChar(100), navn)
     .input('bank_ref', sql.NVarChar(100), bank_ref)
@@ -80,8 +71,6 @@ router.post('/kontooplysninger', async function (req, res) {
     );
 
   const konto_id = resultater.recordset[0].konto_id;
-
-
   res.json({
     success: true,
     konto_oprettelse: {
@@ -95,61 +84,58 @@ router.post('/kontooplysninger', async function (req, res) {
     }
   });
   console.log("Bruger ID fra session:", bruger_id);
-
   console.log("konto oprettet:", req.body); //tjek 
-
+  console.log("DEBUG: 040 - post kontoooplysninger");
 });
 
-
-// dette er opretelse af konto id siden (konto-detaljer), altså når der bliver trykket på se detaljer komme siden frem afhængig af id
+// dette er oprettelse af konto id siden (konto-detaljer), altså når der bliver trykket på se detaljer kommer siden frem afhængig af id
 router.get('/konto/:id', async function (req, res) {
+  console.log("DEBUG: 050 - initiated route konto/id");
   const db = await forbindDatabase();
-
-
   const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
-
-
   const kontoResultater = await db.request()
     .input('id', sql.Int, konto_id)
-
     .query('SELECT * FROM konto.kontooplysninger WHERE konto_id = @id')
-
-
-
-  const indsaettelserResultater = await db.request()
-    .input('id', sql.Int, konto_id)
-    .query('SELECT * FROM konto.transaktioner WHERE transaktions_id = @id');
-
   // Gem første række fra kontodata 
   const konto = kontoResultater.recordset[0];
 
-  // Hent porteføljer
+  // Hent Saldo
+  const kontoSaldo = await db.request()
+    .input('id', sql.Int, konto_id)
+    .query('SELECT saldo FROM konto.kontooplysninger WHERE konto_id = @id')
+  const minSaldo = kontoSaldo.recordset;
+
+  const testVar = "Just testing";
+
+  // Hent alle transaktioner 
+  const transaktionerResultater = await db.request()
+    .input('id', sql.Int, konto_id)
+    //.query('SELECT * FROM konto.transaktioner WHERE transaktions_id = @id');
+    .query('SELECT * FROM konto.transaktioner WHERE konto_id = @id');
+  const transaktioner = transaktionerResultater.recordset;
+
+    // Hent porteføljer
   const portefoljeResultater = await db.request()
     .input('id', sql.Int, konto_id)
     .query('SELECT * FROM konto.portefoelje WHERE konto_id = @id');
   const portefoljer = portefoljeResultater.recordset;
-
-
-  // Hent alle transaktioner 
-  const indsaettelser = indsaettelserResultater.recordset;
-
+ 
+  console.log("*******************TRANSAKTIONER****")
+  console.log(transaktioner)
   // render siden med data 
   res.render('portestyring/konto-detalje', {
     konto,
+    testVar,
     konto_id, // vi sender konti_id til konto_detalje.ejs
-    indsaettelser, // hvis vi vil sende indsættelsesdata til ejs siden
+    transaktioner, // hvis vi vil sende indsættelsesdata til ejs siden
     portefoljer // sendes til EJS
   });
 });
 
-// ruten til at slette konto 
-
+// ruten til at slette konto
 router.delete('/slet-konto/:id', async function (req, res) {
   const kontoId = req.params.id; // tager fat i den tilhørende konto man er inde på 
   const nuværendeTid = new Date(); // tager fat i nutidens dato
-
-
-
   const db = await forbindDatabase();
 
   // slette selve konto 
@@ -170,10 +156,43 @@ router.delete('/slet-konto/:id', async function (req, res) {
       aktiv: false
     }
   });
-
-
 });
 
+// ruten til at genaktiverer konto 
+router.post('/genaktiver-konto/:id', async function (req, res) {
+  const kontoId = req.params.id; // tager fat i den tilhørende konto id som brugeren vil genåbne
+  const db = await forbindDatabase(); // forbinder til databasen 
+  await db.request()
+    .input('Id', sql.Int, kontoId)
+    // vi tager fat i alle lukkede konti 
+    .query(` 
+    UPDATE konto.kontooplysninger
+    SET aktiv = 1, nedlagt = NULL 
+     WHERE konto_id = @Id
+  `);
+
+  res.json({ success: true });
+});
+
+// ruten til at hente lukkede konto fra db 
+router.get('/hent-lukkede-konti', async function (req, res) {
+  const db = await forbindDatabase();
+
+  const result = await db.request().query(`
+    SELECT * FROM konto.kontooplysninger
+    WHERE aktiv = 0
+  `);
+
+  res.json(result.recordset);
+});
+
+
+//*********************************************************************
+//********************* ROUTES for PORTEFØLJESTYRING ******************
+//*********************************************************************
+router.get('/portefoelje-detaljer', function (req, res) {
+  res.render('portestyring/portefoelje-detaljer');
+});
 
 // ruten til oprettels af portefølje  
 router.post('/opret-portefolje', async function (req, res) {
@@ -257,7 +276,6 @@ const handler = handlerResultat.recordset;
 });
 
 // ruten som gemmer handlen for den specifikke portefølje 
-
 router.post('/portesiden/:id/handel', async function (req, res) {
   const db = await forbindDatabase();
   const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
@@ -270,7 +288,7 @@ router.post('/portesiden/:id/handel', async function (req, res) {
     type, // køb eller salg
   } = req.body;
 
-// så vi ikke får fetch fejl 500 
+  // så vi ikke får fetch fejl 500 
    let pris = parseFloat(req.body.pris);
    let antal = parseInt(req.body.antal);
 
@@ -279,9 +297,8 @@ router.post('/portesiden/:id/handel', async function (req, res) {
   const gebyr = pris * 0.001; // 0.1 % gebyr 
   const total = (pris * antal) + gebyr;
 
-// her tjekker vi om brugeren vil sælge eller handle 
-
-let salg_koeb
+  // her tjekker vi om brugeren vil sælge eller handle 
+  let salg_koeb
   if (type === "salg") {
     salg_koeb = 1; // hvis det er salg sæt den til 1
   } else {
@@ -289,20 +306,18 @@ let salg_koeb
   }
 
     // 1: tjek saldo om brugeren har nok penge på den specifikke konto 
-const saldoResultat = await db.request()
-.input('konto_id', sql.Int, konto_id)
-.query(`
-  SELECT saldo FROM konto.kontooplysninger
-  WHERE konto_id = @konto_id
-`);
-const saldo = saldoResultat.recordset[0].saldo;
+  const saldoResultat = await db.request()
+    .input('konto_id', sql.Int, konto_id)
+    .query(`
+      SELECT saldo FROM konto.kontooplysninger
+      WHERE konto_id = @konto_id
+    `);
+  const saldo = saldoResultat.recordset[0].saldo;
 
-
-
-// 2. hvis det er køb og saldoen er for lav så send fejl 
-if (type === "kob" && saldo < total) {
-return res.status(400).json({ success: false, message: "Ikke nok penge på kontoen" });
-}
+  // 2. hvis det er køb og saldoen er for lav så send fejl 
+  if (type === "kob" && saldo < total) {
+    return res.status(400).json({ success: false, message: "Ikke nok penge på kontoen" });
+  }
 
 // vi tager fat i id for værdipapir som skal bruges i handlen 
 const symbol = req.body.symbol;
@@ -321,7 +336,6 @@ if (vpResultat.recordset.length === 0) {
 }
 
 vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
-
 
 // 3. indsæt handel hvis brugeren har nok penge 
   await db.request()
@@ -344,7 +358,6 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
 
   // 4. opret transkation ( dette er vigtigt for opdatering af konto tabel og dens værdier)
 
-
   // vi tjekker hvad for en type transkation det er 
   let transaktionsVaerdi;
 
@@ -354,7 +367,7 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
     transaktionsVaerdi = total;
   }
   
-// vi indsætter de nye værdier i transkationstablen 
+  // vi indsætter de nye værdier i transkationstablen 
   await db.request()
     .input('konto_id', sql.Int, konto_id)
     .input('vaerdi', sql.Decimal(10, 2), transaktionsVaerdi)
@@ -367,18 +380,16 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
     `);
 
     // 5. Opdater kontoens saldo
-await db.request()
-.input('konto_id', sql.Int, konto_id)
-.input('ændring', sql.Decimal(10, 2), transaktionsVaerdi)
-.query(`
-  UPDATE konto.kontooplysninger
-  SET saldo = saldo + @ændring
-  WHERE konto_id = @konto_id
-`);
-
-  
+  await db.request()
+    .input('konto_id', sql.Int, konto_id)
+    .input('ændring', sql.Decimal(10, 2), transaktionsVaerdi)
+    .query(`
+      UPDATE konto.kontooplysninger
+      SET saldo = saldo + @ændring
+      WHERE konto_id = @konto_id
+    `);
  
-// send svar 
+  // send svar 
   res.json({
     success: true,
     handel: {
@@ -397,42 +408,6 @@ await db.request()
   });
 
 });
-
-// ruten til at genaktiverer konto 
-
-router.post('/genaktiver-konto/:id', async function (req, res) {
-
-  const kontoId = req.params.id; // tager fat i den tilhørende konto id som brugeren vil genåbne
-  const db = await forbindDatabase(); // forbinder til databasen 
-  await db.request()
-    .input('Id', sql.Int, kontoId)
-    // vi tager fat i alle lukkede konti 
-    .query(` 
-    UPDATE konto.kontooplysninger
-    SET aktiv = 1, nedlagt = NULL 
-     WHERE konto_id = @Id
-  `);
-
-  res.json({ success: true });
-});
-
-// ruten til at hente lukkede konto fra db 
-
-router.get('/hent-lukkede-konti', async function (req, res) {
-  const db = await forbindDatabase();
-
-  const result = await db.request().query(`
-    SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 0
-  `);
-
-  res.json(result.recordset);
-});
-
-
-
-
-
 
 
 module.exports = router 

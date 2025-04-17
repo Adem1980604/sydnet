@@ -2,7 +2,6 @@
 <!--find ud af hvorfor indsender knappen ikke virker muligvis forkert ruter -->
 
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,14 +10,11 @@
 </head>
 
 <body>
-
   <div class="container">
     <!-- Sidebar til formular -->
     <aside class="sidebar">
       <h2>Opret konto</h2>
-
       <form id="konto_form">
-
         <label for="navn">Navn på konto:</label>
         <input type="text" id="navn" name="navn" required>
 
@@ -31,7 +27,6 @@
       <!-- Bruges til at vise alle konti der er lukkede  -->
       <button onclick="hentLukkedeKonti()">Vis lukkede konti</button>
       <div id="lukkede-konti-knap"></div>
-
     </aside>
 
     <!-- Hovedsektion til kontoliste -->
@@ -49,43 +44,41 @@
 
   <!-- Popup til indsættelse -->
   <div id="popup">
-    <h3>Indsæt penge på konto</h3>
-    <label for="indsæt-værdi">Beløb:</label>
-    <input type="text" id="indsæt-værdi"><br>
-
+    <h3>Indsæt eller hæv penge på kontoen</h3>
+    <label for="værdi">Beløb:</label>
+    <input type="text" id="værdi"><br>
     <label for="valuta">Valuta:</label>
     <select id="indsæt-valuta">
       <option value="DKK">DKK</option>
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
     </select><br><br>
-
     <button onclick="indsaetData()">Indsæt</button>
+    <button onclick="haevData()">Hæv</button>
     <button onclick="lukPopup()">Luk</button>
   </div>
 
+  <!-- **************************** Hvad er dette for en luk knap? ********************** -->
   <div id="resultat">
-    <button id="luk-resultat" class="luk-knap">Luk</button>
-
+    <button id="luk-resultat" class="luk-knap"></button>
   </div>
-
 
   <!-- popup til at lukke konto  -->
   <div id="lukPopup">
     <h3>Er du sikker på at du vil lukke kontoen? </h3>
-
     <button onclick="bekraeftLukning()">Ja, jeg vil gerne lukke denne konto</button>
     <button onclick="lukPopup()">Fortryd lukning</button>
   </div>
 
+  <!-- **************************** Ingen grund til at dette er her? Laver en liste over konto saldoer ********************** -->
+  <!--
   <% for (let i = 0; i < konti.length; i++) { %>
     <p><strong>Saldo:</strong> <%= konti[i].saldo %></p>
   <% } %>
-  
+-->
 
 
   <!-- **************************** JS-SCRIPT START ********************** -->
-
   <script>
     // Her oprettes globale variable som kan anvendes på tværs af funktioner
     let valgtKontoId = null;        //Vi antager at der ikke er valgt en konto i starten
@@ -131,7 +124,7 @@
       };
     };
 
-    
+
     // hent konto og så vis den 
     async function hentKonti() {
       console.log("Henter Konti fra database");
@@ -149,7 +142,7 @@
           <p><strong>Saldo:</strong> ${konti[i].saldo}</p>
           <p><strong>Tilknyttet Bank:</strong> ${konti[i].bank_ref}</p>
           <button onclick="gaaTilKonto(${konti[i].konto_id})">Se detaljer</button>
-          <button onclick="aabnIndsaetPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt penge</button>
+          <button onclick="aabnIndsaetPopup(${JSON.stringify(konti[i].konto_id)})">Indsæt eller hæv penge</button>
           <button onclick="LukKonto(${JSON.stringify(konti[i].konto_id)})">Luk konto</button>
           <hr>
         `;
@@ -175,10 +168,16 @@
     // Send indsættelse
     async function indsaetData() {
       const data = {
-        vaerdi: (document.getElementById("indsæt-værdi").value),
+        vaerdi: (document.getElementById("værdi").value),
         valuta: document.getElementById("indsæt-valuta").value,
         konto_id: valgtKontoId
       };
+
+      if (data.vaerdi <= 0) {
+        console.log("Beløb til indsættelse skal være større end nul.", data);
+        return alert("Beløb til indsættelse skal være større end nul.");
+      }
+
       console.log(" Sender til server:", data);
       const svar = await fetch('/bruger/indsaetter', {
         method: 'POST',
@@ -209,8 +208,56 @@
       }
     }
 
+
+
+    // Send hævning
+    async function haevData() {
+      const data = {
+        vaerdi: (document.getElementById("værdi").value),
+        valuta: document.getElementById("indsæt-valuta").value,
+        konto_id: valgtKontoId
+      };
+
+      if (data.vaerdi >= 0) {
+        console.log("Beløb til hævning skal være mindre end nul.", data);
+        return alert("Beløb til hævning skal være mindre end nul.");
+      }
+
+      console.log(" Sender til server:", data);
+      const svar = await fetch('/bruger/indsaetter', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await svar.json();
+      console.log(" Server svar:", result);
+
+      // kode til at vise indsættelsen 
+      if (result.success) {
+        hentKonti(); // opdater listen med ny saldo
+        const inds = result.indsaettelse;
+        const resultatDiv = document.getElementById("resultat");
+        resultatDiv.innerHTML =
+          `
+          <button id="luk-resultat" class="luk-knap">Luk</button>
+          <h3>Hævning oprettet!</h3>
+          <p>Beløb: ${inds.vaerdi} ${inds.valuta}</p>
+          <p>Konto-ID: ${inds.konto}</p>
+          <p>Dato og tid for oprettelse: ${inds.tid}</p>
+          `;
+        resultatDiv.style.display = "block";
+        document.getElementById("luk-resultat").addEventListener("click", () => {
+          resultatDiv.style.display = "none";
+        });
+        lukPopup();
+      }
+    }
+
+
+
     // Redirection til kontoside
     function gaaTilKonto(id) {
+      console.log("DEBUG initiated gaaTilKonto")
       window.location.href = `/konto/${id}`;
     }
 
