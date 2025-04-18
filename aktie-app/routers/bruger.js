@@ -10,31 +10,13 @@ require('dotenv').config(); // sørger for at tage fat i vores env fil
 // vi sætter vores ROUTES op for BRUGER SIDER.
 // GET bruges til at vise log-ind siden 
 
+//***********************************************************
+//******* BRUGER OPRET, LOGIN, LOGOFF ***********************
+//***********************************************************
 router.get('/bruger-oprettelse', function (req, res) {
     res.render('bruger-sider/bruger-oprettelse');
 });
 
-router.get('/kontooplysninger', function (req, res) {
-    res.render('bruger-sider/kontooplysninger');
-});
-
-router.get('/indsaetter', function (req, res) {
-    res.render('bruger-sider/indsaetter');
-});
-
-router.get('/logoff', function (req, res) {
-    res.render('bruger-sider/logoff');
-});
-
-//Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
-// (Denne forespørgsel kommer f.eks. fra Dashboard)
-//Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
-router.get('/log-ind', function (req, res) {
-    res.render('bruger-sider/log-ind');
-});
-
-//****************************************************************/
-//************* REGISTER - OPRET BRUGER **************************/
 // HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
 router.post('/register', async (req, res) => {
     const { username, password, repeatPassword, email } = req.body;
@@ -84,8 +66,13 @@ router.post('/register', async (req, res) => {
     return res.redirect('/bruger/log-ind');
 });
 
-//****************************************************************/
-//************* LOGIN - HÅNDTER LOGIN   **************************/
+//Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
+// (Denne forespørgsel kommer f.eks. fra Dashboard)
+//Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
+router.get('/log-ind', function (req, res) {
+    res.render('bruger-sider/log-ind');
+});
+
 //Denne post bliver sendt fra "log-ind.ejs" filen. Med den kommer information om et indtastet brugernavn og adgangskode
 router.post('/log-ind', async (req, res) => {
     //console.log(req); // Se hele requesten
@@ -110,9 +97,9 @@ router.post('/log-ind', async (req, res) => {
                     WHERE username=@name`)
 
     //console.log("db_result: " + db_result)  
-    console.log("**********************")
-    console.log(db_result)
-    console.log("**********************")
+    //console.log("**********************")
+    //console.log(db_result)
+    //console.log("**********************")
     // Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen, 
     //Catch bliver kun udløst hvis Try delen er "ulovlig"/programmet giver en rød fejl/crasher
     try {
@@ -132,7 +119,33 @@ router.post('/log-ind', async (req, res) => {
             const db_bruger_id = db_result.recordset[0].bruger_id;
             req.session.bruger_id = db_bruger_id; // gemmer brugerens ID i session
 
+            console.log(" ********* db_bruger_id ************************")
+            console.log(db_bruger_id)
+            console.log(" ********* req.session ************************")
+            console.log(req.session)
+
+            console.log(" ********* req.session.cookie ************************")
+            console.log(req.session.cookie)
+
+            //const token = jwt.sign({ _id: bruger_id.toString() }, 'secret')
+            //console.log(" ********* token ************************")
+            //console.log(token)
+
+            //user.tokens = user.tokens.concat( { token } )
+            //console.log(" ********* user.token ************************")
+            //console.log(user.tokens)
+
+            //req.session.cookie.bearerToken = user.tokens;
+
+            //const token = jwt.sign({ _id: user.id.toString() }, 'secret')
+            //user.tokens = user.tokens.concat( { token } )
+            //await user.save()
+
+
             return res.status(200).json({ success: true, message: "Password er korrekt" });
+
+
+
         }
     } catch {
         return res.status(200).json({ success: true, message: "Noget er gået helt galt" });
@@ -140,6 +153,13 @@ router.post('/log-ind', async (req, res) => {
 
 });
 
+
+
+router.get('/logoff', function (req, res) {
+    res.render('bruger-sider/logoff');
+});
+
+// Reset password
 router.get('/nulstill', function (req, res) {
     res.render('bruger-sider/nulstill');
 });
@@ -149,7 +169,6 @@ router.post('/nulstill', async function (req, res) {
 
     console.log(req.body); // debugging
     const { username, email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
-
     if (nyAdgangskode !== nyAdgangskodeIgen) {
         // Hvis adgangkode ikke matcher stop og send fejl til klienten
         return res.status(400).json({ success: false, message: "OBS. Der er sket en fejl prøv igen " });
@@ -159,7 +178,6 @@ router.post('/nulstill', async function (req, res) {
     const db = await forbindDatabase();
 
     // opdatrer adgangskode direkte ud fra email og brugernavn
-
     await db.request()
         .input('email', sql.NVarChar(255), email)
         .input('username', sql.NVarChar(100), username)
@@ -170,9 +188,21 @@ router.post('/nulstill', async function (req, res) {
         SET password = @password
         WHERE email = @email AND username = @username
         `);
-
-
     return res.status(200).json({ success: true });
+});
+
+
+
+//***********************************************************
+//******* KONTO                       ***********************
+//***********************************************************
+
+router.get('/kontooplysninger', function (req, res) {
+    res.render('bruger-sider/kontooplysninger');
+});
+
+router.get('/indsaetter', function (req, res) {
+    res.render('bruger-sider/indsaetter');
 });
 
 
