@@ -57,8 +57,79 @@
           <% } %>
       </div>
      
+      <!-- Popup form -->
+    <div id="popup1" style="display: none;">
+    <h3>Tilføj Portefølje</h3>
+    <label for="navn">Navn:</label>
+    <input type="text" id="portefoljeNavn"><br>
     
+    <button onclick="OpretPortefølje()">Opret Portefølje</button>
+    <button onclick="lukPopup1()">Luk</button>
+
+  </div>
   
+    <!-- **************************** SCRIPT START ********************** -->
+
+    <script>
+  
+      function åbnPopup1() {
+        document.getElementById('popup1').style.display = 'block';
+      }
+  
+      function lukPopup1() {
+        document.getElementById('popup1').style.display = 'none';
+      }
+  
+      async function OpretPortefølje() {
+        const navn = document.getElementById("portefoljeNavn").value;
+        const konto_id = document.getElementById("kontoData").dataset.kontoId;
+  
+        const nyPortefølje = { navn, konto_id };
+  
+        const svar = await fetch('/portefoljestyring/opret-portefolje', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nyPortefølje)
+        });
+  
+        const data = await svar.json();
+  
+        if (data.success) {
+          const container = document.querySelector(".portefolje-box");
+  
+          const portElement = document.createElement("div");
+          portElement.classList.add("port-liste");
+  
+          // Tilføj HTML 
+          portElement.innerHTML = `
+      <p><strong>Portefølje:</strong> ${data.portefolje_oprettelse.navn}</p>
+      <button class="se-port">Se portefølje</button>
+    `;
+  
+          container.appendChild(portElement);
+  
+          // Bind funktionalitet til knappen
+          const knap = portElement.querySelector(".se-port");
+          knap.addEventListener("click", function () {
+            sePortefolje(data.portefolje_oprettelse.portefoelje_id);
+          });
+          lukPopup1();
+        } else {
+          alert("Noget gik galt!");
+        }
+      }
+  
+      // Redirection til den individuelle portefølje
+      // Redirection til den individuelle portefølje
+      function sePortefolje(id) {
+        window.location.href = `/porteside/${id}`;
+      }
+    
+    </script>
+
+
+
+
 </body>
 
 </html>
