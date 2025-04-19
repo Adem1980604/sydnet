@@ -147,8 +147,16 @@ router.post('/log-ind', async (req, res) => {
 
 
 router.get('/logoff', function (req, res) {
+    //Fjerne bruger_id fra den givne session, hvilket gør at hvis man logger ud, så kan man ikke se noget data på nogen af siderne.
+    req.session.bruger_id = 0;
+    console.log(req.session);
     res.render('bruger-sider/logoff');
 });
+
+
+
+
+
 
 // Reset password
 router.get('/nulstill', function (req, res) {

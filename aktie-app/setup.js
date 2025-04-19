@@ -61,11 +61,11 @@ const lavBrugerTabel = `
 `;
 
 const dataibrugertabel = `
-INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Emil', 'Emil', 'Emil@cbs.dk')
-INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Meda', 'Meda', 'Meda@cbs.dk')
-INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Mads', 'Mads', 'Mads@cbs.dk')
-INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Nikola', 'Nikola', 'Nikola@cbs.dk')
-`;
+    INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Emil', 'Emil', 'Emil@cbs.dk')
+    INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Meda', 'Meda', 'Meda@cbs.dk')
+    INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Mads', 'Mads', 'Mads@cbs.dk')
+    INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Nikola', 'Nikola', 'Nikola@cbs.dk')
+    `;
 
 
 const lavKontoTabel = `
@@ -87,12 +87,12 @@ const lavKontoTabel = `
 
 const dataikontotabel = `
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto1','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',850,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto3','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto4','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
 
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto1','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',5900,'Danske Bank','2025-03-26 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
 
@@ -102,28 +102,28 @@ const dataikontotabel = `
 
 
 const lavTransaktionersTabel = `
-CREATE TABLE konto.transaktioner(
-  transaktions_id INT IDENTITY(1,1),
-  konto_id INT,
-  vaerdi DECIMAL(10,2),
-  transaktionstype NVARCHAR(20),
-  valuta NVARCHAR(50),
-  datotid DATETIME,
-  CONSTRAINT konto1_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
-);
+    CREATE TABLE konto.transaktioner(
+      transaktions_id INT IDENTITY(1,1),
+      konto_id INT,
+      vaerdi DECIMAL(10,2),
+      transaktionstype NVARCHAR(20),
+      valuta NVARCHAR(50),
+      datotid DATETIME,
+      CONSTRAINT konto1_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
+    );
   `;
   
 const dataitransaktionstabel = `
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
 
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,1600,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,2600,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5600,'DKK','2025-04-06 20:00:00')
-  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,560,'DKK','2025-04-06 20:00:00')
-`;
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,600,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,200,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5000,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,100,'DKK','2025-04-06 20:00:00')
+  `;
 
 
 
@@ -140,17 +140,16 @@ const lavPortefoeljeTabel = `
 
 
 const dataIPortefoeljeTabel  = `
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje1','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje2','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje3','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje4','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje5','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje6','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje7','2025-04-06 20:00:00')
-  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje8','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje1','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje2','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje3','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje4','2025-04-06 20:00:00')
+
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje5','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje6','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje7','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje8','2025-04-06 20:00:00')
 `;
-
-
 
 const lavVPOplysninger = `
     CREATE TABLE vaerdipapir.vpoplysninger(
@@ -163,14 +162,12 @@ const lavVPOplysninger = `
       `;
 
 const dataOmVP =
-`INSERT INTO vaerdipapir.vpoplysninger (navn, symbol, type)
-VALUES 
-('Apple Inc.', 'AAPL', 'aktie'),
-('Tesla Inc.', 'TSLA', 'aktie'),
-('Microsoft', 'MSFT', 'aktie');
-`
-
-
+      `INSERT INTO vaerdipapir.vpoplysninger (navn, symbol, type)
+        VALUES 
+        ('Apple Inc.', 'AAPL', 'aktie'),
+        ('Tesla Inc.', 'TSLA', 'aktie'),
+        ('Microsoft', 'MSFT', 'aktie');
+        `
 
 const lavVPHandler = `
       CREATE TABLE vaerdipapir.vphandler(
@@ -191,7 +188,6 @@ const lavVPHandler = `
       );
         `;
 
-
 const lavVPKurs = `
         CREATE TABLE vaerdipapir.vpkurs(
           vpkurs_id INT IDENTITY(1,1),
@@ -203,32 +199,25 @@ const lavVPKurs = `
         );
           `;
 
-
-
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
 async function ventPåDatabase() {
   //forbinder til databasen
   console.log('Connet to database');
   await sql.connect(config); // skaber forbindelse med din database
 
-
   //Drop all TABLES
   console.log('Drop all tabels');
   await sql.query(dropAllTables);
 
-
   //Drop all SCHEMA
   console.log('Drop all schemas');
   await sql.query(dropAllSchemas);
-
 
   // opretter SCHEMA 
   console.log('Create all schemas');
   await sql.query(lavSchemaBruger);
   await sql.query(lavSchemaKonto);
   await sql.query(lavSchemaVaerdipapir);
-
-
 
   // opretter tabeller 
   console.log('Create all tables');
@@ -240,15 +229,12 @@ async function ventPåDatabase() {
   await sql.query(lavVPHandler);
   await sql.query(lavVPKurs);
 
-
-
+  // indsæt test data i tabeller
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
   await sql.query(dataIPortefoeljeTabel);
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
-
-
 
   console.log('alt oprettet') // tjek
 };

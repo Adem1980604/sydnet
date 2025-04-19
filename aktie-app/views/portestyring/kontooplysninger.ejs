@@ -144,13 +144,9 @@
     // hent konto og så vis den 
     async function hentKonti() {
       console.log("Henter Konti fra database");
-
-      
       //const local_token = localStorage.getItem('token');
       //console.log(" ********* local_token ************************")
       //console.log(local_token);
-
-
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
       console.log(response);
 
