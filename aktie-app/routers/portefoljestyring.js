@@ -24,11 +24,21 @@ router.get('/kontooplysninger', async function (req, res) {
 // Henter alle konti og viser dem på Eksisterende Konti siden
 router.get('/hentkontooplysninger', async function (req, res) {
   console.log("DEBUG: 010 - initiated route get /hentkontooplysninger");
+  //console.log(req);
+  //console.log("Bearer_token provided by the client in request header")
+  //console.log(req.session.bearer_token);
+
+  const loggedin_bruger_id = req.session.bruger_id;
+
   const db = await forbindDatabase(); // forbinder til databasen 
   // sørger for at vi kun få vist de aktive konti på siden
-  const result = await db.request().query(`
+
+  
+  const result = await db.request()
+  .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+  .query(`
     SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 1 
+    WHERE aktiv = 1 and bruger_id = @loggedin_bruger_id
   `);
   res.json(result.recordset);
   console.log("DEBUG: 012 - get hentkontoooplysninger");
@@ -193,7 +203,11 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 router.get('/portefoeljeoversigt', async function (req, res) {
   console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
+
+  const loggedin_bruger_id = req.session.bruger_id;
+
   const db = await forbindDatabase();
+
   //const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
   ///const kontoResultater = await db.request()
   ///  .input('id', sql.Int, konto_id)
@@ -201,9 +215,16 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   ///// Gem første række fra kontodata 
   ///const konto = kontoResultater.recordset[0];
   
+
+
+
     // Hent porteføljer
-  const portefoljeResultater = await db.request()    
-    .query('SELECT * FROM konto.portefoelje');
+  const portefoljeResultater = await db.request() 
+    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
+    .query(`
+      SELECT * FROM konto.portefoelje portf
+      JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
+      WHERE ktoopl.bruger_id = @loggedin_bruger_id`);
   const portefoljer = portefoljeResultater.recordset;
 
   ///console.log("DEBUG: 085 ********");

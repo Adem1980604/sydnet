@@ -117,38 +117,29 @@ router.post('/log-ind', async (req, res) => {
         } else {
 
             const db_bruger_id = db_result.recordset[0].bruger_id;
+            //const db_username = db_result.recordset[0].username;
             req.session.bruger_id = db_bruger_id; // gemmer brugerens ID i session
 
-            console.log(" ********* db_bruger_id ************************")
-            console.log(db_bruger_id)
-            console.log(" ********* req.session ************************")
-            console.log(req.session)
+                        
+            //const jwt = require('jsonwebtoken');
 
-            console.log(" ********* req.session.cookie ************************")
-            console.log(req.session.cookie)
+            //const user = { id: db_bruger_id, username: db_username };
+            //const generateToken = (user) => {
+            // // Create a token with user information and a secret key
+            // return jwt.sign({ id: db_bruger_id, username: db_username }, 'your_secret_key', { expiresIn: '1h' });
+            //};
 
-            //const token = jwt.sign({ _id: bruger_id.toString() }, 'secret')
+            //const my_token = generateToken(user);
             //console.log(" ********* token ************************")
-            //console.log(token)
+            //console.log(my_token);
+            //req.session.bearer_token = my_token;
+            
 
-            //user.tokens = user.tokens.concat( { token } )
-            //console.log(" ********* user.token ************************")
-            //console.log(user.tokens)
-
-            //req.session.cookie.bearerToken = user.tokens;
-
-            //const token = jwt.sign({ _id: user.id.toString() }, 'secret')
-            //user.tokens = user.tokens.concat( { token } )
-            //await user.save()
-
-
-            return res.status(200).json({ success: true, message: "Password er korrekt" });
-
-
-
+            return res.status(200).json({ success: true, message: "Password er korrekt"});
         }
-    } catch {
-        return res.status(200).json({ success: true, message: "Noget er gået helt galt" });
+    } catch (error) {        
+        console.log("ERROR" + error.message)  
+        return res.status(400).json({ success: false, message: "Noget er gået helt galt" });
     }
 
 });

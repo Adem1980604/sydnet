@@ -86,11 +86,18 @@ const lavKontoTabel = `
 `;
 
 const dataikontotabel = `
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto1','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto2','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto3','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Konto4','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto1','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto3','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto4','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
+
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto1','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
+
 `;
+
 
 
 
@@ -111,6 +118,11 @@ const dataitransaktionstabel = `
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
   INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
+
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,1600,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,2600,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5600,'DKK','2025-04-06 20:00:00')
+  INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,560,'DKK','2025-04-06 20:00:00')
 `;
 
 
@@ -125,6 +137,18 @@ const lavPortefoeljeTabel = `
     CONSTRAINT konto2_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
   );
     `;
+
+
+const dataIPortefoeljeTabel  = `
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje1','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje2','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje3','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje4','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje5','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje6','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje7','2025-04-06 20:00:00')
+  INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje8','2025-04-06 20:00:00')
+`;
 
 
 
@@ -220,6 +244,7 @@ async function ventPåDatabase() {
 
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
+  await sql.query(dataIPortefoeljeTabel);
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
 

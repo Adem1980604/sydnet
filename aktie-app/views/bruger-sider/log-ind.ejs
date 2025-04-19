@@ -60,6 +60,25 @@
         
         //Her venter vi så på tilbagemelding/den givne håndtering der sker i "bruger.js" filen
         const resultat = await svar.json();
+        
+        console.log("****************Resultat************");
+        console.log(resultat);
+        console.log("****************Token************");
+        console.log(resultat.token);
+        localStorage.setItem('token', resultat.token);
+
+
+        //How to get token from localStorage
+        //const local_token = localStorage.getItem('token');
+        //console.log(" ********* local_token ************************")
+        //console.log(local_token);
+
+
+
+
+
+
+
 
         //Hvis tilbagemeldingen var succesfuld, altså har en status 200, så vil vi gerne sende brugeren videre til vores Dashboard/forside
         if (svar.status === 200){
