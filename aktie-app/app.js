@@ -31,10 +31,21 @@ app.get('/', function (req, res) {
 });
 
 
+
+//*******************API kald data route lavet med Fred*********/
+const dataRouter = require('./routers/aktiesoeg');
+
+//*******************API kald data route lavet med Fred*********/
+app.use('/aktiesoeg', dataRouter);
+
+
+
+//***************Denne behøves ikke...indtil andet er bevist**********/
 // vi sætter ROUTE op for MAIN PAGE.
 app.get('/Dashboard', function (req, res) {
     res.render('Dashboard')
 });
+
 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
