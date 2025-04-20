@@ -63,6 +63,10 @@
       <h3>Tilføj Portefølje</h3>
       <label for="navn">Navn:</label>
       <input type="text" id="portefoljeNavn"><br>
+
+      
+      <label for="navn">Konto id:</label>
+      <input type="text" id="kontoData"><br>
       
       <button onclick="OpretPortefoelje()">Opret Portefølje</button>
       <button onclick="lukPopup1()">Luk</button>
@@ -80,7 +84,12 @@
 
       async function OpretPortefoelje() {
         const navn = document.getElementById("portefoljeNavn").value;
+        console.log("OpretPortefoelje   - Portefølje navn: " + navn)
+
+        console.log(document);
+
         const konto_id = document.getElementById("kontoData").dataset.kontoId;
+        console.log("OpretPortefoelje   - Konto_id: " + konto_id)
 
         const nyPortefølje = { navn, konto_id };
 
