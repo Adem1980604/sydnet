@@ -37,7 +37,7 @@
       </h1>
       <div class="header-buttons">
         <button class="handels-knap" onclick="åbnHistorikPopup()">Handels Historik</button>
-        <button class="handels-knap" onclick="åbnPopup()">Opret Handel</button>
+        <button class="handels-knap" onclick="åbnPopup()">Opret Handel/Salg</button>
       </div>
     </div>
 
@@ -63,14 +63,69 @@
           </canvas>
         </div>
 
-        
-      <!-- udrgning til samlet værdi ag alle værdipapir i porteføljen -->
-        <% 
-        let totalVaerdi = 0; 
-     for (let i = 0; i < handler.length; i++) {
+         <!-- Oprettels af salg -->
+  <%
+  const ejerListe = [];
+
+  for (let i = 0; i < handler.length; i++) {
     const h = handler[i];
-    totalVaerdi += h.antal * h.pris;
+    const symbol = h.symbol;
+    const antal = h.antal;
+    const erSalg = h.salg_koeb;
+
+    let fundet = false;
+
+    for (let j = 0; j < ejerListe.length; j++) {
+      if (ejerListe[j].symbol === symbol) {
+        if (erSalg) {
+          ejerListe[j].antal -= antal;
+        } else {
+          ejerListe[j].antal += antal;
+        }
+        fundet = true;
+        break;
       }
+    }
+
+    if (!fundet) {
+      let antalTilføj;
+      if (erSalg) {
+        antalTilføj = -antal;
+      } else {
+        antalTilføj = antal;
+      }
+
+      ejerListe.push({
+        symbol: symbol,
+        antal: antalTilføj
+      });
+    }
+  }
+
+  const ejerListeFiltreret = ejerListe; // behold hele listen uden filtrering
+
+%>
+
+        
+      <!-- udrgning til samlet værdi af alle værdipapir i porteføljen -->
+        <% 
+        let totalVaerdi = 0;
+        for (let i = 0; i < ejerListeFiltreret.length; i++) {
+          const e = ejerListeFiltreret[i];
+        
+          if (e.antal > 0) {
+            let pris = 0;
+        
+            for (let j = 0; j < handler.length; j++) {
+              if (handler[j].symbol === e.symbol) {
+                pris = handler[j].pris;
+                break;
+              }
+            }
+        
+            totalVaerdi += e.antal * pris;
+          }
+        }        
         %>
         <ul class="egend">
           <li><span></span> AAPL - 35%</li>
@@ -98,20 +153,34 @@
             <th>Værdi</th>
           </tr>
         </thead>
-        <tbody>
-          
+    
             <!-- Tabel for akter brugern ejer Dummy data der skal erstates med live data -->
-            <% for (let i = 0; i < handler.length; i++) { 
-              const h = handler[i]; %>
-         <tr>
-           <td><%= h.navn %><br><small><%= h.symbol %></small></td>
-           <td><%= h.antal %> stk.</td>
-           <td class="positive">+1.27%</td> <!-- dummy data -->
-           <td><%= h.pris %> DKK</td>
-           <td><%= (h.antal * h.pris).toFixed(2) %> DKK</td>
-         </tr>
-         <% } %>         
-        </tbody>
+            <tbody>
+              <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
+                   const e = ejerListeFiltreret[i];
+            
+                   // find første handler med samme symbol (for at få navn og pris)
+                   let navn = "";
+                   let pris = 0;
+                   for (let j = 0; j < handler.length; j++) {
+                     if (handler[j].symbol === e.symbol) {
+                       navn = handler[j].navn;
+                       pris = handler[j].pris;
+                       break;
+                     }
+                   }
+            
+                   if (e.antal > 0) { %>
+                <tr>
+                  <td><%= navn %><br><small><%= e.symbol %></small></td>
+                  <td><%= e.antal %> stk.</td>
+                  <td class="positive">+1.27%</td>
+                  <td><%= pris %> DKK</td>
+                  <td><%= (e.antal * pris).toFixed(2) %> DKK</td>
+                </tr>
+              <% } %>
+              <% } %>
+            </tbody>   
       </table>
     </section>
   </main>
@@ -155,7 +224,7 @@
           <option value="ETF">ETF</option>
         </select>
 
-        <button class="popup-knap" type="submit">Bekræft Handel</button>
+        <button class="popup-knap" type="submit">Bekræft Handel/Salg</button>
       </form>
       <button class="popup-knap" onclick="lukPopup()">Luk</button>
 
@@ -203,19 +272,19 @@
     </div>
   </div>
 
+ 
     <!-- **************************** SCRIPT START ********************** -->
 
   <script>
-
 
     // tager fat i id for konti og portefølje ( jeg tror det skla bruges til backedt senere hen) 
     const konto_id = "<%= konto_id %>";
     const portefolje_id = "<%= portefolje.portefoelje_id %>";
 
+  const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
 
-
-    let handelstype = "kob" // vi antager at brugeren vil køber
-
+  //Debug
+  console.log("Aktier brugeren ejer:", brugerensAktier);
 
 
     // funktion til at åbne popup for opret handel eller salg
@@ -240,20 +309,56 @@
     const toggle = document.getElementById("handelstype-toggle");
     const label = document.getElementById("handelstype-label");
 
-    toggle.addEventListener("change", function () {
-      if (toggle.checked) {
-        label.textContent = "Salg";
-        handelstype = "salg";
-      } else {
-        label.textContent = "Kob";
-        handelstype = "kob";
-      }
-    });
 
+      toggle.addEventListener("change", function () {
+  if (toggle.checked) {
+    label.textContent = "Salg";
+  } else {
+    label.textContent = "Køb";
+  }
+});
+
+  
     // nu tager vi fat i vores data
 
-    document.getElementById("handelForm").addEventListener("submit", async function (element) {
+    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("handelForm")
+    
+    form.addEventListener("submit", async function (element) {
       element.preventDefault();
+
+
+  // Hent aktuel værdi fra toggle direkte
+  const isSalg = document.getElementById("handelstype-toggle").checked;
+  const type = isSalg ? "salg" : "kob";
+
+
+      // Tjek om brugeren ejer nok til at sælge aktien 
+    
+    if (type === "salg") {
+  let fundet = false;
+  let ejerAntal = 0;
+
+  for (let i = 0; i < brugerensAktier.length; i++) {
+    if (brugerensAktier[i].symbol === valgtAktie.symbol) {
+      ejerAntal = brugerensAktier[i].antal;
+      fundet = true;
+      break;
+    }
+  }
+
+  const antalBrugerVilSælge = parseInt(document.getElementById("antal").value);
+
+  if (!fundet) {
+    alert("Du ejer ikke denne aktie og kan derfor ikke sælge den.");
+    return;
+  }
+
+  if (antalBrugerVilSælge > ejerAntal) {
+    alert(`Du prøver at sælge ${antalBrugerVilSælge} stk, men du ejer kun ${ejerAntal} stk.`);
+    return;
+  }
+};
 
       const data = {
         konto_id,
@@ -261,9 +366,10 @@
         antal: document.getElementById("antal").value,
         pris: document.getElementById("samlet_pris").value,
         valuta: "DKK",
-        type: handelstype,
+        type,
         symbol: valgtAktie.symbol
       };
+
 
       const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
         method: "POST",
@@ -274,13 +380,21 @@
       const resultat = await svar.json();
 
       if (resultat.success) {
-        alert("Handel oprettet!");
-        lukPopup();
-        location.reload(); // Genindlæser siden
-      } else {
-        alert("Noget gik galt");
-      }
+  if (type === "kob") {
+    alert("Handel oprettet!");
+  } else if (type === "salg") {
+    alert("Salg gennemført!");
+  }
+  lukPopup();
+  location.reload(); // Genindlæser siden
+} else {
+  alert("Noget gik galt");
+}
+
+  });
     });
+  
+
 
     
     //**************************** SEARCHBAR FUNKTIONALITET ********************** -->

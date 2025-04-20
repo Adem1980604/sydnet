@@ -268,6 +268,7 @@ router.post('/opret-portefolje', async function (req, res) {
       navn,
       dato,
       konto_id,
+      handler
 
     }
 
@@ -311,6 +312,8 @@ const handlerResultat = await db.request()
   `);
 
 const handler = handlerResultat.recordset;
+
+console.log("Handler fra databasen:", handler); 
 
 
   // Send dem alle til din EJS-side
