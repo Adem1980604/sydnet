@@ -467,5 +467,23 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
 
 });
 
+router.get('/vaerdipapir/:symbol', async function (req, res) {
+  const db = await forbindDatabase();
+  const symbol = req.params.symbol;
+
+  const resultat = await db.request()
+    .input('symbol', sql.NVarChar(20), symbol)
+    .query(`
+      SELECT * FROM vaerdipapir.vpoplysninger
+      WHERE symbol = @symbol
+    `);
+
+  const info = resultat.recordset[0];
+
+
+  res.render('portestyring/vpapir-detalje', { info });
+});
+
+
 
 module.exports = router 
