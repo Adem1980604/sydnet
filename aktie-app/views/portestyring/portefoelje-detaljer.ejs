@@ -470,13 +470,13 @@ function beregnSamletPris(){
   const visning = document.getElementById("beregnet_pris")
   
   if(antal > 0) {
-    let samlet = valgtAktie.pris * antal; 
-    //let samlet = min_pris * antal; 
+    //let samlet = valgtAktie.pris * antal; 
     console.log("DEBUG 003");
     console.log(min_pris);
     console.log(antal);
+    let samlet = min_pris * antal; 
     visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
-    document.getElementById("samlet_pris").value = valgtAktie.pris
+    document.getElementById("samlet_pris").value = min_pris
   };
   
 };
