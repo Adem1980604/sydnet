@@ -15,24 +15,18 @@
       const symbol = document.getElementById("searchInput").value;
       console.log(symbol)
       const response = await fetch(`/aktiesoeg/getaktiekurs/${symbol}`);
-      const data = await response.json();
+      const data2 = await response.json();
 
-      const list = document.getElementById("resultList");
-      list.innerHTML = ''; // Clear previous results
+      console.log("****************data2**************");
+      console.log(data2["Time Series (60min)"]);
+      //console.log(data2["Time Series (60min)"]["2025-04-09 16:00:00"]["1. open"]);
+      
+      
+      
+      console.log(Object.keys(data2["Time Series (60min)"])[0]);
 
-      if (data && Object.keys(data).length > 0) {
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            const li = document.createElement('li');
-            li.textContent = `${key}: ${data[key]}`;
-            list.appendChild(li);
-          }
-        }
-      } else {
-        const li = document.createElement('li');
-        li.textContent = "No data found or invalid symbol.";
-        list.appendChild(li);
-      }
+      console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
+
     }
   </script>
 </body>

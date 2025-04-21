@@ -7,7 +7,7 @@ const router = express.Router();
 // replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
 // Emil's API key // 
 const apiKey = "SBD4RTB73V5BISI9";
-
+let offlineResponseData;
 //Jan's API key//
 //const apiKey = "X8PAHO4XS77MP7N8";
 // Venstre side af kontooplysninger (under opret konto)
@@ -22,126 +22,209 @@ router.get('/getaktiekurs/:navn', async function (req, res) {
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${navn}&interval=60min&apikey=${apiKey}`;
   console.log("******************** URL ****************");
   console.log(url);
+  const live = false;
 
-  const response = await axios.get(url,{responseType: "json",limit:1,timeout: 2000,});
-  const my_data = response.data;
-  let my_array = [];
-  for(var i in my_data) {
-    my_array.push([i, my_data [i]]);
-  }
-  console.log(my_array[0]);
-  console.log(my_array[1]);
-  
-  //my_data. (element => {console.log(element);})
-
-    
-  
-  //console.log(response.data);
-  //test_object = response.data;
-  //console.log(.values('Meta Data'))
-
-  //axios.interceptors.response.use(
-  //  (response) => {
-  //    const { data } = response
-  //    console.log(data)
-  //    const { name } = data[0]
-//
-  //    //return name;
-  //    console.log(name)
-  //  },
-  //  (error) => {
-  //    //return Promise.reject(error);
-  //  }
-  //);
-
-  //console.log(Object.values('Meta Data'))
-  //console.log(JSON.stringify(response.data));
-  //console.log(response.data.get('Meta Data'));
-
-  
-  //const getStockData = async (req, res) => {
-  //  try 
-  //  {
-  //    const response = await axios.get(url);
-  //    let data = '';
-  //    
-  //  }
-  //  catch (error) {
-  //    console.log("********ERROR *************")
-  //    console.log(error.message)
-  //  }  
-  //};
-  //getStockData;
-
-});
+  if (live == true) {
+    const response = await axios.get(url);
+    //const my_data = res.json(response.data);
+    //console.log("****************response**************");
+    //console.log(response);
 
 
-/*
-router.get('/getaktiekurs/:navn', (req, res) => 
-  {
-    // Alpha Vantage API URL and API key
-    //https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${navn}&interval=60min&apikey=${apiKey}
-    const ALPHA_VANTAGE_API_URL = 'https://www.alphavantage.co/query';
-    //const apiKey = 'SBD4RTB73V5BISI9';
-    const API_KEY = apiKey; // Replace with your actual API key
-    // Helper function to convert company name to stock symbol
-    const getSymbolFromName = (name) => {
-      const companySymbols = {
-        'Reliance Industries': 'RELIANCE.BSE',
-        'Tata Capital': 'TATACAPITAL.BSE',
-        'Apple': 'AAPL',
-        'Google': 'GOOG',
-        // Add more company-name to symbol mappings as needed
-      };
-      return companySymbols[name.toLowerCase()] || null;  // Return symbol or null if not found
-    };
-    // Controller to fetch stock data from Alpha Vantage
-    const getStockData = async (req, res) => {
-      let { symbol } = req.params; // Get stock symbol from URL parameters
-      // Check if the input is a company name rather than a symbol
-      if (!symbol.match(/^[A-Za-z0-9.]+$/)) {
-        symbol = getSymbolFromName(symbol);
-        if (!symbol) {
-          return res.status(400).json({
-            success: false,
-            message: 'Invalid company name or symbol.',
-          });
-        }
-      }
-      symbol = symbol.toUpperCase(); // Ensure the symbol is in uppercase
-      try {
-        // Fetch stock data from Alpha Vantage API
-        const response = await axios.get(ALPHA_VANTAGE_API_URL, {
-          params: {
-            function: 'TIME_SERIES_DAILY', // Fetch daily time series data
-            symbol: symbol, // Stock symbol (e.g., RELIANCE.BSE)
-            outputsize: 'full', // Retrieve all available data (full dataset)
-            apikey: API_KEY, // Your API key
+    //console.log("****************response data**************");
+    //console.log(response.data);
+    res.json(response.data);
+
+  } else {
+    if ( navn == "IBM") {
+      offlineResponseData = {
+          'Meta Data': {
+            '1. Information': 'Intraday (60min) open, high, low, close prices and volume',
+            '2. Symbol': 'IBM',
+            '3. Last Refreshed': '2025-04-17 19:00:00',
+            '4. Interval': '60min',
+            '5. Output Size': 'Compact',
+            '6. Time Zone': 'US/Eastern'
           },
-        });
-        // Check if the response contains valid data
-        if (response.data['Time Series (Daily)']) {
-          return res.status(200).json({
-            success: true,
-            data: response.data['Time Series (Daily)'], // Return the stock data
-          });
-        } else {
-          return res.status(400).json({
-            success: false,
-            message: 'Failed to fetch stock data.',
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching stock data:', error.message);
-        return res.status(500).json({
-          success: false,
-          message: 'Error fetching stock data from Alpha Vantage API.',
-          error: error.message,
-        });
+          'Time Series (60min)': {
+            '2025-04-17 19:00:00': {
+              '1. open': '238.8100',
+              '2. high': '239.7900',
+              '3. low': '236.2897',
+              '4. close': '238.8300',
+              '5. volume': '505465'
+            },
+            '2025-04-17 18:00:00': {
+              '1. open': '240.3000',
+              '2. high': '240.3000',
+              '3. low': '238.8100',
+              '4. close': '239.7900',
+              '5. volume': '498384'
+            },    
+            '2025-04-09 19:00:00': {
+              '1. open': '235.3100',
+              '2. high': '239.9000',
+              '3. low': '230.3000',
+              '4. close': '236.9700',
+              '5. volume': '1005263'
+            },
+            '2025-04-09 18:00:00': {
+              '1. open': '235.7600',
+              '2. high': '239.9000',
+              '3. low': '230.3000',
+              '4. close': '236.9900',
+              '5. volume': '1005438'
+            },
+            '2025-04-09 16:00:00': {
+              '1. open': '235.3100',
+              '2. high': '239.9000',
+              '1. open': '235.3100',
+              '2. high': '239.9000',
+              '2. high': '239.9000',
+              '3. low': '230.3000',
+              '4. close': '239.9000',
+              '5. volume': '3452551'
+            }
+          }
       }
-    };
-    
-});
-*/
-//module.exports = { getStockData };
+    } else if ( navn == "BA" ) {
+      offlineResponseData = {
+        'Meta Data': {
+           '1. Information': 'Intraday (60min) open, high, low, close prices and volume',
+           '2. Symbol': 'BA',
+           '3. Last Refreshed': '2025-04-17 19:00:00',
+           '4. Interval': '60min',
+           '5. Output Size': 'Compact',
+           '6. Time Zone': 'US/Eastern'
+        },
+        'Time Series (60min)': {
+          '2025-04-17 19:00:00': {
+            '1. open': '161.9000',
+            '2. high': '162.6100',
+            '3. low': '161.9000',
+            '4. close': '162.2700',
+            '5. volume': '828582'
+          },
+          '2025-04-17 18:00:00': {
+            '1. open': '162.1000',
+            '2. high': '162.6073',
+            '3. low': '161.9000',
+            '4. close': '162.3900',
+            '5. volume': '835110'
+          },
+          '2025-04-17 17:00:00': {
+            '1. open': '162.2100',
+            '2. high': '162.5000',
+            '3. low': '162.1000',
+            '4. close': '162.1000',
+            '5. volume': '3646'
+          },
+          '2025-04-17 16:00:00': {
+            '1. open': '161.8900',
+            '2. high': '162.6000',
+            '3. low': '161.8300',
+            '4. close': '162.3300',
+            '5. volume': '2645223'
+          },          
+        }
+      }
+    } else if ( navn == "NVO") {
+      offlineResponseData = {
+        'Meta Data': {
+          '1. Information': 'Intraday (60min) open, high, low, close prices and volume',
+          '2. Symbol': 'TSLA',
+          '3. Last Refreshed': '2025-04-17 19:00:00',
+          '4. Interval': '60min',
+          '5. Output Size': 'Compact',
+          '6. Time Zone': 'US/Eastern'
+        },
+        'Time Series (60min)': {
+          '2025-04-17 19:00:00': {
+            '1. open': '238.8100',
+            '2. high': '239.7900',
+            '3. low': '236.2897',
+            '4. close': '238.8300',
+            '5. volume': '505465'
+          },
+          '2025-04-17 18:00:00': {
+            '1. open': '240.3000',
+            '2. high': '240.3000',
+            '3. low': '238.8100',
+            '4. close': '239.7900',
+            '5. volume': '498384'
+          },    
+          '2025-04-09 19:00:00': {
+            '1. open': '235.3100',
+            '2. high': '239.9000',
+            '3. low': '230.3000',
+            '4. close': '236.9700',
+            '5. volume': '1005263'
+          },
+          '2025-04-09 18:00:00': {
+            '1. open': '235.7600',
+            '2. high': '239.9000',
+            '3. low': '230.3000',
+            '4. close': '236.9900',
+            '5. volume': '1005438'
+          },
+          '2025-04-09 16:00:00': {
+            '1. open': '235.3100',
+            '2. high': '239.9000',
+            '1. open': '235.3100',
+            '2. high': '239.9000',
+            '2. high': '239.9000',
+            '3. low': '230.3000',
+            '4. close': '239.9000',
+            '5. volume': '3452551'
+          }
+        }
+      }
+
+
+    } else if ( navn == "AAPL") {
+      offlineResponseData = {
+        'Meta Data': {
+          '1. Information': 'Intraday (60min) open, high, low, close prices and volume',
+          '2. Symbol': 'AAPL',
+          '3. Last Refreshed': '2025-04-17 19:00:00',
+          '4. Interval': '60min',
+          '5. Output Size': 'Compact',
+          '6. Time Zone': 'US/Eastern'
+        },
+        'Time Series (60min)': {
+          '2025-04-17 19:00:00': {
+            '1. open': '197.1500',
+            '2. high': '197.4000',
+            '3. low': '196.9800',
+            '4. close': '197.3000',
+            '5. volume': '819041'
+          },
+          '2025-04-17 18:00:00': {
+            '1. open': '197.4000',
+            '2. high': '197.5500',
+            '3. low': '197.0000',
+            '4. close': '197.1500',
+            '5. volume': '14368'
+          },
+          '2025-04-17 17:00:00': {
+            '1. open': '197.5900',
+            '2. high': '199.6953',
+            '3. low': '185.0045',
+            '4. close': '197.5400',
+            '5. volume': '55297'
+          },
+          '2025-04-17 16:00:00': {
+            '1. open': '196.8700',
+            '2. high': '198.0000',
+            '3. low': '196.8700',
+            '4. close': '197.4600',
+            '5. volume': '16653073'
+          }
+        }
+      }
+    }
+    res.json(offlineResponseData);
+  }
+});  
+ 
 module.exports = router;

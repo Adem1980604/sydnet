@@ -213,15 +213,24 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
       </label>
       <span id="handelstype-label">Køb</span>
 
-<!--search bar-->
-<input type="text" id="aktieSøg" placeholder="Søg værdipapir">
-<ul id="vaerdiResultat"></ul>
+      
+      <!--search bar-->
+      <input type="text" id="aktieSoeg" placeholder="Søg værdipapir">
+      
+      <!-- Lav drop down liste med de aktier vi kan handle med - aktieliste er allerede leveret som input ved load ad portefoljedetaljer -->
+      <!--
+      <select name="aktiesoegning:" id="aktieDropdown">
+        <% for (let l=0; l < aktieliste.length; l++) { %>
+          <option value=<%= aktieliste[l].symbol %>><%= aktieliste[l].symbol %></option>
+        <% } %>
+      </select>
+    -->
+      <button onclick="aktiesoeg()">Søg efter værdipapir</button>
+      <ul id="vaerdiResultat"></ul>
 
+      
       <!--Handels form-->
-
       <form id="handelForm">
-
-
         <input type="number" id="antal" placeholder="Antal" required>
 
         <!-- Pris per aktie (udfyldes automatisk) -->
@@ -287,17 +296,35 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
   </div>
 
  
-    <!-- **************************** SCRIPT START ********************** -->
-
+  <!-- **************************** SCRIPT START ********************** -->
   <script>
-
     // tager fat i id for konti og portefølje og ejerliste
     const konto_id = "<%= konto_id %>";
     const portefolje_id = "<%= portefolje.portefoelje_id %>";
-  const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
+    const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
+    let min_pris;
+    let symbol;
+    let valgtAktie = [];
 
- 
 
+    async function aktiesoeg() {
+          const symbol = document.getElementById("aktieSoeg").value;
+          console.log(symbol)
+          const response = await fetch(`/aktiesoeg/getaktiekurs/${symbol}`);
+          const data2 = await response.json();
+    
+          console.log("****************data2**************"); 
+          console.log(Object.keys(data2["Time Series (60min)"])[0]);
+          console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
+          const nuvaerendeAktiePris = Object.values(data2["Time Series (60min)"])[0]["1. open"];
+          console.log(nuvaerendeAktiePris);
+          min_pris = nuvaerendeAktiePris
+          console.log("****************min_pris**************"); 
+          console.log(min_pris); 
+          valgtAktie.pris = min_pris;
+          valgtAktie.symbol = symbol;  
+          console.log(valgtAktie); 
+    }  
 
     // funktion til at åbne popup for opret handel eller salg
     function åbnPopup() {
@@ -306,9 +333,8 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
 
      // funktion til at åbne popup for handels historik
     function åbnHistorikPopup() {
-  document.getElementById("historikPopup").style.display = "block";
-}
-
+      document.getElementById("historikPopup").style.display = "block";
+    }
 
     // funktionen til at lukke popup
     function lukPopup() {
@@ -317,72 +343,72 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
       document.getElementById('historikPopup').style.display = 'none';
     };
 
-   // Henter HTML-elementerne til toggle-knappen og teksten der viser handelstypen
-const toggle = document.getElementById("handelstype-toggle");
-const label = document.getElementById("handelstype-label");
+    // Henter HTML-elementerne til toggle-knappen og teksten der viser handelstypen
+    const toggle = document.getElementById("handelstype-toggle");
+    const label = document.getElementById("handelstype-label");
 
-// Når brugeren klikker på toggle-knappen (skifter mellem køb og salg)
-toggle.addEventListener("change", function () {
-  // Hvis checkboxen er slået til (checked = true), så er det et salg
-  if (toggle.checked) {
-    label.textContent = "Salg"; // Vis teksten "Salg"
-  } else {
-    label.textContent = "Køb"; // Ellers vis "Køb"
-  }
-});
+    // Når brugeren klikker på toggle-knappen (skifter mellem køb og salg)
+    toggle.addEventListener("change", function () {
+      // Hvis checkboxen er slået til (checked = true), så er det et salg
+      if (toggle.checked) {
+        label.textContent = "Salg"; // Vis teksten "Salg"
+      } else {
+        label.textContent = "Køb"; // Ellers vis "Køb"
+      }
+    });
 
 
     // Henter formular-elementet fra HTML (popup til handel)
-const form = document.getElementById("handelForm");
+    const form = document.getElementById("handelForm");
 
-// Når brugeren forsøger at indsende formularen
-form.addEventListener("submit", async function (event) {
-  event.preventDefault();
-
-  // Tjekker om brugeren har valgt "salg" via toggle-knap
-  const isSalg = document.getElementById("handelstype-toggle").checked;
-  let type;
-if (isSalg) {
-  type = "salg";
-} else {
-  type = "kob";
-}
-
-  // Hvis brugeren vil sælge, skal vi tjekke om de ejer aktien og har nok
-  if (type === "salg") {
-    let fundet = false; // Bruges til at finde aktien i ejerlisten
-    let ejerAntal = 0;  // Hvor mange aktier brugeren ejer
-
-    // Gennemgå alle aktier brugeren ejer
-    for (let i = 0; i < brugerensAktier.length; i++) {
-      if (brugerensAktier[i].symbol === valgtAktie.symbol) {
-        ejerAntal = brugerensAktier[i].antal;
-        fundet = true;
-        break;
+    // Når brugeren forsøger at indsende formularen
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+    
+      // Tjekker om brugeren har valgt "salg" via toggle-knap
+      const isSalg = document.getElementById("handelstype-toggle").checked;
+      let type;
+      if (isSalg) {
+        type = "salg";
+      } else {
+        type = "kob";
       }
-    }
 
-    const antalBrugerVilSælge = parseInt(document.getElementById("antal").value);
-
-    // Hvis brugeren ikke ejer aktien, vis fejl
-    if (!fundet) {
-      alert("Du ejer ikke denne aktie og kan derfor ikke sælge den.");
-      return; // Stop formularen
-    }
-
-    // Hvis brugeren prøver at sælge flere end de ejer
-    if (antalBrugerVilSælge > ejerAntal) {
-      alert(`Du prøver at sælge ${antalBrugerVilSælge} stk, men du ejer kun ${ejerAntal} stk.`);
-      return; // Stop formularen
-    }
-  }
+      // Hvis brugeren vil sælge, skal vi tjekke om de ejer aktien og har nok
+      if (type === "salg") {
+        let fundet = false; // Bruges til at finde aktien i ejerlisten
+        let ejerAntal = 0;  // Hvor mange aktier brugeren ejer
+      
+        // Gennemgå alle aktier brugeren ejer
+        for (let i = 0; i < brugerensAktier.length; i++) {
+          if (brugerensAktier[i].symbol === valgtAktie.symbol) {
+            ejerAntal = brugerensAktier[i].antal;
+            fundet = true;
+            break;
+          }
+        }      
+        const antalBrugerVilSælge = parseInt(document.getElementById("antal").value);
+      
+        // Hvis brugeren ikke ejer aktien, vis fejl
+        if (!fundet) {
+          alert("Du ejer ikke denne aktie og kan derfor ikke sælge den.");
+          return; // Stop formularen
+        }
+      
+        // Hvis brugeren prøver at sælge flere end de ejer
+        if (antalBrugerVilSælge > ejerAntal) {
+          alert(`Du prøver at sælge ${antalBrugerVilSælge} stk, men du ejer kun ${ejerAntal} stk.`);
+          return; // Stop formularen
+        }
+      }
 
   // Opretter et data-objekt med de informationer der skal sendes til serveren
   const data = {
     konto_id,
     vaerditype: document.getElementById("værditype").value,
     antal: document.getElementById("antal").value,
-    pris: document.getElementById("samlet_pris").value,
+    //pris: document.getElementById("samlet_pris").value,
+    pris: min_pris,
     valuta: "DKK",
     type,
     symbol: valgtAktie.symbol
@@ -411,77 +437,49 @@ if (isSalg) {
     alert("Noget gik galt");
   }
 });
-
-  
     
-    //**************************** SEARCHBAR FUNKTIONALITET ********************** -->
+//**************************** SEARCHBAR FUNKTIONALITET ********************** -->
+// Dette er til searchbar her bruges der dummy data lige nu, men skal udvides med live data
 
-    // Dette er til searchbar her bruges der dummy data lige nu, men skal udvides med live data
-
-
-  let valgtAktie = null; // vi antager at  brugeren ikke har valgt en aktie 
-
-const aktier = [
-  { symbol: "AAPL", navn: "Apple Inc.", pris: 145 },
-  { symbol: "TSLA", navn: "Tesla", pris: 215 },
-  { symbol: "MSFT", navn: "Microsoft", pris: 320 },
-  { symbol: "NFLX", navn: "Netflix", pris: 405 }
-];
-
-
-const input = document.getElementById("aktieSøg");
+ // vi antager at  brugeren ikke har valgt en aktie 
+  
+const input = document.getElementById("aktieSoeg");
+console.log("**********************input********************");
+console.log(input);
 const resultatListe = document.getElementById("vaerdiResultat");
 
-// når brugeren søger 
-input.addEventListener("input", function () {
-  let søg = input.value
 
-  resultatListe.innerHTML = ""; // fjern gamle resultater
-
-
-  // loop gennem alle aktier (dummy data)
-  for (let i = 0; i < aktier.length; i++) {
-    let aktie = aktier[i];
-    let symbol = aktie.symbol.toLowerCase();
-    let navn = aktie.navn.toLowerCase();
-
-// tjek om søg findes i symbol eller navn 
-if(symbol.includes(søg)|| navn.includes(søg)){
-  let li = document.createElement("li"); // vi laver en liste element som viser aktien
-  li.textContent = `${aktie.symbol} - ${aktie.navn}`; // her stiller vi dem op
- 
-
-  // opretter klikke funktionaliteten 
-  li.addEventListener("click", function () {
-  input.value = aktie.symbol;  // ticker-symbolet automatisk bliver sat ind i søgefeltet,
-  resultatListe.innerHTML = ""; // luk listen
-
-  // vi tager fat i prisen for den pågældende aktie og udfylder pris feltet på popup automatisk
-  document.getElementById("samlet_pris").value = aktie.pris 
-  valgtAktie = aktie // nu har brugeren valgt en aktie og vi husker den
-
-  });
-  resultatListe.appendChild(li);
-  }
-}
-});
-
+//// når brugeren søger 
+//input.addEventListener("input", function () {
+//  let søg = input.value
+//  resultatListe.innerHTML = ""; // fjern gamle resultater
+//  // loop gennem alle aktier (dummy data)
+//  
+//  // vi tager fat i prisen for den pågældende aktie og udfylder pris feltet på popup automatisk
+//  console.log("**********************min_pris debug001 ********************");
+// document.getElementById("samlet_pris").value = min_pris
+//  valgtAktie.pris = min_pris;
+//  //valgtAktie.symbol = min_aktie // nu har brugeren valgt en aktie og vi husker den
+//});
+////resultatListe.appendChild(li);
 
 // opertter en funktion der ganger antallet af de valgte aktier med prisen 
-  function  beregnSamletPris(){
-
-// henter antalet af aktier vagt 
-const antal = parseFloat(document.getElementById("antal").value);
- const visning = document.getElementById("beregnet_pris")
-
-
-      if(antal > 0) {
-      let samlet = valgtAktie.pris * antal; 
-
-    visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
+function beregnSamletPris(){
+  // henter antalet af aktier vagt 
+  const antal = parseFloat(document.getElementById("antal").value);
+  const visning = document.getElementById("beregnet_pris")
   
-      };
-    };
+  if(antal > 0) {
+    let samlet = valgtAktie.pris * antal; 
+    //let samlet = min_pris * antal; 
+    console.log("DEBUG 003");
+    console.log(min_pris);
+    console.log(antal);
+    visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
+    document.getElementById("samlet_pris").value = valgtAktie.pris
+  };
+  
+};
 
   // Når brugeren skriver antal så kalder vi på funktionen der beregner prisen
 document.getElementById("antal").addEventListener("input", function () {
@@ -516,20 +514,14 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     display: true,
-                    labels: {
-                        color: '#fff'
-                    }
+                    labels: { color: '#fff' }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: false,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: '#fff'
-                    },
+                    grid:  { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: '#fff'                     },
                     // Tilføj dette for at give overhead i grafen
                     suggestedMax: function(context) {
                         const maxValue = Math.max(...context.chart.data.datasets[0].data);
@@ -537,12 +529,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 },
                 x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: '#fff'
-                    }
+                    grid:  { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: '#fff'                     }
                 }
             }
         }

@@ -276,8 +276,8 @@ router.post('/opret-portefolje', async function (req, res) {
       portefoelje_id,
       navn,
       dato,
-      konto_id
-      //handler
+      konto_id,
+      handler
     }
 
   });
@@ -315,13 +315,23 @@ const handlerResultat = await db.request()
     SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
            v.symbol, v.navn
     FROM vaerdipapir.vphandler h
-    JOIN vaerdipapir.vpoplysninger v ON h.vpoplysninger_id = v.vpoplysninger_id
+    JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
     WHERE h.portefoelje_id = @id
   `);
 
-const handler = handlerResultat.recordset;
+  const handler = handlerResultat.recordset;
 
-console.log("Handler fra databasen:", handler); 
+  //console.log("Handler fra databasen:", handler); 
+
+  const aktielisteresultat = await db.request()    
+    .query(`
+      SELECT symbol, navn FROM vaerdipapir.vpoplysninger      
+    `);
+  const aktieliste = aktielisteresultat.recordset;
+  
+  console.log(aktieliste);
+
+
 
 
   // Send dem alle til din EJS-side
@@ -329,9 +339,12 @@ console.log("Handler fra databasen:", handler);
     portefolje, // den vagte portefølje
     portefoljer, // alle porteføljer for kontoen 
     konto_id, // så vi kan linke tilbage 
+    aktieliste,
     handler // vi sender brugerens Værdipapir historik tilbage
   });
 });
+
+
 
 // ruten som gemmer handlen for den specifikke portefølje 
 router.post('/portesiden/:id/handel', async function (req, res) {
@@ -381,23 +394,23 @@ router.post('/portesiden/:id/handel', async function (req, res) {
 const symbol = req.body.symbol;
 
 // Find vpoplysninger_id baseret på symbol
-const vpResultat = await db.request()
-  .input('symbol', sql.NVarChar(20), symbol)
-  .query(`
-    SELECT vpoplysninger_id 
-    FROM vaerdipapir.vpoplysninger 
-    WHERE symbol = @symbol
-  `);
+//const vpResultat = await db.request()
+//  .input('symbol', sql.NVarChar(20), symbol)
+//  .query(`
+//    SELECT vpoplysninger_id 
+//    FROM vaerdipapir.vpoplysninger 
+//    WHERE symbol = @symbol
+//  `);
 
-if (vpResultat.recordset.length === 0) {
-  return res.status(404).json({ success: false, message: "Værdipapir ikke fundet." });
-}
+//if (vpResultat.recordset.length === 0) {
+//  return res.status(404).json({ success: false, message: "Værdipapir ikke fundet." });
+//}
 
-vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
+//vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
 
 // 3. indsæt handel hvis brugeren har nok penge 
   await db.request()
-    .input('vpoplysninger_id', sql.Int, vpoplysninger_id)
+    .input('symbol', sql.NVarChar(20), symbol)
     .input('portefoelje_id', sql.Int, portefoelje_id)
     .input('konto_id', sql.Int, konto_id)
     .input('vaerditype', sql.NVarChar(50), vaerditype)
@@ -409,9 +422,9 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
     .input('datotid', sql.DateTime, datotid)
     .query(`
       INSERT INTO vaerdipapir.vphandler
-      (vpoplysninger_id,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, valuta, gebyr, datotid)
+      (symbol,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, valuta, gebyr, datotid)
       VALUES
-      (@vpoplysninger_id, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
+      (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
     `);
 
   // 4. opret transkation ( dette er vigtigt for opdatering af konto tabel og dens værdier)
@@ -451,7 +464,7 @@ vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
   res.json({
     success: true,
     handel: {
-      vpoplysninger_id,
+      symbol,
       portefoelje_id,
       konto_id,
       vaerditype,

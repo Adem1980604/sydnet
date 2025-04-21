@@ -157,7 +157,7 @@ const lavVPOplysninger = `
       navn NVARCHAR(50),
       symbol NVARCHAR(20),
       type NVARCHAR(50),
-      CONSTRAINT portefoelje_PK PRIMARY KEY (vpoplysninger_id)
+      CONSTRAINT portefoelje_PK PRIMARY KEY (symbol)
     );
       `;
 
@@ -165,14 +165,15 @@ const dataOmVP =
       `INSERT INTO vaerdipapir.vpoplysninger (navn, symbol, type)
         VALUES 
         ('Apple Inc.', 'AAPL', 'aktie'),
-        ('Tesla Inc.', 'TSLA', 'aktie'),
-        ('Microsoft', 'MSFT', 'aktie');
+        ('Boeing Company', 'BA', 'aktie'),
+        ('Novo Nordisk', 'NVO', 'aktie'),
+        ('IBM', 'IBM', 'aktie');
         `
 
 const lavVPHandler = `
       CREATE TABLE vaerdipapir.vphandler(
         vphandler_id INT IDENTITY(1,1),
-        vpoplysninger_id INT,
+        symbol NVARCHAR(20),
         portefoelje_id INT,
         konto_id INT,
         vaerditype NVARCHAR(50),
@@ -183,19 +184,53 @@ const lavVPHandler = `
         gebyr DECIMAL(10,2),
         datotid DATETIME,
         CONSTRAINT vphandler_PK PRIMARY KEY (vphandler_id),
-        CONSTRAINT vpoplysninger1_FK FOREIGN KEY (vpoplysninger_id) REFERENCES vaerdipapir.vpoplysninger(vpoplysninger_id),
+        CONSTRAINT vpoplysninger1_FK FOREIGN KEY (symbol) REFERENCES vaerdipapir.vpoplysninger(symbol),
         CONSTRAINT fk_vphandler_konto FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
       );
         `;
 
+const dataiVpHandler = `insert into vaerdipapir.vphandler 
+(symbol, portefoelje_id, konto_id, vaerditype, salg_koeb, antal, pris, valuta, gebyr, datotid)
+values  ('BA', 5, 6,'aktie', 0, 4, 215.00, 'DKK', 0.22, '2025-04-20 19:51:13.727'),
+        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:51:43.177'),
+        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:52:09.583'),
+        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:54:58.840'),
+        ('AAPL', 5, 6, 'aktie', 0, 3, 145.00, 'DKK', 0.14, '2025-04-20 20:11:29.057'),
+        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:11:40.797'),
+        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:11:53.183'),
+        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:12:01.247'),
+        ('BA', 5, 6, 'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 20:15:03.813'),
+        ( 'AAPL', 5, 6, 'aktie', 0, 4, 145.00, 'DKK', 0.14, '2025-04-20 20:16:22.843'),
+        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:16:58.687'),
+        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:17:40.107'),
+        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 07:49:18.760'),
+        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 08:03:25.567'),
+        ( 'AAPL', 5, 6, 'aktie', 0, 4, 145.00, 'DKK', 0.14, '2025-04-21 08:08:44.400'),
+        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 08:08:54.140'),
+        ( 'BA', 5, 6, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 09:36:51.160'),
+        ( 'BA', 1, 2, 'aktie', 0, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:53:21.487'),
+        ( 'BA', 1, 2, 'aktie', 1, 2, 215.00, 'DKK', 0.22, '2025-04-21 14:55:41.613'),
+        ( 'BA', 1, 2, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 14:57:43.850'),
+        ( 'BA', 1, 2, 'aktie', 1, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:58:14.177'),
+        ( 'NVO', 1, 2, 'aktie', 0, 4, 545.00, 'DKK', 0.14, '2025-04-20 20:16:22.843'),
+        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-20 20:16:58.687'),
+        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-20 20:17:40.107'),
+        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 07:49:18.760'),
+        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 08:03:25.567'),
+        ( 'NVO', 1, 2, 'aktie', 0, 4, 545.00, 'DKK', 0.14, '2025-04-21 08:08:44.400'),
+        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 08:08:54.140'),
+        ( 'BA', 5, 6, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 09:36:51.160'),
+        ( 'BA', 1, 2, 'aktie', 0, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:53:21.487'),
+        ( 'BA', 1, 2, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 15:06:25.143');`
+
 const lavVPKurs = `
         CREATE TABLE vaerdipapir.vpkurs(
           vpkurs_id INT IDENTITY(1,1),
-          vpoplysninger_id INT,
+          symbol NVARCHAR(20),
           kurs DECIMAL(10,2),
           datotid DATETIME,
           CONSTRAINT vpkurs_PK PRIMARY KEY (vpkurs_id),
-          CONSTRAINT vpoplysninger2_FK FOREIGN KEY (vpoplysninger_id) REFERENCES vaerdipapir.vpoplysninger(vpoplysninger_id)
+          CONSTRAINT vpoplysninger2_FK FOREIGN KEY (symbol) REFERENCES vaerdipapir.vpoplysninger(symbol)
         );
           `;
 
@@ -235,6 +270,8 @@ async function ventPåDatabase() {
   await sql.query(dataIPortefoeljeTabel);
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
+  await sql.query(dataiVpHandler); 
+  
 
   console.log('alt oprettet') // tjek
 };
