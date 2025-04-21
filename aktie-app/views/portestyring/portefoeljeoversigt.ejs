@@ -53,20 +53,31 @@
             <p><strong>Portefølje:</strong>
               <%= portefoljer[i].navn %>
             </p>
+            <p><strong>Tilknyttet konto:</strong>
+              <%= portefoljer[i].kontonavn %>
+            </p>
+
+
             <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
           </div>
           <% } %>
       </div>
      
-      <!-- Popup form -->
+    <!-- Popup form -->
     <div id="popup1" style="display: none;">
       <h3>Tilføj Portefølje</h3>
       <label for="navn">Navn:</label>
       <input type="text" id="portefoljeNavn"><br>
 
-      
       <label for="navn">Konto id:</label>
-      <input type="text" id="kontoData"><br>
+      <!--<input type="text" id="kontoData"><br> -->
+      <select name="Konto navn:" id="kontoNavnDropdown">
+       
+        <% for (let k=0; k < konto.length; k++) { %>
+          <option value=<%= konto[k].konto_id %>><%= konto[k].navn %></option>
+        <% } %>
+      </select>
+
       
       <button onclick="OpretPortefoelje()">Opret Portefølje</button>
       <button onclick="lukPopup1()">Luk</button>
@@ -88,7 +99,7 @@
 
         console.log(document);
 
-        const konto_id = document.getElementById("kontoData").dataset.kontoId;
+        const konto_id = document.getElementById("kontoNavnDropdown").value;
         console.log("OpretPortefoelje   - Konto_id: " + konto_id)
 
         const nyPortefølje = { navn, konto_id };
@@ -98,6 +109,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nyPortefølje)
         });
+
 
         const data = await svar.json();
         if (data.success) {

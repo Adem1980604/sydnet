@@ -208,13 +208,16 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
   const db = await forbindDatabase();
 
-  //const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
-  ///const kontoResultater = await db.request()
-  ///  .input('id', sql.Int, konto_id)
-  ///  .query('SELECT * FROM konto.kontooplysninger WHERE konto_id = @id')
-  ///// Gem første række fra kontodata 
-  ///const konto = kontoResultater.recordset[0];
-  
+  const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
+  const kontoResultater = await db.request()
+    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+    .input('id', sql.Int, konto_id)
+    .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggedin_bruger_id')
+  /// Gem første række fra kontodata 
+
+  const konto = kontoResultater.recordset;
+  //console.log("*************Konto**********");
+  //console.log(konto);
 
 
 
@@ -222,16 +225,22 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   const portefoljeResultater = await db.request() 
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
     .query(`
-      SELECT * FROM konto.portefoelje portf
+      SELECT 
+        portf.portefoelje_id, 
+        portf.konto_id, 
+        portf.navn, 
+        portf.dato,
+        ktoopl.navn as kontonavn
+      FROM konto.portefoelje portf
       JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
       WHERE ktoopl.bruger_id = @loggedin_bruger_id`);
   const portefoljer = portefoljeResultater.recordset;
 
-  ///console.log("DEBUG: 085 ********");
-  ///console.log(konto);
+  //console.log("DEBUG: 085 ********");
+  //console.log(portefoljer);
 
   res.render('portestyring/portefoeljeoversigt', {
-    //konto, // vi sender konti object til konto_detalje.ejs    
+    konto, // 
     portefoljer // sendes til EJS
   });
 });
@@ -267,9 +276,8 @@ router.post('/opret-portefolje', async function (req, res) {
       portefoelje_id,
       navn,
       dato,
-      konto_id,
-      handler
-
+      konto_id
+      //handler
     }
 
   });
