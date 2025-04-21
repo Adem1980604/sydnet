@@ -47,12 +47,8 @@
       <div class="chart-card">
         <h3>Samlet Værdi af portefølje</h3>
         <div class="chart-placeholder" id="line-chart">
-
           <canvas id="accountChart"> 
-
           </canvas>
-
-
         </div>
       </div>
 
@@ -64,48 +60,54 @@
         </div>
 
          <!-- Oprettels af salg -->
-  <%
-  const ejerListe = [];
-
-  for (let i = 0; i < handler.length; i++) {
-    const h = handler[i];
-    const symbol = h.symbol;
-    const antal = h.antal;
-    const erSalg = h.salg_koeb;
-
-    let fundet = false;
-
-    for (let j = 0; j < ejerListe.length; j++) {
-      if (ejerListe[j].symbol === symbol) {
-        if (erSalg) {
-          ejerListe[j].antal -= antal;
-        } else {
-          ejerListe[j].antal += antal;
-        }
-        fundet = true;
-        break;
-      }
-    }
-
-    if (!fundet) {
-      let antalTilføj;
-      if (erSalg) {
-        antalTilføj = -antal;
-      } else {
-        antalTilføj = antal;
-      }
-
-      ejerListe.push({
-        symbol: symbol,
-        antal: antalTilføj
-      });
-    }
-  }
-
-  const ejerListeFiltreret = ejerListe; // behold hele listen uden filtrering
-
-%>
-
+         <%
+         // Opretter en tom liste til at holde overblik over hvad brugeren ejer
+         const ejerListe = [];
+       
+         // Gennemgår alle handler (både køb og salg)
+         for (let i = 0; i < handler.length; i++) {
+           const h = handler[i];               // En enkelt handel
+           const symbol = h.symbol;            // Symbol på værdipapiret (f.eks. AAPL)
+           const antal = h.antal;              // Antal købt eller solgt
+           const erSalg = h.salg_koeb;         // true hvis det er salg, false hvis det er køb
+       
+           let fundet = false; // Bruges til at tjekke om aktien allerede er i ejerlisten
+       
+           // Tjek om aktien allerede er i ejerListe
+           for (let j = 0; j < ejerListe.length; j++) {
+             if (ejerListe[j].symbol === symbol) {
+               // Hvis det er salg, træk antal fra. Ellers læg til.
+               if (erSalg) {
+                 ejerListe[j].antal -= antal;
+               } else {
+                 ejerListe[j].antal += antal;
+               }
+               fundet = true;
+               break; // Vi er færdige, så vi stopper løkken
+             }
+           }
+       
+           // Hvis aktien ikke var i listen, tilføj den som ny
+           if (!fundet) {
+             let antalTilføj;
+             if (erSalg) {
+               antalTilføj = -antal; // Sæt negativ hvis det er salg
+             } else {
+               antalTilføj = antal;  // Positiv hvis det er køb
+             }
+       
+             // Tilføj aktien til ejerlisten
+             ejerListe.push({
+               symbol: symbol,
+               antal: antalTilføj
+             });
+           }
+         }
+       
+         // Kopiér listen så den kan bruges til visning i tabellen
+         const ejerListeFiltreret = ejerListe;
+       %>
+       
         
       <!-- udrgning til samlet værdi af alle værdipapir i porteføljen -->
         <% 
@@ -156,30 +158,39 @@
     
             <!-- Tabel for akter brugern ejer Dummy data der skal erstates med live data -->
             <tbody>
-              <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
-                   const e = ejerListeFiltreret[i];
-            
-                   // find første handler med samme symbol (for at få navn og pris)
-                   let navn = "";
-                   let pris = 0;
-                   for (let j = 0; j < handler.length; j++) {
-                     if (handler[j].symbol === e.symbol) {
-                       navn = handler[j].navn;
-                       pris = handler[j].pris;
-                       break;
-                     }
-                   }
-            
-                   if (e.antal > 0) { %>
-                <tr>
-                  <td><%= navn %><br><small><%= e.symbol %></small></td>
-                  <td><%= e.antal %> stk.</td>
-                  <td class="positive">+1.27%</td>
-                  <td><%= pris %> DKK</td>
-                  <td><%= (e.antal * pris).toFixed(2) %> DKK</td>
-                </tr>
-              <% } %>
-              <% } %>
+              <% 
+// Loop gennem listen over værdipapirer som brugeren ejer (efter køb/salg er beregnet)
+for (let i = 0; i < ejerListeFiltreret.length; i++) {
+  const e = ejerListeFiltreret[i]; // Hver aktie brugeren ejer
+
+  // Vi skal finde navn og pris på aktien baseret på symbol
+  let navn = "";
+  let pris = 0;
+
+  // Gennemgå alle handler for at finde den første med samme symbol
+  for (let j = 0; j < handler.length; j++) {
+    if (handler[j].symbol === e.symbol) {
+      navn = handler[j].navn; // Sæt navnet
+      pris = handler[j].pris; // Sæt den seneste pris (kun første match bruges)
+      break; // Vi har fundet det vi skulle bruge
+    }
+  }
+
+  // Vis kun aktier som brugeren stadig ejer (antal > 0)
+  if (e.antal > 0) {
+%>
+    <tr>
+      <td><%= navn %><br><small><%= e.symbol %></small></td>
+      <td><%= e.antal %> stk.</td>
+      <td class="positive">+1.27%</td> <!-- Her kan du vise ændring i værdi (live data)-->
+      <td><%= pris %> DKK</td>
+      <td><%= (e.antal * pris).toFixed(2) %> DKK</td>
+    </tr>
+<% 
+  } 
+} 
+%>
+
             </tbody>   
       </table>
     </section>
@@ -277,14 +288,12 @@
 
   <script>
 
-    // tager fat i id for konti og portefølje ( jeg tror det skla bruges til backedt senere hen) 
+    // tager fat i id for konti og portefølje og ejerliste
     const konto_id = "<%= konto_id %>";
     const portefolje_id = "<%= portefolje.portefoelje_id %>";
-
   const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
 
-  //Debug
-  console.log("Aktier brugeren ejer:", brugerensAktier);
+ 
 
 
     // funktion til at åbne popup for opret handel eller salg
@@ -300,102 +309,107 @@
 
     // funktionen til at lukke popup
     function lukPopup() {
-      // Lukker begge popup, hvis den er synlig
+      // Lukker begge popup, hvis de er synlige
       document.getElementById('popup').style.display = 'none';
       document.getElementById('historikPopup').style.display = 'none';
     };
 
-    // funktion til at opdatere handelstype
-    const toggle = document.getElementById("handelstype-toggle");
-    const label = document.getElementById("handelstype-label");
+   // Henter HTML-elementerne til toggle-knappen og teksten der viser handelstypen
+const toggle = document.getElementById("handelstype-toggle");
+const label = document.getElementById("handelstype-label");
 
-
-      toggle.addEventListener("change", function () {
+// Når brugeren klikker på toggle-knappen (skifter mellem køb og salg)
+toggle.addEventListener("change", function () {
+  // Hvis checkboxen er slået til (checked = true), så er det et salg
   if (toggle.checked) {
-    label.textContent = "Salg";
+    label.textContent = "Salg"; // Vis teksten "Salg"
   } else {
-    label.textContent = "Køb";
+    label.textContent = "Køb"; // Ellers vis "Køb"
+  }
+});
+
+
+    // Henter formular-elementet fra HTML (popup til handel)
+const form = document.getElementById("handelForm");
+
+// Når brugeren forsøger at indsende formularen
+form.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  // Tjekker om brugeren har valgt "salg" via toggle-knap
+  const isSalg = document.getElementById("handelstype-toggle").checked;
+  let type;
+if (isSalg) {
+  type = "salg";
+} else {
+  type = "kob";
+}
+
+  // Hvis brugeren vil sælge, skal vi tjekke om de ejer aktien og har nok
+  if (type === "salg") {
+    let fundet = false; // Bruges til at finde aktien i ejerlisten
+    let ejerAntal = 0;  // Hvor mange aktier brugeren ejer
+
+    // Gennemgå alle aktier brugeren ejer
+    for (let i = 0; i < brugerensAktier.length; i++) {
+      if (brugerensAktier[i].symbol === valgtAktie.symbol) {
+        ejerAntal = brugerensAktier[i].antal;
+        fundet = true;
+        break;
+      }
+    }
+
+    const antalBrugerVilSælge = parseInt(document.getElementById("antal").value);
+
+    // Hvis brugeren ikke ejer aktien, vis fejl
+    if (!fundet) {
+      alert("Du ejer ikke denne aktie og kan derfor ikke sælge den.");
+      return; // Stop formularen
+    }
+
+    // Hvis brugeren prøver at sælge flere end de ejer
+    if (antalBrugerVilSælge > ejerAntal) {
+      alert(`Du prøver at sælge ${antalBrugerVilSælge} stk, men du ejer kun ${ejerAntal} stk.`);
+      return; // Stop formularen
+    }
+  }
+
+  // Opretter et data-objekt med de informationer der skal sendes til serveren
+  const data = {
+    konto_id,
+    vaerditype: document.getElementById("værditype").value,
+    antal: document.getElementById("antal").value,
+    pris: document.getElementById("samlet_pris").value,
+    valuta: "DKK",
+    type,
+    symbol: valgtAktie.symbol
+  };
+
+  // Sender handlen til backend via fetch (POST-request)
+  const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const resultat = await svar.json(); // Får svar tilbage fra serveren
+
+  // Hvis alt gik godt
+  if (resultat.success) {
+    if (type === "kob") {
+      alert("Handel oprettet!"); // Køb
+    } else if (type === "salg") {
+      alert("Salg gennemført!"); // Salg
+    }
+    lukPopup();       // Lukker popup-vinduet
+    location.reload(); // Opdaterer siden så nye værdier vises
+  } else {
+    // Noget gik galt – vis en fejlbesked
+    alert("Noget gik galt");
   }
 });
 
   
-    // nu tager vi fat i vores data
-
-    document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("handelForm")
-    
-    form.addEventListener("submit", async function (element) {
-      element.preventDefault();
-
-
-  // Hent aktuel værdi fra toggle direkte
-  const isSalg = document.getElementById("handelstype-toggle").checked;
-  const type = isSalg ? "salg" : "kob";
-
-
-      // Tjek om brugeren ejer nok til at sælge aktien 
-    
-    if (type === "salg") {
-  let fundet = false;
-  let ejerAntal = 0;
-
-  for (let i = 0; i < brugerensAktier.length; i++) {
-    if (brugerensAktier[i].symbol === valgtAktie.symbol) {
-      ejerAntal = brugerensAktier[i].antal;
-      fundet = true;
-      break;
-    }
-  }
-
-  const antalBrugerVilSælge = parseInt(document.getElementById("antal").value);
-
-  if (!fundet) {
-    alert("Du ejer ikke denne aktie og kan derfor ikke sælge den.");
-    return;
-  }
-
-  if (antalBrugerVilSælge > ejerAntal) {
-    alert(`Du prøver at sælge ${antalBrugerVilSælge} stk, men du ejer kun ${ejerAntal} stk.`);
-    return;
-  }
-};
-
-      const data = {
-        konto_id,
-        vaerditype: document.getElementById("værditype").value,
-        antal: document.getElementById("antal").value,
-        pris: document.getElementById("samlet_pris").value,
-        valuta: "DKK",
-        type,
-        symbol: valgtAktie.symbol
-      };
-
-
-      const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const resultat = await svar.json();
-
-      if (resultat.success) {
-  if (type === "kob") {
-    alert("Handel oprettet!");
-  } else if (type === "salg") {
-    alert("Salg gennemført!");
-  }
-  lukPopup();
-  location.reload(); // Genindlæser siden
-} else {
-  alert("Noget gik galt");
-}
-
-  });
-    });
-  
-
-
     
     //**************************** SEARCHBAR FUNKTIONALITET ********************** -->
 
