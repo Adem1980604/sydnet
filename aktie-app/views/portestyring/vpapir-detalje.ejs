@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= info.navn %> - Detaljer</title>
+  <link rel="stylesheet" href="/vpapir.css"> 
+
+
+      <!-- link til charts -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+</head>
+
+<body>
+
+<div class="content-container">
+  <!-- Kortet -->
+  <div class="card">
+    <h1>Detaljer for <%= info.navn %> (<%= info.symbol %>)</h1>
+    <ul>
+      <li><strong>Type:</strong> <%= info.type %></li>
+      <li><strong>Seneste pris:</strong> <%= info.seneste_pris %> DKK</li>
+      <li><strong>Markedsværdi:</strong> <%= info.markedsvaerdi %></li>
+      <li><strong>Børs:</strong> <%= info.bors %></li>
+    </ul>
+    <a href="/dashboard">← Tilbage til dashboard</a>
+  </div>
+
+  <!-- Chart-containeren -->
+  <div class="chart-container">
+    <canvas id="aktieChart"></canvas>
+  </div>
+</div>
+
+  
+
+<script>
+
+  //*********************************************chart for aktie graf ********************************
+  const ctx = document.getElementById('aktieChart').getContext('2d');
+
+  const aktieChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag'],
+      datasets: [{
+        label: 'AAPL Pris (USD)',
+        data: [195.50, 197.20, 196.80, 198.00, 196.98],
+        borderColor: '#7c4dff',
+        backgroundColor: 'rgba(124, 77, 255, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#fff'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#fff' },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        },
+        y: {
+          ticks: { color: '#fff' },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        }
+      }
+    }
+  });
+</script>
+
+  </script>
+
+</body>
+
+</html>

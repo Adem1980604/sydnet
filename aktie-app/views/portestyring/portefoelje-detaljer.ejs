@@ -186,6 +186,9 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
       <td><%= pris %> DKK</td>
       <td><%= (e.antal * pris).toFixed(2) %> DKK</td>
     </tr>
+    <td>
+      <a href="/vaerdipapir/<%= e.symbol %>" class="handels-knap">Se detaljer</a> <!-- Knap til at se værdipapir information -->
+    </td>
 <% 
   } 
 } 
@@ -462,7 +465,6 @@ if(symbol.includes(søg)|| navn.includes(søg)){
   }
 }
 });
-//*********************************************chart for line ********************************
 
 
 // opertter en funktion der ganger antallet af de valgte aktier med prisen 
@@ -487,7 +489,7 @@ document.getElementById("antal").addEventListener("input", function () {
 });
 
 
-
+//*********************************************chart for line ********************************
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('accountChart').getContext('2d');
     
