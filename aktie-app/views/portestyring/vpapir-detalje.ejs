@@ -1,87 +1,127 @@
 <!DOCTYPE html>
 <html lang="da">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/vpapir.css"> 
   <title><%= info.navn %> - Detaljer</title>
-  <link rel="stylesheet" href="/vpapir.css"> 
 
-
-      <!-- link til charts -->
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+  <!-- Import af Chart.js bibliotek -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
-<div class="content-container">
-  <!-- Kortet -->
-  <div class="card">
-    <h1>Detaljer for <%= info.navn %> (<%= info.symbol %>)</h1>
-    <ul>
-      <li><strong>Type:</strong> <%= info.type %></li>
-      <li><strong>Seneste pris:</strong> <%= info.seneste_pris %> DKK</li>
-      <li><strong>Markedsværdi:</strong> <%= info.markedsvaerdi %></li>
-      <li><strong>Børs:</strong> <%= info.bors %></li>
-    </ul>
-    <a href="/dashboard">← Tilbage til dashboard</a>
+  <div class="content-container">
+    <!-- Detaljeboksen -->
+    <div class="card">
+      <h1>Detaljer for <%= info.navn %> (<%= info.symbol %>)</h1>
+      <ul>
+        <li><strong>Type:</strong> <%= info.type %></li>
+        <li><strong>Seneste pris:</strong> <%= info.seneste_pris %> DKK</li>
+        <li><strong>Markedsværdi:</strong> <%= info.markedsvaerdi %></li>
+        <li><strong>Børs:</strong> <%= info.bors %></li>
+      </ul>
+      <a href="/dashboard">← Tilbage til dashboard</a>
+    </div>
+
+    <!-- Grafen -->
+    <div class="chart-container">
+      <canvas id="aktieChart"></canvas>
+    </div>
   </div>
 
-  <!-- Chart-containeren -->
-  <div class="chart-container">
-    <canvas id="aktieChart"></canvas>
-  </div>
-</div>
+  <!-- ******************* CHARTS BEGYNDER HER ******************* -->
+  <script>
+ 
+   // Hent symbol direkte fra EJS
+   const symbol = "<%= info.symbol %>";
 
-  
 
-<script>
+async function hentOgVisGraf(symbol) {
+  // Hent kursdata fra din egen backend
+  const response = await fetch(`/aktiesoeg/getaktiekurs/${symbol}`);
+  const data = await response.json();
 
-  //*********************************************chart for aktie graf ********************************
-  const ctx = document.getElementById('aktieChart').getContext('2d');
+  const timeSeries = data["Time Series (60min)"];
+  const labels = [];
+  const priser = [];
 
-  const aktieChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag'],
-      datasets: [{
-        label: 'AAPL Pris (USD)',
-        data: [195.50, 197.20, 196.80, 198.00, 196.98],
-        borderColor: '#7c4dff',
-        backgroundColor: 'rgba(124, 77, 255, 0.2)',
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        borderWidth: 2
-      }]
+  // Sortér tidspunkterne fra ældst til nyest
+  const tidspunkter = Object.keys(timeSeries).sort();
+
+  for (let i = 0; i < tidspunkter.length; i++) {
+    const tid = tidspunkter[i];
+    labels.push(tid);
+    priser.push(parseFloat(timeSeries[tid]["4. close"]));
+  }
+
+
+      // Initialiser grafen med Chart.js
+      new Chart(document.getElementById('aktieChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: `${symbol} Pris (USD)`,
+      data: priser,
+      borderColor: '#7c4dff',
+      backgroundColor: 'rgba(124, 77, 255, 0.2)',
+      pointBackgroundColor: '#7c4dff',
+      pointBorderColor: '#ffffff',
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#ffffff'
+        }
+      }
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          labels: {
-            color: '#fff'
-          }
+    scales: {
+      x: {
+        ticks: {
+          color: '#ffffff'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        },
+        title: {
+          display: true,
+          text: "Tidspunkt",
+          color: '#ffffff'
         }
       },
-      scales: {
-        x: {
-          ticks: { color: '#fff' },
-          grid: { color: 'rgba(255,255,255,0.1)' }
+      y: {
+        ticks: {
+          color: '#ffffff'
         },
-        y: {
-          ticks: { color: '#fff' },
-          grid: { color: 'rgba(255,255,255,0.1)' }
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)'
+        },
+        title: {
+          display: true,
+          text: "Pris (USD)",
+          color: '#ffffff'
         }
       }
     }
-  });
-</script>
+  }
+});
+};
+// Kalder funktionen
+hentOgVisGraf(symbol);
+
+
 
   </script>
 
 </body>
-
 </html>

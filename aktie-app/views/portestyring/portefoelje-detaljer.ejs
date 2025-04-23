@@ -488,56 +488,95 @@ document.getElementById("antal").addEventListener("input", function () {
 
 
 //*********************************************chart for line ********************************
-document.addEventListener('DOMContentLoaded', function() {
+
+async function visPortfolioGraf() {
     const ctx = document.getElementById('accountChart').getContext('2d');
-    
-    // Dummy data - kan erstattes med rigtige data senere
+
+    const nu = new Date();
+    const månedLabels = [];
+    const værdier = [];
+
+    // Vi laver 5 måneder med dummy data men sidste måned har rigtig total værdi
+    let base = <%= totalVaerdi %> * 0.5;   // sikrer positivt udgangspunkt
+    for (let i = 5; i >= 1; i--) {
+      const dato = new Date(nu.getFullYear(), nu.getMonth() - i, 1);
+      månedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short', year: 'numeric' }));
+
+      // Tilføj en stigende dummy-værdi
+      værdier.push(base);
+      base += Math.floor(Math.random() * 1500); // Små stigninger
+    }
+
+    // Tilføjer den aktuelle måned med rigtig værdi
+    const aktuelMåned = nu.toLocaleDateString('da-DK', { month: 'short', year: 'numeric' });
+    månedLabels.push(aktuelMåned);
+    værdier.push(<%= totalVaerdi %>);
+
+    // Opsæt data og konfiguration
     const data = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'],
-        datasets: [{
-            label: 'Portfolio Værdi',
-            data: [100000, 120000, 115000, 130000, 140000, 135000, 150000, 160000, 165000, 175000, 180000,190000],
-            borderColor: '#007bff',
-            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-            fill: true,
-            tension: 0.4,
-            borderWidth: 2
-        }]
+      labels: månedLabels,
+      datasets: [{
+        label: "Porteføljeværdi",
+        data: værdier,
+        borderColor: '#7c4dff',
+        backgroundColor: 'rgba(124, 77, 255, 0.2)',
+        fill: true,
+        tension: 0.4,
+        borderWidth: 2
+      }]
     };
 
     const config = {
-        type: 'line',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: { color: '#fff' }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    grid:  { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#fff'                     },
-                    // Tilføj dette for at give overhead i grafen
-                    suggestedMax: function(context) {
-                        const maxValue = Math.max(...context.chart.data.datasets[0].data);
-                        return maxValue * 1.15; // Giver 15% overhead over højeste værdi
-                    }
-                },
-                x: {
-                    grid:  { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: '#fff'                     }
-                }
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: '#ffffff' }
+          },
+          tooltip: {
+            callbacks: {
+              title: function (tooltipItems) {
+                return tooltipItems[0].label; // måned og år vises som tooltip
+              }
             }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#ffffff'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          y: {
+            ticks: {
+              color: '#ffffff',
+              callback: function (value) {
+                return value.toLocaleString('da-DK') + " DKK";
+              }
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            },
+            title: {
+              display: true,
+              text: "Værdi (DKK)",
+              color: '#ffffff'
+            }
+          }
         }
+      }
     };
 
     new Chart(ctx, config);
-});
+  }
+
+  visPortfolioGraf();
 
 
 //*********************************************chart for donut chart ********************************
@@ -627,6 +666,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const myChart = new Chart(ctx, config);
 });
+
 
 
   </script>

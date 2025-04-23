@@ -99,8 +99,6 @@ const dataikontotabel = `
 `;
 
 
-
-
 const lavTransaktionersTabel = `
     CREATE TABLE konto.transaktioner(
       transaktions_id INT IDENTITY(1,1),

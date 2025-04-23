@@ -290,6 +290,7 @@ router.get('/porteside/:id', async function (req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
+
   // Hent den specifikke portefølje
   const result = await db.request()
     .input('id', sql.Int, portefoljeId)
@@ -331,17 +332,16 @@ const handlerResultat = await db.request()
   
   console.log(aktieliste);
 
+  
+  
 
-
-
-  // Send dem alle til din EJS-side
-  res.render('portestyring/portefoelje-detaljer', {
-    portefolje, // den vagte portefølje
-    portefoljer, // alle porteføljer for kontoen 
-    konto_id, // så vi kan linke tilbage 
-    aktieliste,
-    handler // vi sender brugerens Værdipapir historik tilbage
-  });
+res.render('portestyring/portefoelje-detaljer', {
+  portefolje,
+  portefoljer,
+  konto_id,
+  aktieliste,
+  handler,
+});
 });
 
 
