@@ -179,8 +179,6 @@ router.get('/getaktiekurs/:navn', async function (req, res) {
           }
         }
       }
-
-
     } else if ( navn == "AAPL") {
       offlineResponseData = {
         'Meta Data': {
