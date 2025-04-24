@@ -23,7 +23,7 @@ router.get('/faaaktiekurs/:navn', async function (req, res) {
   //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
   console.log("******************** URL ****************");
   console.log(url);
-  const live = true;
+  const live = false;
 
   if (live == true) {
     const response = await axios.get(url);
