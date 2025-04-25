@@ -309,7 +309,7 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
 
     async function aktiesoeg() {
           const symbol = document.getElementById("aktieSoeg").value;
-          const response = await fetch(`/aktiesoeg/faaaktiekurs/${symbol}`);
+          const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
           const data2 = await response.json();
           //console.log(Object.keys(data2["Time Series (60min)"])[0]);
           //console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);

@@ -17,7 +17,7 @@ const apiKey = "4471cd41f9c9723ed298ca8d";
 //});
 
 
-router.get('/faaaktiekurs/:valuta', async function (req, res) {
+router.get('/hentaktiekurs/:valuta', async function (req, res) {
 
   const valuta = req.params.navn;
   const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${valuta}`;
