@@ -309,7 +309,7 @@ router.get('/porteside/:id', async function (req, res) {
 
   const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
 
-// VI hent handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
+// VI henter handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
 const handlerResultat = await db.request()
   .input('id', sql.Int, portefoljeId)
   .query(`
