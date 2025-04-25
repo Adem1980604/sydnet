@@ -2,31 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Finnhub Stock Search</title>
+  <title>Få fat i valuta kurser</title>
 </head>
 <body>
-  <h1>Stock Profile Search</h1>
-  <input type="text" id="searchInput" placeholder="Enter stock symbol (e.g., AAPL)">
-  <button onclick="search()">Search</button>
+  <h1>Valuta kurs søg</h1>
+  <input type="text" id="valutasoeg" placeholder="Hvilken valuta vil du søge efter (f.eks., EUR)">
+  <button onclick="soeg()">Søg efter valuta kurs</button>
   <ul id="resultList"></ul>
 
   <script>
-    async function search() {
-      const symbol = document.getElementById("searchInput").value;
-      console.log(symbol)
-      const response = await fetch(`/aktiesoeg/getaktiekurs/${symbol}`);
+    async function soeg() {
+      const valuta = document.getElementById("valutasoeg").value;
+      console.log(valuta);
+      const response = await fetch(`/valutasoeg/faaaktiekurs/${valuta}`);
       const data2 = await response.json();
 
       console.log("****************data2**************");
-      console.log(data2["Time Series (60min)"]);
-      //console.log(data2["Time Series (60min)"]["2025-04-09 16:00:00"]["1. open"]);
-      
-      
-      
-      console.log(Object.keys(data2["Time Series (60min)"])[0]);
+      console.log(Object.keys(data2["base_code"])[0]);
 
-      console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
-
+      console.log(Object.values(data2["conversion_rates"])[0]["DKK"]);
+      console.log(Object.values(data2["conversion_rates"])[0]["EUR"]);
+      console.log(Object.values(data2["conversion_rates"])[0]["USD"]);
     }
   </script>
 </body>

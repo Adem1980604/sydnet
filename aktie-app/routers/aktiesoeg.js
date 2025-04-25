@@ -17,9 +17,10 @@ router.get('/aktiesoegning', async function (req, res) {
 });
 
 
-router.get('/getaktiekurs/:navn', async function (req, res) {
+router.get('/faaaktiekurs/:navn', async function (req, res) {
   const navn = req.params.navn;
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${navn}&interval=60min&apikey=${apiKey}`;
+  //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
   console.log("******************** URL ****************");
   console.log(url);
   const live = false;
@@ -31,8 +32,8 @@ router.get('/getaktiekurs/:navn', async function (req, res) {
     //console.log(response);
 
 
-    //console.log("****************response data**************");
-    //console.log(response.data);
+    console.log("****************response data**************");
+    console.log(response.data);
     res.json(response.data);
 
   } else {
@@ -179,8 +180,6 @@ router.get('/getaktiekurs/:navn', async function (req, res) {
           }
         }
       }
-
-
     } else if ( navn == "AAPL") {
       offlineResponseData = {
         'Meta Data': {

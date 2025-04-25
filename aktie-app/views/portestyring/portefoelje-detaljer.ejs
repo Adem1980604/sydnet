@@ -303,26 +303,20 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
     const konto_id = "<%= konto_id %>";
     const portefolje_id = "<%= portefolje.portefoelje_id %>";
     const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
-    let min_pris;
+    let nuvaerendeAktiePris;
     let symbol;
     let valgtAktie = [];
 
 
     async function aktiesoeg() {
           const symbol = document.getElementById("aktieSoeg").value;
-          console.log(symbol)
-          const response = await fetch(`/aktiesoeg/getaktiekurs/${symbol}`);
+          const response = await fetch(`/aktiesoeg/faaaktiekurs/${symbol}`);
           const data2 = await response.json();
-    
-          console.log("****************data2**************"); 
-          console.log(Object.keys(data2["Time Series (60min)"])[0]);
-          console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
-          const nuvaerendeAktiePris = Object.values(data2["Time Series (60min)"])[0]["1. open"];
-          console.log(nuvaerendeAktiePris);
-          min_pris = nuvaerendeAktiePris
-          console.log("****************min_pris**************"); 
-          console.log(min_pris); 
-          valgtAktie.pris = min_pris;
+          //console.log(Object.keys(data2["Time Series (60min)"])[0]);
+          //console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
+          nuvaerendeAktiePris = Object.values(data2["Time Series (60min)"])[0]["1. open"];
+          console.log(nuvaerendeAktiePris); 
+          valgtAktie.pris = nuvaerendeAktiePris;
           valgtAktie.symbol = symbol;  
           console.log(valgtAktie); 
     }  
@@ -409,7 +403,7 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
     vaerditype: document.getElementById("værditype").value,
     antal: document.getElementById("antal").value,
     //pris: document.getElementById("samlet_pris").value,
-    pris: min_pris,
+    pris: nuvaerendeAktiePris,
     valuta: "DKK",
     type,
     symbol: valgtAktie.symbol
@@ -457,27 +451,28 @@ const resultatListe = document.getElementById("vaerdiResultat");
 //  // loop gennem alle aktier (dummy data)
 //  
 //  // vi tager fat i prisen for den pågældende aktie og udfylder pris feltet på popup automatisk
-//  console.log("**********************min_pris debug001 ********************");
-// document.getElementById("samlet_pris").value = min_pris
-//  valgtAktie.pris = min_pris;
+//  console.log("**********************nuvaerendeAktiePris debug001 ********************");
+// document.getElementById("samlet_pris").value = nuvaerendeAktiePris
+//  valgtAktie.pris = nuvaerendeAktiePris;
 //  //valgtAktie.symbol = min_aktie // nu har brugeren valgt en aktie og vi husker den
 //});
 ////resultatListe.appendChild(li);
 
 // opertter en funktion der ganger antallet af de valgte aktier med prisen 
-function beregnSamletPris(){
+async function beregnSamletPris(){  
+  //Soeg efter aktien og find prisen ( vi gemme pris i global variable )
+  await aktiesoeg();
   // henter antalet af aktier vagt 
   const antal = parseFloat(document.getElementById("antal").value);
   const visning = document.getElementById("beregnet_pris")
-  
+
   if(antal > 0) {
-    //let samlet = valgtAktie.pris * antal; 
-    console.log("DEBUG 003");
-    console.log(min_pris);
+    //let samlet = valgtAktie.pris * antal;     
+    console.log(nuvaerendeAktiePris);
     console.log(antal);
-    let samlet = min_pris * antal; 
+    let samlet = nuvaerendeAktiePris * antal; 
     visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
-    document.getElementById("samlet_pris").value = min_pris
+    document.getElementById("samlet_pris").value = nuvaerendeAktiePris
   };
   
 };
