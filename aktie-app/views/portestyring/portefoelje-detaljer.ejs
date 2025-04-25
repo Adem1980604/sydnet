@@ -56,6 +56,7 @@
       <div class="summary-card">
         <div class="chart-placeholder" id="donut-chart">
           <canvas id="portfolioPieChart">
+         
           </canvas>
         </div>
 
@@ -66,10 +67,10 @@
        
          // Gennemgår alle handler (både køb og salg)
          for (let i = 0; i < handler.length; i++) {
-           const h = handler[i];               // En enkelt handel
-           const symbol = h.symbol;            // Symbol på værdipapiret (f.eks. AAPL)
-           const antal = h.antal;              // Antal købt eller solgt
-           const erSalg = h.salg_koeb;         // true hvis det er salg, false hvis det er køb
+           const h = handler[i]; // En enkelt handel
+           const symbol = h.symbol;  // Symbol på værdipapiret (f.eks. AAPL)
+           const antal = h.antal;    // Antal købt eller solgt
+           const erSalg = h.salg_koeb;  // true hvis det er salg, false hvis det er køb
        
            let fundet = false; // Bruges til at tjekke om aktien allerede er i ejerlisten
        
@@ -487,32 +488,32 @@ document.getElementById("antal").addEventListener("input", function () {
 async function visPortfolioGraf() {
     const ctx = document.getElementById('accountChart').getContext('2d');
 
-    const nu = new Date();
-    const månedLabels = [];
-    const værdier = [];
+const nu = new Date();
+const maanedLabels = [];
+const vaerdier = [];
 
-    // Vi laver 5 måneder med dummy data men sidste måned har rigtig total værdi
-    let base = <%= totalVaerdi %> * 0.5;   // sikrer positivt udgangspunkt
-    for (let i = 5; i >= 1; i--) {
-      const dato = new Date(nu.getFullYear(), nu.getMonth() - i, 1);
-      månedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short', year: 'numeric' }));
+const startMaaned = 0; // Januar = måned 0
+const slutMaaned = nu.getMonth(); // Aktuel måned (0-indekseret)
 
-      // Tilføj en stigende dummy-værdi
-      værdier.push(base);
-      base += Math.floor(Math.random() * 1500); // Små stigninger
-    }
+for (let m = startMaaned; m <= slutMaaned; m++) {
+  dato = new Date(nu.getFullYear(), m, 1);
+  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
 
-    // Tilføjer den aktuelle måned med rigtig værdi
-    const aktuelMåned = nu.toLocaleDateString('da-DK', { month: 'short', year: 'numeric' });
-    månedLabels.push(aktuelMåned);
-    værdier.push(<%= totalVaerdi %>);
+  // Dummy data, til totalværdi for graffen
+  if (m < slutMaaned) {
+    vaerdier.push(Math.floor(Math.random() * 5000) + 1000);
+  } else {
+    vaerdier.push(<%= totalVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
+  }
+}
+
 
     // Opsæt data og konfiguration
     const data = {
-      labels: månedLabels,
+      labels: maanedLabels,
       datasets: [{
         label: "Porteføljeværdi",
-        data: værdier,
+        data: vaerdier,
         borderColor: '#7c4dff',
         backgroundColor: 'rgba(124, 77, 255, 0.2)',
         fill: true,
@@ -574,94 +575,121 @@ async function visPortfolioGraf() {
   visPortfolioGraf();
 
 
-//*********************************************chart for donut chart ********************************
+//********************************************* donut chart ********************************
 
-document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('portfolioPieChart').getContext('2d');
 
-    // Rå labels og værdier
-    const rawLabels = ['Growth Tech', 'Tech Leaders', 'ETF', 'Space & Defence', 'E-com'];
-    const values = [35, 12, 24, 14, 15];
+const donutLabels = [];
+  const donutData = [];
 
-    // 1. Beregn totalen manuelt
-    let total = 0;
-    for (let i = 0; i < values.length; i++) {
-        total = total + values[i];
-    }
+  <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
+       const e = ejerListeFiltreret[i];
 
-    // 2. Lav labels med procent
-    let labels = [];
-    for (let i = 0; i < rawLabels.length; i++) {
-        let procent = (values[i] / total) * 100;
-        procent = procent.toFixed(1); // Vis kun 1 decimal
-        let labelMedProcent = rawLabels[i] + ' (' + procent + '%)';
-        labels.push(labelMedProcent);
-    }
+       if (e.antal > 0) {
+         let pris = 0;
+         let navn = "";
 
-    const data = {
-        labels: labels,
-        datasets: [{
-            data: values,
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.8)',   // Blå
-                'rgba(75, 192, 192, 0.8)',   // Turkis
-                'rgba(255, 159, 64, 0.8)',   // Orange
-                'rgba(153, 102, 255, 0.8)',  // Lilla
-                'rgba(201, 203, 207, 0.8)'   // Grå
-            ],
-            borderColor: '#ffffff', // Hvid kant
-            borderWidth: 2,
-            cutout: '65%' // Donut-udskæring
-        }]
-    };
+         // Find pris og navn for symbolet
+         for (let j = 0; j < handler.length; j++) {
+           if (handler[j].symbol === e.symbol) {
+             pris = handler[j].pris;
+             navn = handler[j].navn;
+             break;
+           }
+         }
 
-    const config = {
-        type: 'doughnut',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right',
-                    labels: {
-                        color: '#ffffff', // Hvid tekst
-                        font: {
-                            size: 14,
-                            family: 'Arial, sans-serif'
-                        },
-                        padding: 15,
-                        usePointStyle: true
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Fordeling af værdi i portefølje',
-                    color: '#ffffff', // Hvid titel
-                    font: {
-                        size: 18,
-                        weight: 'bold',
-                        family: 'Arial, sans-serif'
-                    },
-                    padding: {
-                        bottom: 20
-                    }
-                }
+         const værdi = Math.round(e.antal * pris * 100) / 100;
+  %>
+         donutLabels.push("<%= navn %> (<%= e.symbol %>)");
+         donutData.push(<%= værdi %>);
+  <%   }
+     } %>
+
+
+function visDonutChart() {
+  const ctx = document.getElementById('portfolioPieChart').getContext('2d');
+
+  // Labels og data fra EJS (allerede genereret ovenfor)
+  let total = 0;
+  for (let i = 0; i < donutData.length; i++) {
+    total += donutData[i];
+  }
+
+  let labels = [];
+  for (let i = 0; i < donutLabels.length; i++) {
+    let procent = (donutData[i] / total) * 100;
+    procent = procent.toFixed(1);
+    labels.push(donutLabels[i] + " (" + procent + "%)");
+  }
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      data: donutData,
+      backgroundColor: [
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(255, 159, 64, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(201, 203, 207, 0.8)'
+      ],
+      borderColor: '#ffffff',
+      borderWidth: 2,
+      cutout: '65%'
+    }]
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            color: '#ffffff',
+            font: {
+              size: 14,
+              family: 'Arial, sans-serif'
             },
-            layout: {
-                padding: {
-                    top: 20,
-                    bottom: 20,
-                    left: 20,
-                    right: 20
-                }
-            }
+            padding: 15,
+            usePointStyle: true
+          }
+        },
+        title: {
+          display: true,
+          text: 'Fordeling af værdi i portefølje',
+          color: '#ffffff',
+          font: {
+            size: 14,
+            weight: 'bold',
+            family: 'Arial, sans-serif'
+          },
+          padding: {
+            bottom: 20
+          }
         }
-    };
+      },
+      layout: {
+        padding: {
+          top: 20,
+          bottom: 20,
+          left: 20,
+          right: 20
+        }
+      }
+    }
+  };
 
-    const myChart = new Chart(ctx, config);
-});
 
+
+  new Chart(ctx, config);
+
+
+};
+
+  visDonutChart();
 
 
   </script>
