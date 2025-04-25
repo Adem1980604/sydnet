@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <!-- Donut Chart og Total værdi (test) -->
+      <!-- Donut Chart og Total værdi -->
       <div class="summary-card">
         <div class="chart-placeholder" id="donut-chart">
           <canvas id="portfolioPieChart">
@@ -499,7 +499,7 @@ for (let m = startMaaned; m <= slutMaaned; m++) {
   dato = new Date(nu.getFullYear(), m, 1);
   maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
 
-  // Dummy data, til totalværdi for graffen
+  // Dummy data, til totalværdi for grafen
   if (m < slutMaaned) {
     vaerdier.push(Math.floor(Math.random() * 5000) + 1000);
   } else {
@@ -575,12 +575,13 @@ for (let m = startMaaned; m <= slutMaaned; m++) {
   visPortfolioGraf();
 
 
-//********************************************* donut chart ********************************
+ //**************************** piechart **********************
+
+ const donutLabels = []; // array der indeholder navne og symboler på akten
+  const donutData = []; // array der indholder værdierne for porteføljen 
 
 
-const donutLabels = [];
-  const donutData = [];
-
+  // går igennem alle aktier brugeren ejer 
   <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
        const e = ejerListeFiltreret[i];
 
@@ -597,13 +598,32 @@ const donutLabels = [];
            }
          }
 
-         const værdi = Math.round(e.antal * pris * 100) / 100;
-  %>
+         const værdi = Math.round(e.antal * pris * 100) / 100; // udregner værdi
+  %>   // psu
          donutLabels.push("<%= navn %> (<%= e.symbol %>)");
          donutData.push(<%= værdi %>);
   <%   }
      } %>
+    
 
+
+      // Funktion der laver én tilfældig farve
+  function randomRgbFarve() {
+  const r = Math.floor(Math.random() * 80) + 60;  
+  const g = Math.floor(Math.random() * 80) + 80;   
+  const b = Math.floor(Math.random() * 100) + 100; 
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+
+  // Funktion der laver en array af tilfældige farver
+  function genererMangeTilfaeldigeFarver(antal) {
+    const farver = [];
+    for (let i = 0; i < antal; i++) {
+      farver.push(randomRgbFarve());
+    }
+    return farver;
+  }
 
 function visDonutChart() {
   const ctx = document.getElementById('portfolioPieChart').getContext('2d');
@@ -621,17 +641,13 @@ function visDonutChart() {
     labels.push(donutLabels[i] + " (" + procent + "%)");
   }
 
+
+
   const data = {
     labels: labels,
     datasets: [{
       data: donutData,
-      backgroundColor: [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(75, 192, 192, 0.8)',
-        'rgba(255, 159, 64, 0.8)',
-        'rgba(153, 102, 255, 0.8)',
-        'rgba(201, 203, 207, 0.8)'
-      ],
+      backgroundColor:genererMangeTilfaeldigeFarver(donutData.length),
       borderColor: '#ffffff',
       borderWidth: 2,
       cutout: '65%'

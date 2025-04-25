@@ -221,7 +221,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
 
 
-    // Hent porteføljer
+    // Hent porteføljer for brugeren
   const portefoljeResultater = await db.request() 
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
     .query(`
@@ -239,8 +239,31 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   //console.log("DEBUG: 085 ********");
   //console.log(portefoljer);
 
+
+  // vi henter total værdi for hver portfølje som skla bruges til at lave en piechart 
+
+   // Hent total værdi for hver portefølje
+   for (let i = 0; i < portefoljer.length; i++) {
+    const portefolje = portefoljer[i];
+
+    // vi finder total resutat af den værdi portefølgen indeholder 
+    const totalResultat = await db.request()
+      .input('portefoelje_id', sql.Int, portefolje.portefoelje_id)
+      .query(`
+        SELECT 
+        SUM(CASE WHEN salg_koeb = 0 THEN antal * pris ELSE 0 END) -
+        SUM(CASE WHEN salg_koeb = 1 THEN antal * pris ELSE 0 END)
+         AS totalVaerdi
+
+        FROM vaerdipapir.vphandler
+        WHERE portefoelje_id = @portefoelje_id
+      `);
+
+    portefolje.totalVaerdi = totalResultat.recordset[0].totalVaerdi;
+  }
+
   res.render('portestyring/portefoeljeoversigt', {
-    konto, // 
+    konto, 
     portefoljer // sendes til EJS
   });
 });

@@ -187,21 +187,38 @@ button:hover {
   text-align: center;
 }
 
-.portefolje-box {
-  background-color: #2a2a2d;
-  border-radius: 15px;
-  padding: 10px 20px; 
-  margin-left: 220px;
+/* Container til listen og donut-chart */
+.portefolje-container {
+  display: flex; /* Brug Flexbox til at arrangere elementerne side om side */
+  gap: 20px; /* Afstand mellem listen og grafen */
+  align-items: flex-start; /* Juster elementerne til toppen */
   margin-top: 20px;
-  width: 40%; /* mindre bredde */
-  font-size: px;
-
 }
 
-.port-liste {
-  padding: 5px 10px;
-  border-bottom: 1px solid #444;
-  margin: 5px 0;
+/* Styling til listen */
+.portefolje-box {
+  flex: 1; /* Gør listen fleksibel */
+  max-width: 50%; /* Maksimal bredde for listen */
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling til donut-chart */
+.summary-card {
+  flex: 1; /* Gør grafen fleksibel */
+  max-width: 50%; /* Maksimal bredde for grafen */
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Canvas styling */
+#portfolioPieChartSamletVeardi {
+  width: 100%; /* Fylder hele containerens bredde */
+  height: auto; /* Bevarer proportionerne */
 }
 
 
