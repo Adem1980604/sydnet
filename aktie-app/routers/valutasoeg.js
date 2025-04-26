@@ -28,10 +28,7 @@ router.get('/hentaktiekurs/:valuta', async function (req, res) {
   if (live == true) {
     const response = await axios.get(url);
     console.log(response);
-    
   };
-
-
 
     //console.log("****************response**************");
     //console.log(response);
