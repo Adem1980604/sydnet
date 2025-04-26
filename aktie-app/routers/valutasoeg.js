@@ -30,3 +30,4 @@ router.get('/hentvalutakurs/:valuta', async function (req, res) {
   res.json(response.data);
 });
 
+module.exports = router;

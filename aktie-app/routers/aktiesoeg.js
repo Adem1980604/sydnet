@@ -3203,4 +3203,33 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
   }
 });  
  
+
+
+// Emil's valuta kurs API key // 
+const apiValutaKey = "4471cd41f9c9723ed298ca8d";
+
+router.get('/andersand/:valuta', async function (req, res) {
+
+  const valuta = req.params.navn;
+  const url = `https://v6.exchangerate-api.com/v6/${apiValutaKey}/latest/${valuta}`;
+  console.log("******************** URL ****************");
+  console.log(url);
+  const live = true;
+
+  if (live == true) {
+    const response = await axios.get(url);
+    console.log(response);
+  };
+  console.log("****************response data**************");
+  console.log(response.data);
+  res.json(response.data);
+});
+
+
+
+
+
+
+
+
 module.exports = router;
