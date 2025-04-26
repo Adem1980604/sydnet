@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/kontoDetalje.css">
+      <!-- link til charts -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Portefølje-oversigt</title>
 </head>
 
@@ -43,25 +45,20 @@
         </div>
       </div>
 
-      <!-- Portefølje liste -->
-      <div class="portefolje-box">
-        <h3>
-         Given bruger(eller konto) list af porteføljer
-        </h3>
-        <% for (let i=0; i < portefoljer.length; i++) { %>
-          <div class="port-liste">
-            <p><strong>Portefølje:</strong>
-              <%= portefoljer[i].navn %>
-            </p>
-            <p><strong>Tilknyttet konto:</strong>
-              <%= portefoljer[i].kontonavn %>
-            </p>
-
-
-            <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
-          </div>
-          <% } %>
+      <div class="portefolje-container">
+  <!-- Listen -->
+  <div class="portefolje-box">
+    <h3>Given bruger(eller konto) list af porteføljer</h3>
+    <% for (let i = 0; i < portefoljer.length; i++) { %>
+      <div class="port-liste">
+        <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
+        <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
+        <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
       </div>
+    <% } %>
+  </div>
+
+
      
     <!-- Popup form -->
     <div id="popup1" style="display: none;">
@@ -82,7 +79,18 @@
       <button onclick="OpretPortefoelje()">Opret Portefølje</button>
       <button onclick="lukPopup1()">Luk</button>
     </div>
+
+    <!-- Donut Chart for fordeligen af værdi i portefølgen -->
+    <div class="summary-card">
+      <div class="chart-placeholder" id="donut-chart">
+        <canvas id="portfolioPieChartSamletVeardi">
+        </canvas>
+      </div>
   
+
+
+
+
     <!-- **************************** SCRIPT START ********************** -->
     <script>
       function åbnPopup1() {
@@ -141,6 +149,121 @@
       function sePortefolje(id) {
         window.location.href = `/porteside/${id}`;
       }
+
+     
+
+
+  //********************************************* donut chart ********************************
+ 
+
+  const portefoljeLabels = []; // indeholder en liste af navne af alle porteføler + konto navn (visnig i graf)
+  const portefoljeData = []; // indeholder den samlede værdi for her portefølje ( stærrelse i gaf)
+
+
+  // går igennem alle porteøljer og pusher navn,konto navn og værdi til den portefølje 
+  <% for (let i = 0; i < portefoljer.length; i++) { %>
+    portefoljeLabels.push("<%= portefoljer[i].navn %> (<%= portefoljer[i].kontonavn %>)");
+    portefoljeData.push(<%= portefoljer[i].totalVaerdi %>);
+  <% } %>
+
+  // Funktion der laver én tilfældig farve
+  function randomRgbFarve() {
+  const r = Math.floor(Math.random() * 80) + 60;   // 60–140
+  const g = Math.floor(Math.random() * 80) + 80;   // 80–160
+  const b = Math.floor(Math.random() * 100) + 100; // 100–200
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+
+  // Funktion der laver en array af tilfældige farver
+  function genererMangeTilfaeldigeFarver(antal) {
+    const farver = [];
+    for (let i = 0; i < antal; i++) {
+      farver.push(randomRgbFarve());
+    }
+    return farver;
+  }
+
+  // Selve donut chart funktionen
+  function visPortefoljeOversigtChart() {
+    const ctx = document.getElementById('portfolioPieChartSamletVeardi').getContext('2d');
+
+ 
+    // Vi vil vise, hvor stor en procentdel hver portefølje udgør af hele brugerens samlede portefølje-værdi.
+    let total = 0;
+    for (let i = 0; i < portefoljeData.length; i++) {
+      total += portefoljeData[i];
+    }
+
+    let labels = [];
+    for (let i = 0; i < portefoljeLabels.length; i++) { 
+      let procent = (portefoljeData[i] / total) * 100; // regner hvor meget hver portefølje fylder procent mæssigt
+      procent = procent.toFixed(1);
+      labels.push(portefoljeLabels[i] + " (" + procent + "%)"); // vi danner en ny array der indehoilder navn på portefølje men også proven udregningen nu 
+    }
+
+    const data = {
+      labels: labels,
+      datasets: [{
+        data: portefoljeData,
+        backgroundColor: genererMangeTilfaeldigeFarver(portefoljeData.length),
+        borderColor: '#ffffff',
+        borderWidth: 2,
+        cutout: '65%'
+      }]
+    };
+
+    const config = {
+      type: 'doughnut',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: '#ffffff',
+              font: {
+                size: 14,
+                family: 'Arial, sans-serif'
+              },
+              padding: 15,
+              usePointStyle: true
+            }
+          },
+          title: {
+            display: true,
+            text: 'Fordeling af værdi i porteføljer',
+            color: '#ffffff',
+            font: {
+              size: 14,
+              weight: 'bold',
+              family: 'Arial, sans-serif'
+            },
+            padding: {
+              bottom: 20
+            }
+          }
+        },
+        layout: {
+          padding: {
+            top: 20,
+            bottom: 20,
+            left: 20,
+            right: 20
+          }
+        }
+      }
+    };
+
+    new Chart(ctx, config);
+  }
+
+  // Kald funktionen så charten vises
+  visPortefoljeOversigtChart();
+
+
 
     </script>
     </body>

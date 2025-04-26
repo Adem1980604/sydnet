@@ -33,26 +33,29 @@
   <!-- ******************* CHARTS BEGYNDER HER ******************* -->
   <script>
  
-   // Hent symbol direkte fra EJS
+   // Hent symbol direkte fra EJS ruten
    const symbol = "<%= info.symbol %>";
+
 
 
 async function hentOgVisGraf(symbol) {
   // Hent kursdata fra din egen backend
-  const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
+  const response = await fetch(`/aktiesoeg/faaaktiekurs/${symbol}`);
   const data = await response.json();
 
+  // vi tager fat i kurs data hver 60 minut ( skal skiftes til måned)
   const timeSeries = data["Weekly Time Series"];
-  const labels = [];
-  const priser = [];
+  const labels = []; // X-akse som viser tidspunkter 
+  const priser = []; // Y-akse viser værdier  ( lukkepriser )
 
-  // Sortér tidspunkterne fra ældst til nyest
+  // Sortér tidspunkterne fra ældst til nyest 
   const tidspunkter = Object.keys(timeSeries).sort();
 
+  // her går vi igennen alle tidspunkter og fylder labels og priser ind 
   for (let i = 0; i < tidspunkter.length; i++) {
     const tid = tidspunkter[i];
-    labels.push(tid);
-    priser.push(parseFloat(timeSeries[tid]["4. close"]));
+    labels.push(tid); // pusher tidspunkt 
+    priser.push(parseFloat(timeSeries[tid]["4. close"])); // for hvert timestamp gemmes tidpunktet og lukkekursen i arrays 
   }
 
 
@@ -60,10 +63,10 @@ async function hentOgVisGraf(symbol) {
       new Chart(document.getElementById('aktieChart').getContext('2d'), {
   type: 'line',
   data: {
-    labels: labels,
+    labels: labels, // vores x-akse med tidspuntker 
     datasets: [{
-      label: `${symbol} Pris (USD)`,
-      data: priser,
+      label: `${symbol} Pris (USD)`, // overskrift til grafenn
+      data: priser, // viser lukkpriser for værdipapir 
       borderColor: '#7c4dff',
       backgroundColor: 'rgba(124, 77, 255, 0.2)',
       pointBackgroundColor: '#7c4dff',
