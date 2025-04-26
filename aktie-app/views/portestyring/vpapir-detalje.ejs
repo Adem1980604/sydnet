@@ -42,7 +42,7 @@ async function hentOgVisGraf(symbol) {
   const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
   const data = await response.json();
 
-  const timeSeries = data["Time Series (60min)"];
+  const timeSeries = data["Weekly Time Series"];
   const labels = [];
   const priser = [];
 

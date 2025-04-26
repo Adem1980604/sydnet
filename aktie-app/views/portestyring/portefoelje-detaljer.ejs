@@ -314,7 +314,7 @@ for (let i = 0; i < ejerListeFiltreret.length; i++) {
           const data2 = await response.json();
           //console.log(Object.keys(data2["Time Series (60min)"])[0]);
           //console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
-          nuvaerendeAktiePris = Object.values(data2["Time Series (60min)"])[0]["1. open"];
+          nuvaerendeAktiePris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
           console.log(nuvaerendeAktiePris); 
           valgtAktie.pris = nuvaerendeAktiePris;
           valgtAktie.symbol = symbol;  

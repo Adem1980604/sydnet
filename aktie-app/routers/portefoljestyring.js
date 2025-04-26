@@ -376,7 +376,7 @@ router.post('/portesiden/:id/handel', async function (req, res) {
     salg_koeb = 0;
   }
 
-    // 1: tjek saldo om brugeren har nok penge på den specifikke konto 
+  // 1: tjek saldo om brugeren har nok penge på den specifikke konto 
   const saldoResultat = await db.request()
     .input('konto_id', sql.Int, konto_id)
     .query(`
@@ -387,7 +387,12 @@ router.post('/portesiden/:id/handel', async function (req, res) {
 
   // 2. hvis det er køb og saldoen er for lav så send fejl 
   if (type === "kob" && saldo < total) {
+    console.log("Vi sender fejlmeddelelse til clienten med besked om at der ikke er penge nok.")
+    // Retur besked bliver sendt men message bliver ikke vist korrekt på klienten.
     return res.status(400).json({ success: false, message: "Ikke nok penge på kontoen" });
+    //res.statusMessage = "Ikke nok penge på kontoen";
+    //res.status(400).end();
+    return res;
   }
 
 // vi tager fat i id for værdipapir som skal bruges i handlen 
@@ -408,7 +413,31 @@ const symbol = req.body.symbol;
 
 //vpoplysninger_id = vpResultat.recordset[0].vpoplysninger_id;
 
-// 3. indsæt handel hvis brugeren har nok penge 
+// 2.1 Indsæt aktien i vpoplysninger hvis den ikke findes i forvejen
+
+try {
+  await db.request()
+  .input('navn', sql.NVarChar(20), symbol)
+  .input('symbol', sql.NVarChar(20), symbol)
+  .input('vaerditype', sql.NVarChar(50), vaerditype)
+  .query(`
+    IF NOT EXISTS (SELECT * FROM vaerdipapir.vpoplysninger WHERE symbol = @symbol)
+    BEGIN
+      INSERT INTO vaerdipapir.vpoplysninger
+      (navn,symbol,type)
+      VALUES
+      (@navn,@symbol,@vaerditype)
+    END
+  `); 
+} catch (error) {
+  console.log("ERROR: Der skete en fejl i forbindelse med: Indsæt aktien i vpoplysninger hvis den ikke findes i forvejen")
+  console.log(error.message)
+}
+
+
+
+try {
+  // 3. indsæt handel 
   await db.request()
     .input('symbol', sql.NVarChar(20), symbol)
     .input('portefoelje_id', sql.Int, portefoelje_id)
@@ -426,6 +455,10 @@ const symbol = req.body.symbol;
       VALUES
       (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
     `);
+  } catch (error) {
+    console.log("ERROR: Der skete en fejl i forbindelse med: Indsæt handel i databasen")
+    console.log(error.message)
+  }
 
   // 4. opret transkation ( dette er vigtigt for opdatering af konto tabel og dens værdier)
 
@@ -438,7 +471,7 @@ const symbol = req.body.symbol;
     transaktionsVaerdi = total;
   }
   
-  // vi indsætter de nye værdier i transkationstablen 
+  // vi indsætter de nye værdier i transaktionstablen 
   await db.request()
     .input('konto_id', sql.Int, konto_id)
     .input('vaerdi', sql.Decimal(10, 2), transaktionsVaerdi)
