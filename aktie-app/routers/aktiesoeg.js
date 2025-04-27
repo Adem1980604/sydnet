@@ -8,6 +8,7 @@ const router = express.Router();
 // Emil's API key // 
 const apiKey = "SBD4RTB73V5BISI9";
 let offlineResponseData;
+let offlineValutaResponseData;
 //Jan's API key//
 //const apiKey = "X8PAHO4XS77MP7N8";
 // Venstre side af kontooplysninger (under opret konto)
@@ -3209,27 +3210,81 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
 const apiValutaKey = "4471cd41f9c9723ed298ca8d";
 
 router.get('/andersand/:valuta', async function (req, res) {
+  console.log("********************Reg.params*************");
+  console.log(req.params);
+  const valuta = req.params.valuta;
 
-  const valuta = req.params.navn;
+
   const url = `https://v6.exchangerate-api.com/v6/${apiValutaKey}/latest/${valuta}`;
   console.log("******************** URL ****************");
   console.log(url);
-  const live = true;
+  const live = false;
 
   if (live == true) {
     const response = await axios.get(url);
-    console.log(response);
-  };
-  console.log("****************response data**************");
-  console.log(response.data);
-  res.json(response.data);
+    console.log("************************Response***********");
+    console.log(response.data);
+    res.json(response.data);
+  } else {
+    if (valuta== "DKK"){
+      // Begrænsning i offline data. Man kan kun søge på DKK og får kun USD og EUR.
+      offlineValutaResponseData = 
+      {
+        result: 'success',
+        documentation: 'https://www.exchangerate-api.com/docs',
+        terms_of_use: 'https://www.exchangerate-api.com/terms',
+        time_last_update_unix: 1745625602,
+        time_last_update_utc: 'Sat, 26 Apr 2025 00:00:02 +0000',
+        time_next_update_unix: 1745712002,
+        time_next_update_utc: 'Sun, 27 Apr 2025 00:00:02 +0000',
+        base_code: 'DKK',
+        conversion_rates: {
+          DKK: 1,
+          EUR: 0.134,
+          USD: 0.1523
+        }
+      }
+    } else if (valuta== "USD"){
+      // Begrænsning i offline data. Man kan kun søge på DKK og får kun USD og EUR.
+      offlineValutaResponseData =
+      {
+        result: 'success',
+        documentation: 'https://www.exchangerate-api.com/docs',
+        terms_of_use: 'https://www.exchangerate-api.com/terms',
+        time_last_update_unix: 1745625602,
+        time_last_update_utc: 'Sat, 26 Apr 2025 00:00:02 +0000',
+        time_next_update_unix: 1745712002,
+        time_next_update_utc: 'Sun, 27 Apr 2025 00:00:02 +0000',
+        base_code: 'USD',
+        conversion_rates: {
+          USD: 1,
+          DKK: 6.566,
+          EUR: 0.8801
+        }
+      }
+    } else if (valuta== "EUR"){
+      // Begrænsning i offline data. Man kan kun søge på DKK og får kun USD og EUR.
+      offlineValutaResponseData =
+      {
+        result: 'success',
+        documentation: 'https://www.exchangerate-api.com/docs',
+        terms_of_use: 'https://www.exchangerate-api.com/terms',
+        time_last_update_unix: 1745625602,
+        time_last_update_utc: 'Sat, 26 Apr 2025 00:00:02 +0000',
+        time_next_update_unix: 1745712002,
+        time_next_update_utc: 'Sun, 27 Apr 2025 00:00:02 +0000',
+        base_code: 'EUR',
+        conversion_rates: {
+          EUR: 1,
+          DKK: 7.4602,
+          USD: 1.1363      
+        }
+      }
+    }
+    res.json(offlineValutaResponseData);
+  }
 });
 
-
-
-
-
-
-
-
 module.exports = router;
+
+
