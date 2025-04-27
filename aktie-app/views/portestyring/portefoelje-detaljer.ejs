@@ -51,9 +51,9 @@
         <div class="total-value">
           <p>Samlet urealiseret gevinst/tab</p>
           <% if (totalUrealiseretGevinstTab >= 0) { %>
-            <h2 class="positive">+<%= totalUrealiseretGevinstTab.toFixed(2) %> DKK</h2>
+            <h2 class="positive">+<%= Number(totalUrealiseretGevinstTab).toFixed(2) %> DKK</h2>
           <% } else { %>
-            <h2 class="negative"><%= totalUrealiseretGevinstTab.toFixed(2) %> DKK</h2>
+            <h2 class="negative"><%= Number(totalUrealiseretGevinstTab).toFixed(2) %> DKK</h2>
           <% } %>
         </div>
       </div>
@@ -83,7 +83,7 @@
           <tr> <!-- Start ny række -->
             <td><%= e.navn %> (<%= e.symbol %>)</td> <!-- Navn -->
             <td><%= e.antal %> stk.</td> <!-- Antal aktier -->
-            <td><%= e.pris.toFixed(2) %> DKK</td> <!-- Aktuel pris -->
+            <td><%= Number(e.pris).toFixed(2) %> DKK</td> <!-- Aktuel pris -->
             <td><%= samletVaerdi.toFixed(2) %> DKK</td> <!-- Samlet værdi -->
             <td><%= e.gak.toFixed(2) %> DKK</td> <!-- GAK -->
           
@@ -194,8 +194,7 @@
           const symbol = document.getElementById("aktieSoeg").value;
           const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
           const data2 = await response.json();
-          //console.log(Object.keys(data2["Time Series (60min)"])[0]);
-          //console.log(Object.values(data2["Time Series (60min)"])[0]["1. open"]);
+
           nuvaerendeAktiePris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
           console.log(nuvaerendeAktiePris); 
           valgtAktie.pris = nuvaerendeAktiePris;
@@ -369,6 +368,9 @@ document.getElementById("antal").addEventListener("input", function () {
 //*********************************************chart for line ********************************
 
 async function visPortfolioGraf() {
+  if(Chart.getChart("accountChart")) {
+  Chart.getChart("accountChart")?.destroy()
+}
     const ctx = document.getElementById('accountChart').getContext('2d');
 
 const nu = new Date();
