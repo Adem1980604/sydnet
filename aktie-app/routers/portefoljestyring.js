@@ -225,9 +225,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   //console.log("*************Konto**********");
   //console.log(konto);
 
-
-
-    // Hent alle porteføljer for brugeren
+  // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
     .query(`
@@ -277,13 +275,21 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
         const aktie = beregner.ejerListeFiltreret[j];
     
-          const apiSvar = await axios.get(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-          const timeSeries = apiSvar.data['Time Series (60min)'];
-          const senesteTidspunkt = Object.keys(timeSeries)[0];
-          const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+          //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+          console.log(aktie.symbol)
+          const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+          const data2 = await response.json();
+
+          aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
           aktie.pris = aktuelPris;
           console.log(aktuelPris); 
         
+
+          //const timeSeries = data2['Weekly Time Series'];
+          //const senesteTidspunkt = Object.keys(timeSeries)[0];
+          //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+          //aktie.pris = aktuelPris;
+          //console.log(aktuelPris); 
       };
 
 
@@ -344,7 +350,6 @@ router.post('/opret-portefolje', async function (req, res) {
 });
 
 // ruten til at gå ind på den individuelle portefølje for en bruger 
-
 router.get('/porteside/:id', async function (req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
@@ -396,14 +401,24 @@ const handlerResultat = await db.request()
     // HER henter vi de NYESTE aktiekurser for hver aktie
     for (let i = 0; i < beregner.ejerListeFiltreret.length; i++) {
       const aktie = beregner.ejerListeFiltreret[i];
+
+      console.log(aktie.symbol)
+      const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+      const data2 = await response.json();
+
+      aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+      aktie.pris = aktuelPris;
+      console.log(aktuelPris); 
       
-        const apiSvar = await axios.get(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-        const timeSeries = apiSvar.data['Time Series (60min)'];
-        const senesteTidspunkt = Object.keys(timeSeries)[0];
-        const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
-        aktie.pris = aktuelPris; // Her opdateres aktuel pris
-       
-      
+        //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+        //const timeSeries = apiSvar.data['Weekly Time Series'];
+        //const senesteTidspunkt = Object.keys(timeSeries)[0];
+        //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+        //aktie.pris = aktuelPris; // Her opdateres aktuel pris
+       //
+        //console.log(aktie.symbol)
+        //const response = await fetch(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+        //const data2 = await response.json();
     }
   
   

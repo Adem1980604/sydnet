@@ -12,18 +12,20 @@
 
   <script>
     async function soeg() {
-      console.log(valuta);
       const valuta = document.getElementById("valutasoeg").value;
       console.log(valuta);
       const response = await fetch(`/aktiesoeg/andersand/${valuta}`);
       const data2 = await response.json();
 
-      console.log("****************data2**************");
-      console.log(Object.keys(data2["base_code"])[0]);
-
-      console.log(Object.values(data2["conversion_rates"])[0]["DKK"]);
-      console.log(Object.values(data2["conversion_rates"])[0]["EUR"]);
-      console.log(Object.values(data2["conversion_rates"])[0]["USD"]);
+      console.log("****************DEBUG 9990**************");
+      console.log(data2.base_code);
+      console.log(data2.conversion_rates);
+      console.log("****************DEBUG 9991: EUR**************");
+      console.log(data2.conversion_rates.EUR);
+      console.log("****************DEBUG 9993: DKK**************");
+      console.log(data2.conversion_rates.DKK);
+      console.log("****************DEBUG 9994: USD**************");
+      console.log(data2.conversion_rates.USD);
     }
   </script>
 </body>
