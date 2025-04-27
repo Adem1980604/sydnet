@@ -5,14 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/kontoDetalje.css">
-      <!-- link til charts -->
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Portefølje-oversigt</title>
 </head>
 
 <body>
   <div class="container">
-    <!-- Navigation Sidebar -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="logo">
         <h3>SYDNET</h3>
@@ -23,12 +22,10 @@
         <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
       </ul>
     </aside>
-    
-    <main class = "content">
-      <main class="content">
-        <!-- Skjult felt til at gemme konto_id -->
+
+    <main class="content">
       <div class="header-div">
-        <h1>Porteføljeoversigt </h1>
+        <h1>Porteføljeoversigt</h1>
         <button onclick="åbnPopup1()">Tilføj Portefølje</button>
       </div>
 
@@ -36,59 +33,59 @@
       <div class="dashboard-grid">
         <div class="card">
           <h3>Total portefølje-værdi i DKK</h3>
-          <h2>224.543 DKK</h2>
-          <div class="performance-bar">
-            <div class="positive">+1.4%</div>
-            <div class="negative">-1.7%</div>
-            <div class="positive">+2.4%</div>
-          </div>
+          <h2 id="totalPortefoljeVaerdi">0 DKK</h2>
         </div>
       </div>
 
+      <!-- Portefølje liste -->
       <div class="portefolje-container">
-  <!-- Listen -->
-  <div class="portefolje-box">
-    <h3>Given bruger(eller konto) list af porteføljer</h3>
-    <% for (let i = 0; i < portefoljer.length; i++) { %>
-      <div class="port-liste">
-        <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
-        <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
-        <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
-      </div>
-    <% } %>
-  </div>
-
-
+        <div class="portefolje-box">
+          <h3>Brugerens porteføljer</h3>
+          <% for (let i = 0; i < portefoljer.length; i++) { %>
+            <div class="port-liste">
+              <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
+              <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
+              <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
+              <div class="portefolje-data">
+                <p><strong>Erhvervelsespris:</strong> <%= portefoljer[i].totalErhvervelsespris.toFixed(2) %> DKK</p>
+                <p><strong>Forventet værdi:</strong> <%= portefoljer[i].totalForventetVaerdi.toFixed(2) %> DKK</p>
+                <% if (portefoljer[i].totalUrealiseretGevinstTab >= 0) { %>
+                  <p class="positive"><strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> DKK</p>
+                <% } else { %>
+                  <p class="negative"><strong>Urealiseret Gevinst/Tab:</strong> <%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> DKK</p>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        </div> 
+      </div
+      >
      
-    <!-- Popup form -->
-    <div id="popup1" style="display: none;">
-      <h3>Tilføj Portefølje</h3>
-      <label for="navn">Navn:</label>
-      <input type="text" id="portefoljeNavn"><br>
-
-      <label for="navn">Konto id:</label>
-      <!--<input type="text" id="kontoData"><br> -->
-      <select name="Konto navn:" id="kontoNavnDropdown">
-       
-        <% for (let k=0; k < konto.length; k++) { %>
-          <option value=<%= konto[k].konto_id %>><%= konto[k].navn %></option>
-        <% } %>
-      </select>
-
-      
-      <button onclick="OpretPortefoelje()">Opret Portefølje</button>
-      <button onclick="lukPopup1()">Luk</button>
-    </div>
-
-    <!-- Donut Chart for fordeligen af værdi i portefølgen -->
-    <div class="summary-card">
-      <div class="chart-placeholder" id="donut-chart">
-        <canvas id="portfolioPieChartSamletVeardi">
-        </canvas>
+      <!-- Donut Chart -->
+      <div class="summary-card">
+        <div class="chart-placeholder" id="donut-chart">
+          <canvas id="portfolioPieChartSamletVeardi"></canvas>
+        </div>
       </div>
-  
 
+      <!-- Popup til opret portefølje -->
+      <div id="popup1" style="display: none;">
+        <h3>Tilføj Portefølje</h3>
+        <label for="navn">Navn:</label>
+        <input type="text" id="portefoljeNavn"><br>
 
+        <label for="navn">Konto id:</label>
+        <select id="kontoNavnDropdown">
+          <% for (let k = 0; k < konto.length; k++) { %>
+            <option value="<%= konto[k].konto_id %>"><%= konto[k].navn %></option>
+          <% } %>
+        </select>
+
+        <button onclick="OpretPortefoelje()">Opret Portefølje</button>
+        <button onclick="lukPopup1()">Luk</button>
+      </div>
+
+    </main>
 
 
     <!-- **************************** SCRIPT START ********************** -->
@@ -155,16 +152,19 @@
 
   //********************************************* donut chart ********************************
  
+  const portefoljeLabels = [];
+const portefoljeData = [];
+let samletVaerdi = 0;
 
-  const portefoljeLabels = []; // indeholder en liste af navne af alle porteføler + konto navn (visnig i graf)
-  const portefoljeData = []; // indeholder den samlede værdi for her portefølje ( stærrelse i gaf)
+// Bygger data til grafen og beregner total
+<% for (let i = 0; i < portefoljer.length; i++) { %>
+  portefoljeLabels.push("<%= portefoljer[i].navn %> (<%= portefoljer[i].kontonavn %>)");
+  portefoljeData.push(<%= portefoljer[i].totalForventetVaerdi %>);
+  samletVaerdi += <%= portefoljer[i].totalForventetVaerdi %>;
+<% } %>
 
-
-  // går igennem alle porteøljer og pusher navn,konto navn og værdi til den portefølje 
-  <% for (let i = 0; i < portefoljer.length; i++) { %>
-    portefoljeLabels.push("<%= portefoljer[i].navn %> (<%= portefoljer[i].kontonavn %>)");
-    portefoljeData.push(<%= portefoljer[i].totalVaerdi %>);
-  <% } %>
+// Opdater total værdi på siden
+document.getElementById('totalPortefoljeVaerdi').innerText = samletVaerdi.toFixed(2) + " DKK";
 
   // Funktion der laver én tilfældig farve
   function randomRgbFarve() {

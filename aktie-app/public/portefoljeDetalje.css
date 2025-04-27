@@ -105,21 +105,39 @@
     margin-bottom: 30px;
   }
   
-  /* Chart Cards */
-  .chart-card, .summary-card {
-    background-color: #1f1f1f;
-    border-radius: 12px;
-    padding: 20px;
-  }
-  
-  .chart-placeholder {
-    width: 100%;
-    height: 250px;
-    background: #2c2c2c;
-    border-radius: 8px;
-    margin-top: 15px;
-  }
-  
+  /* Charts Container */
+.charts-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Chart Cards */
+.chart-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px; /* Maksimal bredde for hver chart */
+  background-color: #1f1f1f;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.chart-card h4 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #ccc;
+}
+
+canvas {
+  max-width: 100%; /* Sørger for, at canvas ikke overstiger containerens bredde */
+  max-height: 400px; /* Begræns højden på canvas */
+  width: auto;
+  height: auto;
+}
+
   /* Total Value */
   .total-value {
     background-color: #2a2a2a;
@@ -131,7 +149,6 @@
   .total-value h2 {
     margin-top: 8px;
     font-size: 24px;
-    color: #fff;
   }
   
   /*  Aktier Table  */
@@ -168,6 +185,8 @@
   .negative {
     color: #f44336;
   }
+  
+    
   
   /*  Opret Handel Knap  */
 .opret-handel-knap {
