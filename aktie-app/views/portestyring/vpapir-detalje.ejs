@@ -43,8 +43,8 @@ async function hentOgVisGraf(symbol) {
   const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
   const data = await response.json();
 
-  // vi tager fat i kurs data hver 60 minut ( skal skiftes til måned)
-  const timeSeries = data["Time Series (60min)"];
+  // vi tager fat i kurs data for hver måned
+  const timeSeries = data["Weekly Time Series"];
   const labels = []; // X-akse som viser tidspunkter 
   const priser = []; // Y-akse viser værdier  ( lukkepriser )
 

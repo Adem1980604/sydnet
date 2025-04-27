@@ -165,7 +165,10 @@ const dataOmVP =
         ('Apple Inc.', 'AAPL', 'aktie'),
         ('Boeing Company', 'BA', 'aktie'),
         ('Novo Nordisk', 'NVO', 'aktie'),
-        ('IBM', 'IBM', 'aktie');
+        ('IBM', 'IBM', 'aktie'),
+        ('Nike', 'NKE', 'aktie'),
+        ('McDonalds', 'MCD', 'aktie'),
+        ('Walmart Inc.', 'WMT', 'aktie')
         `
 
 const lavVPHandler = `
@@ -186,6 +189,7 @@ const lavVPHandler = `
         CONSTRAINT fk_vphandler_konto FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
       );
         `;
+
 
 const dataiVpHandler = `insert into vaerdipapir.vphandler 
 (symbol, portefoelje_id, konto_id, vaerditype, salg_koeb, antal, pris, valuta, gebyr, datotid)
@@ -231,6 +235,7 @@ const lavVPKurs = `
           CONSTRAINT vpoplysninger2_FK FOREIGN KEY (symbol) REFERENCES vaerdipapir.vpoplysninger(symbol)
         );
           `;
+
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
 async function ventPåDatabase() {
