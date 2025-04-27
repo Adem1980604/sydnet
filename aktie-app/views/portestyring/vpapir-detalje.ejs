@@ -40,7 +40,7 @@
 
 async function hentOgVisGraf(symbol) {
   // Hent kursdata fra din egen backend
-  const response = await fetch(`/aktiesoeg/faaaktiekurs/${symbol}`);
+  const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
   const data = await response.json();
 
   // vi tager fat i kurs data hver 60 minut ( skal skiftes til måned)

@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const { sql, forbindDatabase } = require('../db');  // tager fat i db filen 
+const PortefoljeBeregner = require('../logik/PorteBeregner'); // logiken til beregning af portefølje funktionaliteter 
+const axios = require('axios'); // axios, som er et moderne og populært HTTP-klientbibliotek Denne gør HTTP kaldet mere simpelt og lækkert
+
 
 
 //*********************************************************************
@@ -200,15 +203,18 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 //*********************************************************************
 //********************* ROUTES for PORTEFØLJESTYRING ******************
 //*********************************************************************
+
 router.get('/portefoeljeoversigt', async function (req, res) {
   console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
 
-  const loggedin_bruger_id = req.session.bruger_id;
+  const loggedin_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
 
   const db = await forbindDatabase();
 
   const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
+
+  // Henter konto
   const kontoResultater = await db.request()
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
     .input('id', sql.Int, konto_id)
@@ -221,7 +227,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
 
 
-    // Hent porteføljer for brugeren
+    // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
     .query(`
@@ -233,7 +239,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
         ktoopl.navn as kontonavn
       FROM konto.portefoelje portf
       JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
-      WHERE ktoopl.bruger_id = @loggedin_bruger_id`);
+      WHERE ktoopl.bruger_id = @loggedin_bruger_id`
+    );
   const portefoljer = portefoljeResultater.recordset;
 
   //console.log("DEBUG: 085 ********");
@@ -242,29 +249,56 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
   // vi henter total værdi for hver portfølje som skla bruges til at lave en piechart 
 
-   // Hent total værdi for hver portefølje
-   for (let i = 0; i < portefoljer.length; i++) {
+  
+  // Brug klassen på hver portefølje
+  for (let i = 0; i < portefoljer.length; i++) {
     const portefolje = portefoljer[i];
 
-    // vi finder total resutat af den værdi portefølgen indeholder 
-    const totalResultat = await db.request()
+// Man henter alle handler (køb/salg) tilhørende den portefølje
+    const handlerResultat = await db.request()
       .input('portefoelje_id', sql.Int, portefolje.portefoelje_id)
       .query(`
-        SELECT 
-        SUM(CASE WHEN salg_koeb = 0 THEN antal * pris ELSE 0 END) -
-        SUM(CASE WHEN salg_koeb = 1 THEN antal * pris ELSE 0 END)
-         AS totalVaerdi
-
-        FROM vaerdipapir.vphandler
-        WHERE portefoelje_id = @portefoelje_id
+        SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
+               v.symbol, v.navn
+        FROM vaerdipapir.vphandler h
+        JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
+        WHERE h.portefoelje_id = @portefoelje_id
       `);
 
-    portefolje.totalVaerdi = totalResultat.recordset[0].totalVaerdi;
-  }
+    const handler = handlerResultat.recordset;
+
+
+    // her broger vi klassen fra logik filen til at beregne ejerstruktur
+    const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
+    beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
+
+
+      // For hver aktie i porteføljen hentes live pris, her opdateres der pris på værdipapir
+      for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
+        const aktie = beregner.ejerListeFiltreret[j];
+    
+          const apiSvar = await axios.get(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+          const timeSeries = apiSvar.data['Time Series (60min)'];
+          const senesteTidspunkt = Object.keys(timeSeries)[0];
+          const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+          aktie.pris = aktuelPris;
+          console.log(aktuelPris); 
+        
+      };
+
+
+   // Beregn totals baseret på opdaterede priser
+    const totaler = beregner.beregnTotaler();
+
+    // Gem totals på portefølje, så vi kan vise det via vores EJS fil
+    portefolje.totalErhvervelsespris = totaler.totalErhvervelsespris || 0;
+    portefolje.totalForventetVaerdi = totaler.totalForventetVaerdi || 0;
+    portefolje.totalUrealiseretGevinstTab = totaler.totalUrealiseretGevinstTab || 0;
+}
 
   res.render('portestyring/portefoeljeoversigt', {
-    konto, 
-    portefoljer // sendes til EJS
+    konto,
+    portefoljer
   });
 });
 
@@ -293,6 +327,8 @@ router.post('/opret-portefolje', async function (req, res) {
 
   const portefoelje_id = result.recordset[0].portefoelje_id;
 
+
+
   res.json({
     success: true,
     portefolje_oprettelse: {
@@ -308,19 +344,18 @@ router.post('/opret-portefolje', async function (req, res) {
 });
 
 // ruten til at gå ind på den individuelle portefølje for en bruger 
-// altså ruten sørger for at vise siden 
+
 router.get('/porteside/:id', async function (req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
 
-  // Hent den specifikke portefølje
-  const result = await db.request()
+  // Hen den specifikke portefølje fra databsen
+  const result = await db.request() 
     .input('id', sql.Int, portefoljeId)
     .query(`SELECT * FROM konto.portefoelje WHERE portefoelje_id = @id`);
 
   const portefolje = result.recordset[0]; // Her tager vi den første række i svaret – altså den portefølje brugeren har klikket på
-
   const konto_id = portefolje.konto_id; // Hver portefølje tilhører en konto – derfor henter vi konto_id fra porteføljen
 
   // Hent alle porteføljer for den samme konto
@@ -332,8 +367,9 @@ router.get('/porteside/:id', async function (req, res) {
 
   const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
 
+
 // VI henter handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
-const handlerResultat = await db.request()
+const handlerResultat = await db.request() 
   .input('id', sql.Int, portefoljeId)
   .query(`
     SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
@@ -347,26 +383,48 @@ const handlerResultat = await db.request()
 
   //console.log("Handler fra databasen:", handler); 
 
-  const aktielisteresultat = await db.request()    
-    .query(`
-      SELECT symbol, navn FROM vaerdipapir.vpoplysninger      
-    `);
+  // hent hele aktielisten
+  const aktielisteresultat = await db.request()
+    .query(`SELECT symbol, navn FROM vaerdipapir.vpoplysninger`);
   const aktieliste = aktielisteresultat.recordset;
-  
-  console.log(aktieliste);
 
-  
-  
+  // brug funktionaliteten fra klassen her til at beregne GAK osv for enkel portefølje
+  const beregner = new PortefoljeBeregner(handler);
+  beregner.beregnEjerOgGAK();
 
-res.render('portestyring/portefoelje-detaljer', {
-  portefolje,
-  portefoljer,
-  konto_id,
-  aktieliste,
-  handler,
+
+    // HER henter vi de NYESTE aktiekurser for hver aktie
+    for (let i = 0; i < beregner.ejerListeFiltreret.length; i++) {
+      const aktie = beregner.ejerListeFiltreret[i];
+      
+        const apiSvar = await axios.get(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+        const timeSeries = apiSvar.data['Time Series (60min)'];
+        const senesteTidspunkt = Object.keys(timeSeries)[0];
+        const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+        aktie.pris = aktuelPris; // Her opdateres aktuel pris
+       
+      
+    }
+  
+  
+  
+  // 11. Når alle aktiepriser er hentet, beregner vi totaler
+  const totaler = beregner.beregnTotaler();
+
+  // Sender data videre til EJS 
+  res.render('portestyring/portefoelje-detaljer', {
+    portefolje, // den valgte portefolje
+    portefoljer: [], // henter flere, ellers tom array
+    konto_id,
+    handler, // alle handler lavet i porteføljen 
+    aktieliste, // liste over alle akiter 
+    ejerListeFiltreret: beregner.ejerListeFiltreret, //de ekjer brugeren ejer nu 
+    gakBeregning: beregner.gakBeregning, // info om GAK
+  // totalErhvervelsespris: totaler.totalErhvervelsespris, // samlet købspris
+    totalForventetVaerdi: totaler.totalForventetVaerdi, // samlet forventet værdi 
+    totalUrealiseretGevinstTab: totaler.totalUrealiseretGevinstTab // samlet urealiseret gevidst/tak
+  });
 });
-});
-
 
 
 // ruten som gemmer handlen for den specifikke portefølje 
