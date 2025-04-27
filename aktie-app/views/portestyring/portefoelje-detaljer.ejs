@@ -462,34 +462,30 @@ for (let m = startMaaned; m <= slutMaaned; m++) {
 
  //**************************** piechart **********************
 
+// hent alle live priser som bruges til piechart
+ async function hentLivePriser(symboler) {
+  const priser = [];
+
+  for (let i = 0; i < symboler.length; i++) {
+    const symbol = symboler[i];
+
+    const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
+    const data = await response.json();
+
+    const livePris = Object.values(data["Weekly Time Series"])[0]["1. open"];
+    
+    priser.push({
+      symbol: symbol,
+      pris: parseFloat(livePris)
+    });
+  }
+
+  return priser;
+}
+
  const donutLabels = []; // array der indeholder navne og symboler på akten
   const donutData = []; // array der indholder værdierne for porteføljen 
 
-
-  // går igennem alle aktier brugeren ejer 
-  <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
-       const e = ejerListeFiltreret[i];
-
-       if (e.antal > 0) {
-         let pris = 0;
-         let navn = "";
-
-         // Find pris og navn for symbolet
-         for (let j = 0; j < handler.length; j++) {
-           if (handler[j].symbol === e.symbol) {
-             pris = handler[j].pris;
-             navn = handler[j].navn;
-             break;
-           }
-         }
-
-         const værdi = Math.round(e.antal * pris * 100) / 100; // udregner værdi
-  %>   // psu
-         donutLabels.push("<%= navn %> (<%= e.symbol %>)");
-         donutData.push(<%= værdi %>);
-  <%   }
-     } %>
-    
 
 
       // Funktion der laver én tilfældig farve
@@ -510,26 +506,59 @@ for (let m = startMaaned; m <= slutMaaned; m++) {
     return farver;
   }
 
-function visDonutChart() {
+// funktionen der sørger for at vise donut chart
+  async function visDonutChart() {
   const ctx = document.getElementById('portfolioPieChart').getContext('2d');
 
-  // Labels og data fra EJS (allerede genereret ovenfor)
+  // Henter alle symboler 
+  const symboler = [];
+  for (let i = 0; i < brugerensAktier.length; i++) {
+    symboler.push(brugerensAktier[i].symbol);
+  }
+
+  // Henter live priser
+  const livePriser = await hentLivePriser(symboler);
+
+  // Nulstil arrays
+  donutLabels.length = 0;
+  donutData.length = 0;
+
+  // Bygger labels og data
+  for (let i = 0; i < brugerensAktier.length; i++) {
+    const aktie = brugerensAktier[i];
+    if (aktie.antal > 0) {
+        let pris = 0;
+        for (let j = 0; j < livePriser.length; j++) {
+            if (livePriser[j].symbol === aktie.symbol) {
+                pris = livePriser[j].pris;
+                break;
+            }
+        }
+
+        const vaerdi = aktie.antal * pris;
+
+        donutLabels.push(`${aktie.navn} (${aktie.symbol})`);
+        donutData.push(vaerdi);
+    }
+}
+
+  // Finder total værdi
   let total = 0;
   for (let i = 0; i < donutData.length; i++) {
     total += donutData[i];
   }
 
-  let labels = [];
+  // Tilføjer procentdele i labels
+  const labelsMedProcent = [];
   for (let i = 0; i < donutLabels.length; i++) {
     let procent = (donutData[i] / total) * 100;
     procent = procent.toFixed(1);
-    labels.push(donutLabels[i] + " (" + procent + "%)");
+    labelsMedProcent.push(donutLabels[i] + " (" + procent + "%)");
   }
 
 
-
   const data = {
-    labels: labels,
+    labels: labelsMedProcent,
     datasets: [{
       data: donutData,
       backgroundColor:genererMangeTilfaeldigeFarver(donutData.length),
