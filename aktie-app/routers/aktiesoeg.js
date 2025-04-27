@@ -13,7 +13,7 @@ let offlineValutaResponseData;
 //const apiKey = "X8PAHO4XS77MP7N8";
 // Venstre side af kontooplysninger (under opret konto)
 router.get('/aktiesoegning', async function (req, res) {
-  console.log("DEBUG: 100 - initiated route get /aktiesoegning");  
+  console.log("DEBUG: Initiated route get /aktiesoegning");  
   res.render('bruger-sider/aktiesoeg');  
 });
 
