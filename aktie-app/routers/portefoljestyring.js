@@ -61,7 +61,7 @@ router.get('/hentkontooplysninger', async function (req, res) {
 
 // Opretter en POST til tilføjelse af konto 
 router.post('/kontooplysninger', async function (req, res) {
-  const { navn, bank_ref } = req.body
+  const { navn, bank_ref,konto_valuta } = req.body
   const saldo = 0.00;
   
   const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet hved hvem brugeren er når man skifter imellem forskellige sider
@@ -75,7 +75,7 @@ router.post('/kontooplysninger', async function (req, res) {
     .input('bruger_id', sql.Int, bruger_id)
     .input('aktiv', sql.Bit, 1) // Aktiv = true 
     .input('nedlagt', sql.DateTime, null) // Nedlagt = null ( der skal nok laves en ekstra rute til nedlæggelse af konto)
-    .input('valuta', sql.NVarChar(50), 'DKK')
+    .input('valuta', sql.NVarChar(50), konto_valuta)
     .query(`
          INSERT INTO konto.kontooplysninger(navn,bank_ref,oprettet, saldo, bruger_id, aktiv, nedlagt, valuta)
           OUTPUT INSERTED.konto_id

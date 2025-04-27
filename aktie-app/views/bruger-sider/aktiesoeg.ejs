@@ -14,7 +14,7 @@
     async function soeg() {
       const valuta = document.getElementById("valutasoeg").value;
       console.log(valuta);
-      const response = await fetch(`/aktiesoeg/andersand/${valuta}`);
+      const response = await fetch(`/aktiesoeg/hentvalutakurs/${valuta}`);
       const data2 = await response.json();
 
       console.log("****************DEBUG 9990**************");

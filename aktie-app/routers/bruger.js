@@ -209,34 +209,79 @@ router.get('/indsaetter', function (req, res) {
 router.post('/indsaetter', async function (req, res) {
     const { vaerdi, valuta, konto_id } = req.body;
     const nuværendeTid = new Date(); // tager fat i nutidens dato
-
+    let vaerdiIBaseCurrency = 0; 
 
     //Backendt delen: Vi vil indsætte værdien brugeren har indsæt/vil indsætte på sin konto.       
 
     const db = await forbindDatabase();  // skaber en forbindelse med db
 
+    const db_result = await db.request()
+        .input('konto_id', sql.Int, konto_id)
+        .query(`
+            SELECT valuta 
+            FROM konto.kontooplysninger kntopl 
+            where kntopl.konto_id = @konto_id`
+           );
+
+    console.log(db_result);
+    const baseCurrency = db_result.recordset[0].valuta;
+    
+    if (baseCurrency == valuta) {
+       // Do Nothing
+       console.log("********Debug888***********");
+       vaerdiIBaseCurrency = vaerdi;
+    } 
+    else { 
+        console.log("kontoens baseCurrency : " + baseCurrency);
+        console.log("indsat valuta : " + valuta);
+        console.log("antal penge indsat : " + vaerdi);
+        const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/${valuta}`);
+        console.log(response);
+        const data2 = await response.json();
+      
+        console.log("****************DEBUG 9990**************");
+        console.log(data2.base_code);
+        console.log(data2.conversion_rates);
+        console.log("****************DEBUG 9991: EUR**************");
+        console.log(data2.conversion_rates.EUR);
+        console.log("****************DEBUG 9993: DKK**************");
+        console.log(data2.conversion_rates.DKK);
+        console.log("****************DEBUG 9994: USD**************");
+        console.log(data2.conversion_rates.USD);
+        console.log("****************DEBUG 9995: **************");
+        console.log(data2.conversion_rates[baseCurrency]);
+
+        vaerdiIBaseCurrency = vaerdi * data2.conversion_rates[baseCurrency];
+        console.log("vaerdiIBaseCurrency : " + vaerdiIBaseCurrency);
+
+    } 
+    console.log("******************Debug1000000000****************")
+    console.log(vaerdiIBaseCurrency);
+
+    if (vaerdi == null || isNaN(vaerdi)) {
+        return res.status(400).json({ success: false, message: "Ugyldig værdi sendt til serveren" });
+    }
+
+    let transaktionsType="";
+    if (vaerdi >0 )  {transaktionsType="Indsat"} else {transaktionsType="Hævet"}
     const transResult = await db.request()
-        .input('vaerdi', sql.Decimal(10, 2), vaerdi)
-        .input('valuta', sql.NVarChar(100), valuta)
+        .input('vaerdi', sql.Decimal(10, 2), vaerdiIBaseCurrency.toFixed(2))
+        .input('valuta', sql.NVarChar(100), baseCurrency)
         .input('datotid', sql.DateTime, nuværendeTid)
         .input('konto_id', sql.Int, konto_id)
-
-        .query(`
-         INSERT INTO konto.transaktioner(vaerdi, valuta, datotid, konto_id)
+        .input('transaktionstype', sql.NVarChar(20), transaktionsType)
+        .query(`         
+         INSERT INTO konto.transaktioner(vaerdi, valuta, datotid, konto_id, transaktionstype)
           OUTPUT INSERTED.transaktions_id
-         VALUES (@vaerdi, @valuta, @datotid, @konto_id)`
+         VALUES (@vaerdi, @valuta, @datotid, @konto_id, @transaktionstype )`
         );
 
     const transaktions_id = transResult.recordset[0].transaktions_id;
 
     // vi opdater saldoen hvis bruger indsætter penge på konto 
 
-    if (vaerdi == null || isNaN(vaerdi)) {
-        return res.status(400).json({ success: false, message: "Ugyldig værdi sendt til serveren" });
-    }
-
     await db.request()
-        .input('vaerdi', sql.Decimal(10, 2), vaerdi)
+        .input('vaerdi', sql.Decimal(10, 2), vaerdiIBaseCurrency)
         .input('konto_id', sql.Int, konto_id)
         .query(`
       UPDATE konto.kontooplysninger
