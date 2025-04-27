@@ -3214,7 +3214,7 @@ router.get('/andersand/:valuta', async function (req, res) {
   const url = `https://v6.exchangerate-api.com/v6/${apiValutaKey}/latest/${valuta}`;
   console.log("******************** URL ****************");
   console.log(url);
-  const live = true;
+  const live = false;
 
   if (live == true) {
     const response = await axios.get(url);
