@@ -14,11 +14,10 @@
       <h3>SYDNET</h3>
     </div>
     <ul>
-      <li><a href="/bruger/dashboard">Dashboard</a></li>
+      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/portefoljestyring/konto/<%= konto_id %>">Min porteføljeoversigt</a></li>
       <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
-      <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
     </ul>
-    
   </aside>
 
   <main class="main-content">
@@ -124,7 +123,7 @@
               <td><%= h.salg_koeb ? 'Salg' : 'Køb' %></td>
               <td><%= h.symbol %></td>
               <td><%= h.antal %> stk</td>
-              <td><%= h.pris.toFixed(2) %> DKK</td>
+              <td><%= Number(h.pris).toFixed(2) %> DKK</td>
               <td><%= total.toFixed(2) %> DKK</td>
             </tr>
             <% } %>

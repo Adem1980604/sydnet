@@ -47,7 +47,10 @@
         <label for="bank">Tilknyttet Bank:</label>
         <input type="text" id="bank_ref" name="bank" required>
     
-        <button type="button" onclick="sendkonto()">Opret konto</button>
+        <label for="bank">Valuta for konto:</label>
+        <input type="text" id="konto_valuta" name="konto_valuta" required>
+    
+        <button type="button" onclick="sendkonto();this.form.reset();">Opret konto</button>
       </form>
     
       <!-- Bruges til at vise alle konti der er lukkede  -->
@@ -129,18 +132,26 @@
     async function sendkonto() {
       let nyKonto = {
         navn: document.getElementById("navn").value,
-        bank_ref: document.getElementById("bank_ref").value
+        bank_ref: document.getElementById("bank_ref").value,
+        konto_valuta: document.getElementById("konto_valuta").value
       };
-      const svar = await fetch('/portefoljestyring/kontooplysninger', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nyKonto)
-      });
 
-      if (svar.ok) {
-        await hentKonti();
+      if (nyKonto.navn == "" || nyKonto.bank_ref == "" || nyKonto.konto_valuta == "") {
+        alert("Alle felter skal udfyldes!");
+      } else {
+        console.log("**********Debug013************");
+        const svar = await fetch('/portefoljestyring/kontooplysninger', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nyKonto)
+        });
+
+        if (svar.ok) {
+          await hentKonti();
+          console.log("**********Debug013************");
+        };
       };
-    };
+  };
 
 
     // hent konto og så vis den 
@@ -172,7 +183,7 @@
 
         console.log("DEBUG 060  ***************");
         container.appendChild(kontoElement)
-
+        
       }
     }
 
@@ -198,6 +209,7 @@
         vaerdi: (document.getElementById("værdi").value),
         valuta: document.getElementById("indsæt-valuta").value,
         konto_id: valgtKontoId
+        
       };
 
       if (data.vaerdi <= 0) {

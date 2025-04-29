@@ -3209,7 +3209,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
 // Emil's valuta kurs API key // 
 const apiValutaKey = "4471cd41f9c9723ed298ca8d";
 
-router.get('/andersand/:valuta', async function (req, res) {
+router.get('/hentvalutakurs/:valuta', async function (req, res) {
   console.log("********************Reg.params*************");
   console.log(req.params);
   const valuta = req.params.valuta;
