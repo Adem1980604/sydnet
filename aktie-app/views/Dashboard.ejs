@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="da">
-
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
-  <link rel="stylesheet" type="text/css" href="Dashboard.css">
+  <link rel="stylesheet" type="text/css" href="/Dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -15,16 +15,11 @@
         <h3>SYDNET</h3>
       </div>
       <ul>
-        <li><a href="/Dashboard">Dashboard</a></li>
-        <li><a href="/portefoljestyring/kontooplysninger">Kontooversigt</a></li>
+        <li><a href="/bruger/dashboard">Dashboard</a></li>
+        <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
         <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
-        <!--*********************Search page til aktiekurser-->
-        <li><a href="/aktiesoeg/aktiesoegning">Søgning</a></li>
       </ul>
-
     </aside>
-
-
 
     <!-- Dashboard Content -->
     <main class="content">
@@ -33,105 +28,200 @@
       <div class="top-cards">
         <div class="card">
           <h3>Total værdi</h3>
-          <h2>10000 DKK</h2>
-          <span class="positive">+2.4%</span>
+          <h2><%= samletVaerdi.toFixed(2) %> DKK</h2>
         </div>
         <div class="card">
           <h3>Total realiseret gevinst</h3>
-          <h2>10.000 DKK</h2>
-          <span class="positive">+5.1%</span>
+          <h2><%= totalRealiseretGevinstTab.toFixed(2) %> DKK</h2>
+          
         </div>
         <div class="card">
           <h3>Total urealiseret gevinst</h3>
-          <h2>10.000 DKK</h2>
-          <span class="negative">-0.8%</span>
+          <h2><%= totalUrealiseretGevinstTab.toFixed(2) %> DKK</h2>
+        
         </div>
       </div>
 
+      <div class="charts-container">
+        <!-- Line Chart -->
+        <div class="chart-card">
+          <h4>Samlet Værdi</h4>
+          <canvas id="dashboardChart"></canvas>
+        </div>
+      
+
       <div class="table-section">
+        <!-- Top 5 værdipapirer baseret på værdi -->
         <section class="stock-table">
-          <h3>Listen over top 5 værdipapir baseret på værdi</h3>
+          <h3>Top 5 værdipapirer baseret på værdi</h3>
           <table>
             <thead>
               <tr>
                 <th>Navn</th>
-                <th>Portefølje</th>
-                <th>24h Change</th>
+                <th>Volume</th>
+                <th>portefølje</th>
                 <th>Værdi</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Apple<br><small>AAPL</small></td>
-                <td>1 stk.</td>
-                <td class="positive">+1.27%</td>
-                <td>100 DKK</td>
-              </tr>
-              <tr>
-                <td>Apple<br><small>AAPL</small></td>
-                <td>1 stk.</td>
-                <td class="negative">+1.27%</td>
-                <td>100 DKK</td>
-              </tr>
-              <!-- Flere rækker -->
+              <% if (top5Vaerdi && top5Vaerdi.length > 0) { %>
+                <% for (let i = 0; i < top5Vaerdi.length; i++) { %>
+                  <tr>
+                    <td><%= top5Vaerdi[i].navn %> </td>
+                    <td><%= top5Vaerdi[i].antal %> stk.</td>
+                     <td><%= top5Vaerdi[i].portefolje_navn %></td>
+                    <td><%= top5Vaerdi[i].vaerdi.toFixed(2) %> DKK</td>
+                  </tr>
+                <% } %>
+              <% } else { %>
+                <tr>
+                  <td>Ingen data tilgængelig</td>
+                </tr>
+              <% } %>
             </tbody>
+            
           </table>
         </section>
 
+        <!-- Top 5 værdipapirer baseret på profit -->
         <section class="stock-table">
-          <h3>Listen over top 5 værdipapir baseret på værdi</h3>
+          <h3>Top 5 værdipapirer baseret på profit</h3>
           <table>
             <thead>
               <tr>
                 <th>Navn</th>
-                <th>Portefølje</th>
-                <th>24h Change</th>
-                <th>Værdi</th>
+                <th>Volume</th>
+                <th>portefølje</th>
+                <th>Profit</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Apple<br><small>AAPL</small></td>
-                <td>1 stk.</td>
-                <td class="positive">+1.27%</td>
-                <td>100 DKK</td>
-              </tr>
-              <tr>
-                <td>Apple<br><small>AAPL</small></td>
-                <td>1 stk.</td>
-                <td class="negative">+1.27%</td>
-                <td>100 DKK</td>
-              </tr>
-              <!-- Flere rækker -->
+             
+              <% if (top5Profit && top5Profit.length > 0) { %>
+                <% for (let i = 0; i < top5Profit.length; i++) { %>
+                  <tr>
+                    <td><%= top5Profit[i].navn %> </td>
+                    <td><%= top5Profit[i].antal %> stk.</td>
+                    <td><%= top5Profit[i].portefolje_navn %></td>
+                    <td class="<%= top5Profit[i].gevinst >= 0 ? 'positive' : 'negative' %>">
+                      <% if (top5Profit[i].gevinst >= 0) { %>
+                        +<%= top5Profit[i].gevinst.toFixed(2) %> DKK
+                      <% } else { %>
+                        <%= top5Profit[i].gevinst.toFixed(2) %> DKK
+                      <% } %>
+                      
+                    </td>
+                  </tr>
+                <% } %>
+              <% } else { %>
+                <tr>
+                  <td>Ingen data tilgængelig</td>
+                </tr>
+              <% } %>
+              
             </tbody>
           </table>
         </section>
       </div>
-
-
-
-
-
     </main>
 
-    <!-- Rightsidebar til handlinger -->
-    <aside2 class="sidebar">
-      <div>
+    <!-- Right Sidebar (handlinger) -->
+    <aside class="sidebar">
+      <div class="logo">
         <h3>HANDLINGER</h3>
       </div>
-
       <ul>
-        <li></li>
-        <li><a href="/bruger/bruger-oprettelse">Oprettelse af Bruger</a></li>
-        <li><a href="/bruger/nulstill">Nulstill adgangskode</a></li>
+        <li><a href="/bruger/bruger-oprettelse">Opret Bruger</a></li>
+        <li><a href="/bruger/nulstill">Nulstil Adgangskode</a></li>
         <li><a href="/bruger/log-ind">Log-ind</a></li>
         <li><a href="/bruger/logoff">Log ud</a></li>
       </ul>
-
-    </aside2>
+    </aside>
 
   </div>
 
-</body>
+  <script>
 
+    //*********************************************chart for line ********************************
+
+
+  function visPortfolioGraf() {
+    const ctx = document.getElementById('dashboardChart').getContext('2d');
+
+    const nu = new Date();
+    const maanedLabels = [];
+    const vaerdier = [];
+
+    const startMaaned = 0;
+    const slutMaaned = nu.getMonth();
+
+    for (let m = startMaaned; m <= slutMaaned; m++) {
+      const dato = new Date(nu.getFullYear(), m, 1);
+      maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short' }));
+
+      if (m < slutMaaned) {
+        vaerdier.push(Math.floor(Math.random() * 10000) + 1000);
+      } else {
+        vaerdier.push(<%= samletVaerdi.toFixed(2) %>);
+      }
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: maanedLabels,
+        datasets: [{
+          label: "Porteføljeværdi",
+          data: vaerdier,
+          borderColor: '#7c4dff',
+          backgroundColor: 'rgba(124, 77, 255, 0.2)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: '#ffffff' }
+          },
+          tooltip: {
+            callbacks: {
+              title: function (tooltipItems) {
+                return tooltipItems[0].label;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#ffffff' },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+          },
+          y: {
+            ticks: {
+              color: '#ffffff',
+              callback: function (value) {
+                return value.toLocaleString('da-DK') + " DKK";
+              }
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+            title: {
+              display: true,
+              text: "Værdi (DKK)",
+              color: '#ffffff'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  visPortfolioGraf();
+
+
+  </script>
+</body>
 </html>

@@ -266,6 +266,8 @@ async function ventPåDatabase() {
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
   await sql.query(lavVPKurs);
+  await sql.query(lavPortfolioHistorik);
+
 
   // indsæt test data i tabeller
   await sql.query(dataibrugertabel);
@@ -273,7 +275,7 @@ async function ventPåDatabase() {
   await sql.query(dataIPortefoeljeTabel);
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
-  await sql.query(dataiVpHandler); 
+ 
   
 
   console.log('alt oprettet') // tjek

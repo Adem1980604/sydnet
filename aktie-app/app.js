@@ -2,7 +2,10 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+app.set('case sensitive routing', false);
 const session = require('express-session');
+
+
 
 const port = 4000;
 
@@ -10,6 +13,7 @@ const port = 4000;
 // her sætter vi EJS som template, så vi kan bruge "dynamiske" HTML-sider
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
 
 // session sørger for at der huskes hvem brugeren er så du kan knytte dem til fx en konto eller en indsættelse
 app.use(session({
@@ -42,24 +46,26 @@ app.use('/aktiesoeg', dataRouter);
 
 //***************Denne behøves ikke...indtil andet er bevist**********/
 // vi sætter ROUTE op for MAIN PAGE.
-app.get('/Dashboard', function (req, res) {
-    res.render('Dashboard')
-});
+//app.get('/Dashboard', function (req, res) {
+  //res.render('Dashboard')
+//});
 
 
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
 const portefoljeRuter = require('./routers/portefoljestyring');
 const transaktionsRuter = require('./routers/transaktionssider');
-const kontoRouter = require('./routers/portefoljestyring'); // konto id ting ting 
+const kontoRouter = require('./routers/portefoljestyring'); 
+//const dashboardRouter = require('./routers/bruger');
+
 
 
 
 app.use('/bruger', brugerRuter);
 app.use('/portefoljestyring', portefoljeRuter);
 app.use('/transaktionssider', transaktionsRuter);
-app.use('/', kontoRouter);  // konto ting ting ting 
-
+app.use('/', kontoRouter);   
+//app.use('/', dashboardRouter);
 
 
 //res.status(200).json();
