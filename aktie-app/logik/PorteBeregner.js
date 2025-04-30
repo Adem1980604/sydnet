@@ -22,6 +22,9 @@ class PortefoljeBeregner {
 
     // Metode: Beregner ejerliste og GAK for alle aktier
     beregnEjerOgGAK() {
+          // Sorter handler efter dato først 
+  this.handler.sort((a, b) => new Date(a.datotid) - new Date(b.datotid));
+
         // Gennemgår alle handler (køb/salg)
         for (let i = 0; i < this.handler.length; i++) {
             const h = this.handler[i];
@@ -64,6 +67,10 @@ class PortefoljeBeregner {
                 gakAktie.samletAntal += antal;
             } else { // salg
                 ejerAktie.antal -= antal;
+
+                if (gakAktie.samletAntal < antal) {
+                    throw new Error(`Ugyldigt salg: Forsøger at sælge ${antal}, men ejer kun ${gakAktie.samletAntal}`);
+                  }
                 const gakIndenSalg = gakAktie.samletPris / gakAktie.samletAntal;
                 gakAktie.samletPris -= gakIndenSalg * antal;
                 gakAktie.samletAntal -= antal;
@@ -201,3 +208,7 @@ class PortefoljeBeregner {
 };
 
 module.exports = PortefoljeBeregner;
+
+
+
+  
