@@ -73,7 +73,7 @@
 
         //Hvis tilbagemeldingen var succesfuld, altså har en status 200, så vil vi gerne sende brugeren videre til vores Dashboard/forside
         if (svar.status === 200){
-            window.location.href = "/Dashboard";
+            window.location.href = "/bruger/Dashboard";
         //Hvis ikke tilbagemeldingen var succesfuld, så udskriv en advarsel, med den givne fejl vi får grundet kriterierne givet i "bruger.js" filen
         } else {
             alert(resultat.message)

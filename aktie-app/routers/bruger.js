@@ -5,6 +5,9 @@ const { sql, forbindDatabase } = require('../db');
 const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 
+const PortefoljeBeregner = require('../logik/PorteBeregner');
+
+
 
 
 // vi sætter vores ROUTES op for BRUGER SIDER.
@@ -154,10 +157,6 @@ router.get('/logoff', function (req, res) {
 });
 
 
-
-
-
-
 // Reset password
 router.get('/nulstill', function (req, res) {
     res.render('bruger-sider/nulstill');
@@ -193,7 +192,7 @@ router.post('/nulstill', async function (req, res) {
 
 
 //***********************************************************
-//******* KONTO                       ***********************
+//******* KONTO  ***********************
 //***********************************************************
 
 router.get('/kontooplysninger', function (req, res) {
@@ -306,7 +305,74 @@ router.post('/indsaetter', async function (req, res) {
 
 });
 
+// Dashboard route som viser alle de regnede værder
+router.get('/dashboard', async function (req, res) {
+  
+  const brugerId = req.session.bruger_id;
+  const db = await forbindDatabase();
 
+  // 1. Hent alle konti
+  const kontiResultat = await db.request()
+    .input('bruger_id', sql.Int, brugerId)
+    .query(`
+      SELECT * FROM konto.kontooplysninger 
+      WHERE bruger_id = @bruger_id AND aktiv = 1
+    `);
+  const konti = kontiResultat.recordset;
+
+  // 2. Hent ALLE handler for brugerens porteføljer
+  const handlerResultat = await db.request()
+    .input('bruger_id', sql.Int, brugerId)
+    .query(`
+      SELECT h.*, v.navn, p.navn as portefolje_navn
+      FROM vaerdipapir.vphandler h
+      JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
+      JOIN konto.portefoelje p ON h.portefoelje_id = p.portefoelje_id
+      JOIN konto.kontooplysninger k ON p.konto_id = k.konto_id
+       WHERE k.bruger_id = @bruger_id
+    `);
+  const handler = handlerResultat.recordset;
+
+  // 3. Brug PortefoljeBeregner
+  const beregner = new PortefoljeBeregner(handler, konti);  
+  beregner.beregnEjerOgGAK();
+
+
+// vi opdater aktiepriser med live data
+for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
+  const aktie = beregner.ejerListeFiltreret[j];
+  const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+  const data = await response.json();
+  const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
+  aktie.pris = aktuelPris;
+}
+
+
+  // 4. Beregner totaler
+  const totaler = beregner.beregnTotaler();
+
+  // 5. Læg kontanter + aktier sammen
+  let samletKontantSaldo = 0;
+  for (let i = 0; i < konti.length; i++) {
+    samletKontantSaldo += konti[i].saldo;
+  }
+  const samletVaerdi = samletKontantSaldo + totaler.totalForventetVaerdi;
+
+  // 6. Top 5 aktier
+  const top5Vaerdi = beregner.topFemVaerdi();
+  const top5Profit = beregner.topFemProfit();
+
+  // 7. Render dashboard
+  res.render('Dashboard', {
+    samletVaerdi,
+    samletKontantSaldo,
+    totalUrealiseretGevinstTab: totaler.totalUrealiseretGevinstTab,
+    totalRealiseretGevinstTab: totaler.totalRealiseretGevinstTab,
+    top5Vaerdi,
+    top5Profit
+  });
+
+});
 
 
 module.exports = router;

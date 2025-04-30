@@ -610,4 +610,5 @@ router.get('/vaerdipapir/:symbol', async function (req, res) {
 
 
 
-module.exports = router 
+
+module.exports = router;

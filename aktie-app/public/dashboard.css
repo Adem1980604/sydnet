@@ -186,3 +186,16 @@ a:hover {
   color: #999;
 }
 
+
+.chart-card {
+  background-color: #1f1f1f;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  height: 300px; /* <- Vigtig */
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

@@ -9,17 +9,15 @@
 </head>
 
 <body>
-  <div class="container">
-    <!-- Navigation Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
-        <h3>SYDNET</h3>
-      </div>
-      <ul>
-        <li><a href="/Dashboard">Dashboard</a></li>
-        <li><a href="/portefoljestyring/kontooplysninger">Kontooversigt</a></li>
-        <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
-      </ul>
+  <aside class="sidebar">
+    <div class="logo">
+      <h3>SYDNET</h3>
+    </div>
+    <ul>
+      <li><a href="/bruger/dashboard">Dashboard</a></li>
+      <li><a href="/portefoljestyring/konto/<%= konto_id %>">Min porteføljeoversigt</a></li>
+      <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
+    </ul>
   </aside>
 
   <main class="main-content">
@@ -94,6 +92,10 @@
             <% } else { %>
               <td class="negative"><%= gevinstTab.toFixed(2) %> DKK</td> <!-- Tab -->
             <% } %>
+            <td>
+              <a href="/portefoljestyring/vaerdipapir/<%= e.symbol %>" class="detalje-knap">Detaljer</a>
+            </td>
+            
           </tr> <!-- Slut på række -->
           <% } %>
           </tbody>
