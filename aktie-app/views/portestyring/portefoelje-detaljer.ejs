@@ -160,7 +160,7 @@
     <form id="handelForm">
       <input type="number" id="antal" placeholder="Antal" required>
 
-      <label for="samlet_pris">Pris per aktie</label>
+      <label for="samlet_pris">Pris per aktie i USD</label>
       <input type="number" id="samlet_pris" placeholder="Pris" readonly>
 
       <p id="beregnet_pris">Samlet pris: 0 DKK</p>
@@ -191,6 +191,8 @@
     const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
     let nuvaerendeAktiePris;
     let symbol;
+    let valuta = "<%= valuta %>";
+    let valutakurs = "<%= valutakurs %>";    
     let valgtAktie = [];
 
 
@@ -289,7 +291,7 @@
     antal: document.getElementById("antal").value,
     //pris: document.getElementById("samlet_pris").value,
     pris: nuvaerendeAktiePris,
-    valuta: "DKK",
+    valuta: valuta,
     type,
     symbol: valgtAktie.symbol
   };
@@ -329,20 +331,10 @@ console.log("**********************input********************");
 console.log(input);
 const resultatListe = document.getElementById("vaerdiResultat");
 
-
-//// når brugeren søger 
-//input.addEventListener("input", function () {
-//  let søg = input.value
-//  resultatListe.innerHTML = ""; // fjern gamle resultater
-//  // loop gennem alle aktier (dummy data)
-//  
-//  // vi tager fat i prisen for den pågældende aktie og udfylder pris feltet på popup automatisk
-//  console.log("**********************nuvaerendeAktiePris debug001 ********************");
-// document.getElementById("samlet_pris").value = nuvaerendeAktiePris
-//  valgtAktie.pris = nuvaerendeAktiePris;
-//  //valgtAktie.symbol = min_aktie // nu har brugeren valgt en aktie og vi husker den
-//});
-////resultatListe.appendChild(li);
+// Når brugeren skriver antal så kalder vi på funktionen der beregner prisen
+document.getElementById("antal").addEventListener("input", function () {
+  beregnSamletPris();
+});
 
 // opertter en funktion der ganger antallet af de valgte aktier med prisen 
 async function beregnSamletPris(){  
@@ -356,17 +348,15 @@ async function beregnSamletPris(){
     //let samlet = valgtAktie.pris * antal;     
     console.log(nuvaerendeAktiePris);
     console.log(antal);
-    let samlet = nuvaerendeAktiePris * antal; 
-    visning.textContent = ` Samlet: ${samlet} DKK`  // vi viser den samlet beregnet pris 
-    document.getElementById("samlet_pris").value = nuvaerendeAktiePris
+    console.log(valuta);
+    console.log(valutakurs);
+    let samlet = nuvaerendeAktiePris * antal * valutakurs; 
+    visning.textContent = ` Samlet i kontoens valuta: ${samlet.toFixed(2)} ${valuta}`  // vi viser den samlet beregnet pris 
+    document.getElementById("samlet_pris").value = nuvaerendeAktiePris;
   };
   
 };
 
-  // Når brugeren skriver antal så kalder vi på funktionen der beregner prisen
-document.getElementById("antal").addEventListener("input", function () {
-  beregnSamletPris();
-});
 
 
 //*********************************************chart for line ********************************

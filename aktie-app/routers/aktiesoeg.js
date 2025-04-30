@@ -23,8 +23,8 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
   //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${navn}&interval=60min&apikey=${apiKey}`;
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=${navn}&apikey=${apiKey}`;
   //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
-  console.log("******************** URL ****************");
-  console.log(url);
+  //console.log("******************** URL ****************");
+  //console.log(url);
   const live = false;
 
   if (live == true) {
@@ -1632,7 +1632,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
         },
         'Weekly Time Series': {
           '2025-04-24': {
-            '1. open': '2899.3300',
+            '1. open': '289.3300',
             '2. high': '308.2100',
             '3. low': '282.4563',
             '4. close': '306.8600',
@@ -3210,14 +3210,14 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
 const apiValutaKey = "4471cd41f9c9723ed298ca8d";
 
 router.get('/hentvalutakurs/:valuta', async function (req, res) {
-  console.log("********************Reg.params*************");
-  console.log(req.params);
+  //console.log("********************Reg.params*************");
+  //console.log(req.params);
   const valuta = req.params.valuta;
 
 
   const url = `https://v6.exchangerate-api.com/v6/${apiValutaKey}/latest/${valuta}`;
-  console.log("******************** URL ****************");
-  console.log(url);
+  //console.log("******************** URL ****************");
+  //console.log(url);
   const live = false;
 
   if (live == true) {
