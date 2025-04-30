@@ -265,7 +265,7 @@ router.post('/indsaetter', async function (req, res) {
     let transaktionsType="";
     if (vaerdi >0 )  {transaktionsType="Indsat"} else {transaktionsType="Hævet"}
     const transResult = await db.request()
-        .input('vaerdi', sql.Decimal(10, 2), vaerdiIBaseCurrency.toFixed(2))
+        .input('vaerdi', sql.Decimal(10, 2), Number(vaerdiIBaseCurrency).toFixed(2))
         .input('valuta', sql.NVarChar(100), baseCurrency)
         .input('datotid', sql.DateTime, nuværendeTid)
         .input('konto_id', sql.Int, konto_id)

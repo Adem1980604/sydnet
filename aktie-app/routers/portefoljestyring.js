@@ -207,11 +207,8 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 router.get('/portefoeljeoversigt', async function (req, res) {
   console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
-
   const loggedin_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
-
   const db = await forbindDatabase();
-
   const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
 
   // Henter konto
@@ -222,8 +219,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   /// Gem første række fra kontodata 
 
   const konto = kontoResultater.recordset;
-  //console.log("*************Konto**********");
-  //console.log(konto);
+  console.log("*************Konto**********");
+  console.log(konto);
 
   // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
@@ -234,7 +231,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
         portf.konto_id, 
         portf.navn, 
         portf.dato,
-        ktoopl.navn as kontonavn
+        ktoopl.navn as kontonavn,
+        ktoopl.valuta as kontovaluta
       FROM konto.portefoelje portf
       JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
       WHERE ktoopl.bruger_id = @loggedin_bruger_id`
@@ -252,45 +250,40 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   for (let i = 0; i < portefoljer.length; i++) {
     const portefolje = portefoljer[i];
 
-// Man henter alle handler (køb/salg) tilhørende den portefølje
-    const handlerResultat = await db.request()
-      .input('portefoelje_id', sql.Int, portefolje.portefoelje_id)
-      .query(`
-        SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
-               v.symbol, v.navn
-        FROM vaerdipapir.vphandler h
-        JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
-        WHERE h.portefoelje_id = @portefoelje_id
-      `);
+  // Man henter alle handler (køb/salg) tilhørende den portefølje
+  const handlerResultat = await db.request()
+    .input('portefoelje_id', sql.Int, portefolje.portefoelje_id)
+    .query(`
+      SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
+             v.symbol, v.navn
+      FROM vaerdipapir.vphandler h
+      JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
+      WHERE h.portefoelje_id = @portefoelje_id
+    `);
 
-    const handler = handlerResultat.recordset;
-
-
-    // her broger vi klassen fra logik filen til at beregne ejerstruktur
-    const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
-    beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
+  const handler = handlerResultat.recordset;
 
 
-      // For hver aktie i porteføljen hentes live pris, her opdateres der pris på værdipapir
-      for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
-        const aktie = beregner.ejerListeFiltreret[j];
+  // her bruger vi klassen fra logik filen til at beregne ejerstruktur
+  const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
+  beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
+  // For hver aktie i porteføljen hentes live pris, her opdateres der pris på værdipapir
+  for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
+    const aktie = beregner.ejerListeFiltreret[j];
+    //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+    console.log(aktie.symbol)
+    const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+    const data2 = await response.json();
+    aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+    aktie.pris = aktuelPris;
+    console.log(aktuelPris); 
     
-          //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-          console.log(aktie.symbol)
-          const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-          const data2 = await response.json();
-
-          aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
-          aktie.pris = aktuelPris;
-          console.log(aktuelPris); 
-        
-
-          //const timeSeries = data2['Weekly Time Series'];
-          //const senesteTidspunkt = Object.keys(timeSeries)[0];
-          //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
-          //aktie.pris = aktuelPris;
-          //console.log(aktuelPris); 
-      };
+    //const timeSeries = data2['Weekly Time Series'];
+    //const senesteTidspunkt = Object.keys(timeSeries)[0];
+    //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
+    //aktie.pris = aktuelPris;
+    //console.log(aktuelPris); 
+  };
 
 
    // Beregn totals baseret på opdaterede priser
@@ -330,23 +323,16 @@ router.post('/opret-portefolje', async function (req, res) {
         VALUES (@navn, @dato, @konto_id)
       `);
 
-
   const portefoelje_id = result.recordset[0].portefoelje_id;
-
-
-
   res.json({
     success: true,
     portefolje_oprettelse: {
       portefoelje_id,
       navn,
       dato,
-      konto_id,
-      handler
+      konto_id
     }
-
   });
-
 });
 
 // ruten til at gå ind på den individuelle portefølje for en bruger 
@@ -355,34 +341,30 @@ router.get('/porteside/:id', async function (req, res) {
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
 
 
-  // Hen den specifikke portefølje fra databsen
+  // Hen den specifikke portefølje fra databasen
   const result = await db.request() 
     .input('id', sql.Int, portefoljeId)
     .query(`SELECT * FROM konto.portefoelje WHERE portefoelje_id = @id`);
-
   const portefolje = result.recordset[0]; // Her tager vi den første række i svaret – altså den portefølje brugeren har klikket på
   const konto_id = portefolje.konto_id; // Hver portefølje tilhører en konto – derfor henter vi konto_id fra porteføljen
-
   // Hent alle porteføljer for den samme konto
   // Nu henter vi alle porteføljer, der tilhører samme konto – så sidebar kan vise dem alle
   const allePortefoljer = await db.request()
     .input('konto_id', sql.Int, konto_id)
     .query(`SELECT * FROM konto.portefoelje WHERE konto_id = @konto_id`);
-
-
   const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
-
-
-// VI henter handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
-const handlerResultat = await db.request() 
-  .input('id', sql.Int, portefoljeId)
-  .query(`
-    SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
-           v.symbol, v.navn
-    FROM vaerdipapir.vphandler h
-    JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
-    WHERE h.portefoelje_id = @id
-  `);
+  
+  
+  // VI henter handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
+  const handlerResultat = await db.request() 
+    .input('id', sql.Int, portefoljeId)
+    .query(`
+      SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
+             v.symbol, v.navn
+      FROM vaerdipapir.vphandler h
+      JOIN vaerdipapir.vpoplysninger v ON h.symbol = v.symbol
+      WHERE h.portefoelje_id = @id
+    `);
 
   const handler = handlerResultat.recordset;
 
