@@ -27,7 +27,7 @@
     <main class="content">
       <div class="header-div">
         <h1>Porteføljeoversigt</h1>
-        <button onclick="åbnPopup1()">Tilføj Portefølje</button>
+        <button onclick="aabnPopup1()">Tilføj Portefølje</button>
       </div>
 
       <!-- Kort med total værdi -->
@@ -48,12 +48,12 @@
               <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
               <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
               <div class="portefolje-data">
-                <p><strong>Erhvervelsespris:</strong> <%= portefoljer[i].totalErhvervelsespris.toFixed(2) %> DKK</p>
-                <p><strong>Forventet værdi:</strong> <%= portefoljer[i].totalForventetVaerdi.toFixed(2) %> DKK</p>
+                <p><strong>Erhvervelsespris:</strong> <%= portefoljer[i].totalErhvervelsespris.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
+                <p><strong>Forventet værdi:</strong> <%= portefoljer[i].totalForventetVaerdi.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
                 <% if (portefoljer[i].totalUrealiseretGevinstTab >= 0) { %>
-                  <p class="positive"><strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> DKK</p>
+                  <p class="positive"><strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
                 <% } else { %>
-                  <p class="negative"><strong>Urealiseret Gevinst/Tab:</strong> <%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> DKK</p>
+                  <p class="negative"><strong>Urealiseret Gevinst/Tab:</strong> <%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
                 <% } %>
               </div>
             </div>
@@ -91,7 +91,7 @@
 
     <!-- **************************** SCRIPT START ********************** -->
     <script>
-      function åbnPopup1() {
+      function aabnPopup1() {
         document.getElementById('popup1').style.display = 'block';
       }
 

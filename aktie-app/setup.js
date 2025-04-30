@@ -86,16 +86,15 @@ const lavKontoTabel = `
 `;
 
 const dataikontotabel = `
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto1','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',850,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto3','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto4','DKK',0,'Jyske Bank','2025-04-06 20:00:00',NULL,1)
-
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto1','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',5900,'Danske Bank','2025-03-26 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',0,'Danske Bank','2025-03-26 20:00:00',NULL,1)
-
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto1','DKK',5000,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto4','DKK',3000,'Nordea','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto1','DKK',5000,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',3000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
+  
 `;
 
 
@@ -112,14 +111,13 @@ const lavTransaktionersTabel = `
   `;
   
 const dataitransaktionstabel = `
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-04-06 20:00:00')
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-04-06 20:00:00')
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,100,'DKK','2025-01-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-02-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-03-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
-
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,600,'DKK','2025-04-06 20:00:00')
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,200,'DKK','2025-04-06 20:00:00')
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5000,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,600,'DKK','2025-01-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,200,'DKK','2025-02-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5000,'DKK','2025-03-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,100,'DKK','2025-04-06 20:00:00')
   `;
 
@@ -138,15 +136,14 @@ const lavPortefoeljeTabel = `
 
 
 const dataIPortefoeljeTabel  = `
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje1','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje2','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje3','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'portefoelje4','2025-04-06 20:00:00')
-
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje5','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje6','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje7','2025-04-06 20:00:00')
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'portefoelje8','2025-04-06 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje1','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje2','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje3','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje4','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje1','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje2','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje3','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje4','2024-05-07 20:00:00')
 `;
 
 const lavVPOplysninger = `
@@ -168,7 +165,8 @@ const dataOmVP =
         ('IBM', 'IBM', 'aktie'),
         ('Nike', 'NKE', 'aktie'),
         ('McDonalds', 'MCD', 'aktie'),
-        ('Walmart Inc.', 'WMT', 'aktie')
+        ('Walmart Inc.', 'WMT', 'aktie'),
+        ('Caterpiller Inc.', 'CAT', 'aktie')
         `
 
 const lavVPHandler = `
@@ -193,37 +191,22 @@ const lavVPHandler = `
 
 const dataiVpHandler = `insert into vaerdipapir.vphandler 
 (symbol, portefoelje_id, konto_id, vaerditype, salg_koeb, antal, pris, valuta, gebyr, datotid)
-values  ('BA', 5, 6,'aktie', 0, 4, 215.00, 'DKK', 0.22, '2025-04-20 19:51:13.727'),
-        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:51:43.177'),
-        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:52:09.583'),
-        ('BA', 5, 6,'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 19:54:58.840'),
-        ('AAPL', 5, 6, 'aktie', 0, 3, 145.00, 'DKK', 0.14, '2025-04-20 20:11:29.057'),
-        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:11:40.797'),
-        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:11:53.183'),
-        ('AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:12:01.247'),
-        ('BA', 5, 6, 'aktie', 1, 1, 215.00, 'DKK', 0.22, '2025-04-20 20:15:03.813'),
-        ( 'AAPL', 5, 6, 'aktie', 0, 4, 145.00, 'DKK', 0.14, '2025-04-20 20:16:22.843'),
-        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:16:58.687'),
-        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-20 20:17:40.107'),
-        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 07:49:18.760'),
-        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 08:03:25.567'),
-        ( 'AAPL', 5, 6, 'aktie', 0, 4, 145.00, 'DKK', 0.14, '2025-04-21 08:08:44.400'),
-        ( 'AAPL', 5, 6, 'aktie', 1, 1, 145.00, 'DKK', 0.14, '2025-04-21 08:08:54.140'),
-        ( 'BA', 5, 6, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 09:36:51.160'),
-        ( 'BA', 1, 2, 'aktie', 0, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:53:21.487'),
-        ( 'BA', 1, 2, 'aktie', 1, 2, 215.00, 'DKK', 0.22, '2025-04-21 14:55:41.613'),
-        ( 'BA', 1, 2, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 14:57:43.850'),
-        ( 'BA', 1, 2, 'aktie', 1, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:58:14.177'),
-        ( 'NVO', 1, 2, 'aktie', 0, 4, 545.00, 'DKK', 0.14, '2025-04-20 20:16:22.843'),
-        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-20 20:16:58.687'),
-        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-20 20:17:40.107'),
-        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 07:49:18.760'),
-        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 08:03:25.567'),
-        ( 'NVO', 1, 2, 'aktie', 0, 4, 545.00, 'DKK', 0.14, '2025-04-21 08:08:44.400'),
-        ( 'NVO', 1, 2, 'aktie', 1, 1, 545.00, 'DKK', 0.14, '2025-04-21 08:08:54.140'),
-        ( 'BA', 5, 6, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 09:36:51.160'),
-        ( 'BA', 1, 2, 'aktie', 0, 3, 215.00, 'DKK', 0.22, '2025-04-21 14:53:21.487'),
-        ( 'BA', 1, 2, 'aktie', 0, 2, 215.00, 'DKK', 0.22, '2025-04-21 15:06:25.143');`
+values  ('BA', 1, 2,'aktie', 0, 100, 117572.00, 'DKK', 117.57, '2024-05-10 19:51:13.727'),        
+        ('AAPL', 1, 2, 'aktie', 0, 150, 164804.00, 'DKK', 164.80, '2024-05-10 20:11:29.057'),
+        ('IBM', 1, 2, 'aktie', 0, 210, 226590.00, 'DKK', 226.59, '2024-05-10 20:11:29.057'),
+        ('MCD', 1, 2, 'aktie', 0, 150, 264225.00, 'DKK', 264.23, '2024-05-10 20:11:29.057'),
+        ('NKE', 1, 2, 'aktie', 0, 110, 66352.00, 'DKK', 66.35, '2024-05-10 20:11:29.057'),
+        ('WMT', 1, 2, 'aktie', 0, 200, 79092.00, 'DKK', 79.09, '2024-05-10 20:11:29.057'),
+        ('CAT', 1, 2, 'aktie', 0, 100, 221565.50, 'DKK', 221.57, '2024-05-10 20:11:29.057'),
+
+        ('BA', 5, 6,'aktie', 0, 100, 117572.00, 'DKK', 117.57, '2024-05-10 19:51:13.727'),        
+        ('AAPL', 5, 6, 'aktie', 0, 150, 164804.00, 'DKK', 164.80, '2024-05-10 20:11:29.057'),
+        ('IBM', 5, 6, 'aktie', 0, 210, 226590.00, 'DKK', 226.59, '2024-05-10 20:11:29.057'),
+        ('MCD', 5, 6, 'aktie', 0, 150, 264225.00, 'DKK', 264.23, '2024-05-10 20:11:29.057'),
+        ('NKE', 5, 6, 'aktie', 0, 110, 66352.00, 'DKK', 66.35, '2024-05-10 20:11:29.057'),
+        ('WMT', 5, 6, 'aktie', 0, 200, 79092.00, 'DKK', 79.09, '2024-05-10 20:11:29.057'),
+        ('CAT', 5, 6, 'aktie', 0, 100, 221565.50, 'DKK', 221.57, '2024-05-10 20:11:29.057')
+        ;`
 
 const lavVPKurs = `
         CREATE TABLE vaerdipapir.vpkurs(
@@ -266,16 +249,15 @@ async function ventPåDatabase() {
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
   await sql.query(lavVPKurs);
-  await sql.query(lavPortfolioHistorik);
-
-
+  
   // indsæt test data i tabeller
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
   await sql.query(dataIPortefoeljeTabel);
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
- 
+  await sql.query(dataiVpHandler); 
+
   
 
   console.log('alt oprettet') // tjek
