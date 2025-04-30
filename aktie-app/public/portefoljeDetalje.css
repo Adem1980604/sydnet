@@ -71,38 +71,24 @@
     font-size: 24px;
   }
   
-  .header button {
-    background-color: #7c4dff;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    margin-left: 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .header button:hover {
-    background-color: #5e35b1;
-  }
+ 
 
   .header-buttons {
     display: flex;
     gap: 10px;
   }
   
-  .handels-knap {
+  .detalje-knap {
     background-color: #7c4dff;
     color: white;
     border: none;
-    padding: 10px 18px;
+    padding: 5px 10px;
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s ease;
   }
   
-  .handels-knap:hover {
+  .detalje-knap:hover {
     background-color: #5e35b1;
   }
   
