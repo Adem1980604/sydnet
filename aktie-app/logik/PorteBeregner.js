@@ -23,7 +23,7 @@ class PortefoljeBeregner {
     // Metode: Beregner ejerliste og GAK for alle aktier
     beregnEjerOgGAK() {
           // Sorter handler efter dato først 
-  this.handler.sort((a, b) => new Date(a.datotid) - new Date(b.datotid));
+        this.handler.sort((a, b) => new Date(a.datotid) - new Date(b.datotid));
 
         // Gennemgår alle handler (køb/salg)
         for (let i = 0; i < this.handler.length; i++) {
