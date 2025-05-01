@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/kontoDetalje.css">
+  <link rel="stylesheet" href="/portefolje-oversigt.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <title>Portefølje-oversigt</title>
 </head>
@@ -41,30 +41,21 @@
       <!-- Portefølje liste -->
       <div class="portefolje-container">
         <div class="portefolje-box">
-          <h3>Brugerens porteføljer</h3>
-          <% for (let i = 0; i < portefoljer.length; i++) { %>
-            <div class="port-liste">
-              <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
-              <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
-              <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
-              <div class="portefolje-data">
-                <p><strong>Erhvervelsespris:</strong> <%= portefoljer[i].totalErhvervelsespris.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
-                <p><strong>Forventet værdi:</strong> <%= portefoljer[i].totalForventetVaerdi.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
-                <% if (portefoljer[i].totalUrealiseretGevinstTab >= 0) { %>
-                  <p class="positive"><strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
-                <% } else { %>
-                  <p class="negative"><strong>Urealiseret Gevinst/Tab:</strong> <%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
-                <% } %>
-              </div>
-            </div>
-          <% } %>
-        </div> 
-      </div
-      >
-     
-      <!-- Donut Chart -->
-      <div class="summary-card">
-        <div class="chart-placeholder" id="donut-chart">
+          <h3>Mine Porteføljer</h3>
+          <ul>
+            <% for (let i = 0; i < portefoljer.length; i++) { %>
+              <li>
+                <strong><%= portefoljer[i].navn %></strong>
+                
+                <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje Detaljer</button>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+
+        <!-- Donut-chart -->
+        <div class="summary-card">
+          <h3>Fordeling af værdi</h3>
           <canvas id="portfolioPieChartSamletVeardi"></canvas>
         </div>
       </div>

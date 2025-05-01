@@ -5,14 +5,6 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-/*body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color:#0d0d0d;
-    color: #f5f5f5;
-  }*/
-
-
   body {
     background-color: #0d0d0d;
     color: white;
@@ -189,8 +181,8 @@ button:hover {
 
 /* Container til listen og donut-chart */
 .portefolje-container {
-  display: flex; /* Brug Flexbox til at arrangere elementerne side om side */
-  gap: 20px; /* Afstand mellem listen og grafen */
+  display: flex; /* Arranger elementerne side om side */
+  gap: 30px; /* Afstand mellem listen og grafen */
   align-items: flex-start; /* Juster elementerne til toppen */
   margin-top: 20px;
 }
@@ -198,27 +190,67 @@ button:hover {
 /* Styling til listen */
 .portefolje-box {
   flex: 1; /* Gør listen fleksibel */
-  max-width: 50%; /* Maksimal bredde for listen */
+  max-width: 45%; /* Reducer bredden for bedre plads til grafen */
   background-color: #1a1a1a;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow-y: auto; /* Tilføj scrollbar, hvis listen bliver for lang */
+  max-height: 500px; /* Begræns højden */
+}
+
+.portefolje-box h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #c792ea;
+}
+
+.portefolje-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.portefolje-box li {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #292929;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.portefolje-box li:hover {
+  background-color: #3a3a3a;
+}
+
+.portefolje-box li strong {
+  color: #fff;
+  display: block;
+  margin-bottom: 5px;
 }
 
 /* Styling til donut-chart */
 .summary-card {
   flex: 1; /* Gør grafen fleksibel */
-  max-width: 50%; /* Maksimal bredde for grafen */
+  max-width: 45%; /* Reducer bredden for bedre plads til listen */
   background-color: #1a1a1a;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.summary-card h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #c792ea;
 }
 
 /* Canvas styling */
 #portfolioPieChartSamletVeardi {
   width: 100%; /* Fylder hele containerens bredde */
   height: auto; /* Bevarer proportionerne */
+  max-height: 400px; /* Begræns højden */
 }
 
 
