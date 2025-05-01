@@ -214,7 +214,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   // Henter konto
   const kontoResultater = await db.request()
     .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
-    .input('id', sql.Int, konto_id)
+    .input('id', sql.Int, konto_id)    
     .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggedin_bruger_id')
   /// Gem første række fra kontodata 
 
@@ -250,8 +250,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   for (let i = 0; i < portefoljer.length; i++) {
     const portefolje = portefoljer[i];
 
-  // Man henter alle handler (køb/salg) tilhørende den portefølje
-  const handlerResultat = await db.request()
+    // Man henter alle handler (køb/salg) tilhørende den portefølje
+    const handlerResultat = await db.request()
     .input('portefoelje_id', sql.Int, portefolje.portefoelje_id)
     .query(`
       SELECT h.antal, h.pris, h.datotid, h.valuta, h.vaerditype, h.salg_koeb,
@@ -293,10 +293,16 @@ router.get('/portefoeljeoversigt', async function (req, res) {
     portefolje.totalErhvervelsespris = totaler.totalErhvervelsespris || 0;
     portefolje.totalForventetVaerdi = totaler.totalForventetVaerdi || 0;
     portefolje.totalUrealiseretGevinstTab = totaler.totalUrealiseretGevinstTab || 0;
-}
+  }
+
+  //console.log(" *********** Data object portefoljer - sendt til browser sammen med portefoeljeoversigt.ejs*****************");
+  //console.log(portefoljer);
+  //console.log(konto);
+  console.log(konto.valuta);
+
 
   res.render('portestyring/portefoeljeoversigt', {
-    konto,
+    konto,    
     portefoljer
   });
 });
@@ -348,13 +354,31 @@ router.get('/porteside/:id', async function (req, res) {
   const portefolje = result.recordset[0]; // Her tager vi den første række i svaret – altså den portefølje brugeren har klikket på
   const konto_id = portefolje.konto_id; // Hver portefølje tilhører en konto – derfor henter vi konto_id fra porteføljen
   // Hent alle porteføljer for den samme konto
-  // Nu henter vi alle porteføljer, der tilhører samme konto – så sidebar kan vise dem alle
-  const allePortefoljer = await db.request()
+  //// Nu henter vi alle porteføljer, der tilhører samme konto – så sidebar kan vise dem alle
+  //const allePortefoljer = await db.request()
+  //  .input('konto_id', sql.Int, konto_id)
+  //  .query(`SELECT * FROM konto.portefoelje WHERE konto_id = @konto_id`);
+  //const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
+  
+  const kontooplysninger = await db.request()
     .input('konto_id', sql.Int, konto_id)
-    .query(`SELECT * FROM konto.portefoelje WHERE konto_id = @konto_id`);
-  const portefoljer = allePortefoljer.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
-  
-  
+    .query(`SELECT * FROM konto.kontooplysninger WHERE konto_id = @konto_id`);
+  const konto = kontooplysninger.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
+  console.log("*******0000")
+  console.log(konto)
+  console.log("*******0001")
+  const valuta = konto[0].valuta;
+  console.log("Valuta: " + valuta)
+
+
+  const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+  const data2 = await response.json();
+  console.log("*******0002")
+  console.log(data2.conversion_rates[valuta]);
+  console.log("*******0003")
+  const valutakurs = data2.conversion_rates[valuta];
+
+
   // VI henter handler + info om værdipapir som kan vises i tabel (porefølje-detalje-ejs)
   const handlerResultat = await db.request() 
     .input('id', sql.Int, portefoljeId)
@@ -380,29 +404,18 @@ router.get('/porteside/:id', async function (req, res) {
   beregner.beregnEjerOgGAK();
 
 
-    // HER henter vi de NYESTE aktiekurser for hver aktie
-    for (let i = 0; i < beregner.ejerListeFiltreret.length; i++) {
-      const aktie = beregner.ejerListeFiltreret[i];
+  // HER henter vi de NYESTE aktiekurser for hver aktie
+  for (let i = 0; i < beregner.ejerListeFiltreret.length; i++) {
+    const aktie = beregner.ejerListeFiltreret[i];
 
-      console.log(aktie.symbol)
-      const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-      const data2 = await response.json();
+    console.log(aktie.symbol)
+    const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+    const data2 = await response.json();
 
-      aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
-      aktie.pris = aktuelPris;
-      console.log(aktuelPris); 
-      
-        //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-        //const timeSeries = apiSvar.data['Weekly Time Series'];
-        //const senesteTidspunkt = Object.keys(timeSeries)[0];
-        //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
-        //aktie.pris = aktuelPris; // Her opdateres aktuel pris
-       //
-        //console.log(aktie.symbol)
-        //const response = await fetch(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-        //const data2 = await response.json();
-    }
-  
+    aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+    aktie.pris = aktuelPris;
+    console.log(aktuelPris); 
+  }
   
   
   // 11. Når alle aktiepriser er hentet, beregner vi totaler
@@ -413,6 +426,8 @@ router.get('/porteside/:id', async function (req, res) {
     portefolje, // den valgte portefolje
     portefoljer: [], // henter flere, ellers tom array
     konto_id,
+    valuta,
+    valutakurs,
     handler, // alle handler lavet i porteføljen 
     aktieliste, // liste over alle akiter 
     ejerListeFiltreret: beregner.ejerListeFiltreret, //de ekjer brugeren ejer nu 

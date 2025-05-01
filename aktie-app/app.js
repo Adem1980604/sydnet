@@ -20,7 +20,7 @@ app.use(session({
     secret: 'sydnet123',  // Hemmelig nøgle til at kryptere sessions
     resave: false,         // Gem ikke sessioner igen, hvis de ikke er ændret
     saveUninitialized: true, // Gem nye tomme sessioner (bruges ved login)
-    cookie: { secure: false } // Tillad cookies uden HTTPS (til lokal udvikling (tror jeg))
+//    cookie: { secure: false } // Tillad cookies uden HTTPS (til lokal udvikling (tror jeg))
 }));
 
 // dette håndere vores JSON-data altså POST request
@@ -29,7 +29,7 @@ app.use(express.json());
 // Gør det muligt for hjemmesiden at bruge filer som CSS og JavaScript.
 app.use(express.static('public'));
 
-// vi sætter ROUTES op for LOGIN page
+// vi sætter ROUTES op for LOGIN page(Hvilket er vores main page)
 app.get('/', function (req, res) {
     res.render('bruger-sider/log-ind')
 });
@@ -38,8 +38,6 @@ app.get('/', function (req, res) {
 
 //*******************API kald data route lavet med Fred*********/
 const dataRouter = require('./routers/aktiesoeg');
-
-//*******************API kald data route lavet med Fred*********/
 app.use('/aktiesoeg', dataRouter);
 
 
