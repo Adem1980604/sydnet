@@ -27,8 +27,9 @@ class PortefoljeBeregner {
 
         // Gennemgår alle handler (køb/salg)
         for (let i = 0; i < this.handler.length; i++) {
-            const h = this.handler[i];
+            const h = this.handler[i];            
             const symbol = h.symbol;
+            const valuta = h.valuta;
             const antal = h.antal;
             const pris = h.pris;
             const salg_koeb = h.salg_koeb; // false = køb, true = salg
@@ -125,7 +126,7 @@ class PortefoljeBeregner {
         for (let i = 0; i < this.ejerListeFiltreret.length; i++) {
             const e = this.ejerListeFiltreret[i];
             totalErhvervelsespris += e.antal * e.gak;
-            totalForventetVaerdi += e.antal * e.pris;
+            totalForventetVaerdi += e.antal * e.pris;// * valutakurs;
         }
 
         // Beregn urealiseret gevinst/tab (profit minus hvad vi har betalt)

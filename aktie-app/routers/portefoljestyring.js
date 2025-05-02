@@ -219,8 +219,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   /// Gem første række fra kontodata 
 
   const konto = kontoResultater.recordset;
-  console.log("*************Konto**********");
-  console.log(konto);
+  //console.log("*************Konto**********");
+  //console.log(konto);
 
   // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
@@ -271,22 +271,24 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
     const aktie = beregner.ejerListeFiltreret[j];
     //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-    console.log(aktie.symbol)
+    //console.log(aktie.symbol)
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
     const data2 = await response.json();
     aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
     aktie.pris = aktuelPris;
-    console.log(aktuelPris); 
-    
-    //const timeSeries = data2['Weekly Time Series'];
-    //const senesteTidspunkt = Object.keys(timeSeries)[0];
-    //const aktuelPris = parseFloat(timeSeries[senesteTidspunkt]['1. open']);
-    //aktie.pris = aktuelPris;
     //console.log(aktuelPris); 
   };
 
 
+  //const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+  //const data2 = await response.json();
+  ////console.log("*******0002")
+  ////console.log(data2.conversion_rates[valuta]);
+  ////console.log("*******0003")
+  //const valutakurs = data2.conversion_rates[valuta];
+
    // Beregn totals baseret på opdaterede priser
+    //const totaler = beregner.beregnTotaler(valutakurs);
     const totaler = beregner.beregnTotaler();
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
@@ -298,7 +300,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   //console.log(" *********** Data object portefoljer - sendt til browser sammen med portefoeljeoversigt.ejs*****************");
   //console.log(portefoljer);
   //console.log(konto);
-  console.log(konto.valuta);
+  //console.log(konto.valuta);
 
 
   res.render('portestyring/portefoeljeoversigt', {
@@ -417,8 +419,9 @@ router.get('/porteside/:id', async function (req, res) {
     console.log(aktuelPris); 
   }
   
-  
+
   // 11. Når alle aktiepriser er hentet, beregner vi totaler
+  //const totaler = beregner.beregnTotaler(valutakurs);
   const totaler = beregner.beregnTotaler();
 
   // Sender data videre til EJS 
@@ -426,8 +429,8 @@ router.get('/porteside/:id', async function (req, res) {
     portefolje, // den valgte portefolje
     portefoljer: [], // henter flere, ellers tom array
     konto_id,
-    valuta,
-    valutakurs,
+    valuta, // Valuta forkortelse
+    valutakurs, // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     handler, // alle handler lavet i porteføljen 
     aktieliste, // liste over alle akiter 
     ejerListeFiltreret: beregner.ejerListeFiltreret, //de ekjer brugeren ejer nu 

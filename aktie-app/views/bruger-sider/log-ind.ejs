@@ -23,10 +23,12 @@
     
     
         <label for ="brugernavn">Bruger Navn:</label>
-        <input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn" required>
+        <!--<input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn" required>-->
+        <input type="text" name="brugernavn" title="Indtast din brugernavn"  id="brugernavn">
 
         <label for = "adgangskode">Adgangskode:</label>
-        <input type="password" name="adgangskode"  title="Indtast din adgangskode" id="adgangskode" required>
+        <!--<input type="password" name="adgangskode"  title="Indtast din adgangskode" id="adgangskode" required>-->
+        <input type="password" name="adgangskode"  title="Indtast din adgangskode" id="adgangskode">
 
         <a href="/bruger/bruger-oprettelse">Opret Bruger</a>
         <a href="/bruger/nulstill">Glemt adgangskode?</a>
@@ -43,10 +45,10 @@
 
         //Vi sætter værdierne af det brugeren har indskrevet ind i en variable(logIndData)
         let logIndData = {
-            brugernavn: document.getElementById("brugernavn").value,
-            //brugernavn: "Emil",
-            adgangskode: document.getElementById("adgangskode").value
-            //adgangskode: "Emil"
+            //brugernavn: document.getElementById("brugernavn").value,
+            brugernavn: "Emil",
+            //adgangskode: document.getElementById("adgangskode").value
+            adgangskode: "Emil"
         };
         //Udskriver både brugernavn og adgangskode for at kunne følge med i terminalen
         console.log("brugernavn:  " + document.getElementById("brugernavn").value)

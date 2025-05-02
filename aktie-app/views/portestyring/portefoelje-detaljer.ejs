@@ -12,12 +12,13 @@
   <aside class="sidebar">
     <div class="logo">
       <h3>SYDNET</h3>
-    </div>
+    </div>    
     <ul>
       <li><a href="/bruger/dashboard">Dashboard</a></li>
-      <li><a href="/portefoljestyring/konto/<%= konto_id %>">Min porteføljeoversigt</a></li>
       <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
+      <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
     </ul>
+
   </aside>
 
   <main class="main-content">
@@ -51,9 +52,9 @@
         <div class="total-value">
           <p>Samlet urealiseret gevinst/tab</p>
           <% if (totalUrealiseretGevinstTab >= 0) { %>
-            <h2 class="positive">+<%= Number(totalUrealiseretGevinstTab).toFixed(2) %> DKK</h2>
+            <h2 class="positive">+<%= Number(totalUrealiseretGevinstTab).toFixed(2) %> <%= valuta %></h2>
           <% } else { %>
-            <h2 class="negative"><%= Number(totalUrealiseretGevinstTab).toFixed(2) %> DKK</h2>
+            <h2 class="negative"><%= Number(totalUrealiseretGevinstTab).toFixed(2) %> <%= valuta %></h2>
           <% } %>
         </div>
       </div>
@@ -67,7 +68,7 @@
           <tr>
             <th>Navn</th>
             <th>Volume</th>
-            <th>Pris</th>
+            <th>Pris pr stk</th>
             <th>Forventet værdi</th>
             <th>GAK</th>
             <th>Urealiseret gevinst/tab</th>
@@ -76,27 +77,28 @@
         <tbody>
           <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
             const e = ejerListeFiltreret[i];
-            const samletVaerdi = e.antal * e.pris;  // Forventet værdi = antal * aktuel pris
+            const samletVaerdi = e.antal * e.pris * valutakurs;  // Forventet værdi = antal * aktuel pris
             const erhvervelsesPris = e.antal * e.gak; // Erhvervelsespris = antal * GAK
             const gevinstTab = samletVaerdi - erhvervelsesPris;
+            const aktuelPrisIBaseCurrency = e.pris * valutakurs;
           %>
-          <tr> <!-- Start ny række -->
-            <td><%= e.navn %> (<%= e.symbol %>)</td> <!-- Navn -->
-            <td><%= e.antal %> stk.</td> <!-- Antal aktier -->
-            <td><%= Number(e.pris).toFixed(2) %> DKK</td> <!-- Aktuel pris -->
-            <td><%= samletVaerdi.toFixed(2) %> DKK</td> <!-- Samlet værdi -->
-            <td><%= e.gak.toFixed(2) %> DKK</td> <!-- GAK -->
-          
-            <% if (gevinstTab >= 0) { %>
-              <td class="positive">+<%= gevinstTab.toFixed(2) %> DKK</td> <!-- Gevinst -->
-            <% } else { %>
-              <td class="negative"><%= gevinstTab.toFixed(2) %> DKK</td> <!-- Tab -->
-            <% } %>
-            <td>
-              <a href="/portefoljestyring/vaerdipapir/<%= e.symbol %>" class="detalje-knap">Detaljer</a>
-            </td>
-            
-          </tr> <!-- Slut på række -->
+              <tr> <!-- Start ny række -->
+                <td><%= e.navn %> (<%= e.symbol %>)</td> <!-- Navn -->
+                <td><%= e.antal %> stk.</td> <!-- Antal aktier -->
+                <td><%= Number(aktuelPrisIBaseCurrency).toFixed(2) %> <%= valuta %></td> <!-- Aktuel pris pr stk -->
+                <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forvented Samlet værdi -->
+                <td><%= e.gak.toFixed(2) %> <%= valuta %></td> <!-- GAK -->
+              
+                <% if (gevinstTab >= 0) { %>
+                  <td class="positive">+<%= gevinstTab.toFixed(2) %> <%= valuta %></td> <!-- Gevinst -->
+                <% } else { %>
+                  <td class="negative"><%= gevinstTab.toFixed(2) %> <%= valuta %></td> <!-- Tab -->
+                <% } %>
+                <td>
+                  <a href="/portefoljestyring/vaerdipapir/<%= e.symbol %>" class="detalje-knap">Detaljer</a>
+                </td>
+
+              </tr> <!-- Slut på række -->
           <% } %>
           </tbody>
       </table>
@@ -127,7 +129,7 @@
               <td><%= h.salg_koeb ? 'Salg' : 'Køb' %></td>
               <td><%= h.symbol %></td>
               <td><%= h.antal %> stk</td>
-              <td><%= Number(h.pris).toFixed(2) %> DKK</td>
+              <td><%= Number(h.pris).toFixed(2) %> </td>
               <td><%= total.toFixed(2) %> DKK</td>
             </tr>
             <% } %>
@@ -152,14 +154,12 @@
 
     <!-- Søgefelt til aktier -->
     <input type="text" id="aktieSoeg" placeholder="Søg værdipapir">
-
     <button onclick="aktiesoeg()">Søg efter værdipapir</button>
     <ul id="vaerdiResultat"></ul>
 
     <!-- Formular til køb/salg -->
     <form id="handelForm">
       <input type="number" id="antal" placeholder="Antal" required>
-
       <label for="samlet_pris">Pris per aktie i USD</label>
       <input type="number" id="samlet_pris" placeholder="Pris" readonly>
 
@@ -191,10 +191,9 @@
     const brugerensAktier = JSON.parse('<%- JSON.stringify(ejerListeFiltreret) %>');
     let nuvaerendeAktiePris;
     let symbol;
-    let valuta = "<%= valuta %>";
-    let valutakurs = "<%= valutakurs %>";    
+    let valuta = "<%= valuta %>"; // Valuta forkortelse
+    let valutakurs = "<%= valutakurs %>"; // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     let valgtAktie = [];
-
 
     async function aktiesoeg() {
           const symbol = document.getElementById("aktieSoeg").value;
@@ -326,8 +325,8 @@
  // vi antager at  brugeren ikke har valgt en aktie 
   
 const input = document.getElementById("aktieSoeg");
-console.log("**********************input********************");
-console.log(input);
+//console.log("**********************input********************");
+//console.log(input);
 const resultatListe = document.getElementById("vaerdiResultat");
 
 // Når brugeren skriver antal så kalder vi på funktionen der beregner prisen
@@ -362,28 +361,29 @@ async function beregnSamletPris(){
 
 async function visPortfolioGraf() {
   if(Chart.getChart("accountChart")) {
-  Chart.getChart("accountChart")?.destroy()
-}
-    const ctx = document.getElementById('accountChart').getContext('2d');
-
-const nu = new Date();
-const maanedLabels = [];
-const vaerdier = [];
-
-const startMaaned = 0; // Januar = måned 0
-const slutMaaned = nu.getMonth(); // Aktuel måned (0-indekseret)
-
-for (let m = startMaaned; m <= slutMaaned; m++) {
-  dato = new Date(nu.getFullYear(), m, 1);
-  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
-
-  // Dummy data, til totalværdi for grafen
-  if (m < slutMaaned) {
-    vaerdier.push(Math.floor(Math.random() * 5000) + 1000);
-  } else {
-    vaerdier.push(<%= totalForventetVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
+    Chart.getChart("accountChart")?.destroy()
   }
-}
+  const ctx = document.getElementById('accountChart').getContext('2d');
+
+  const nu = new Date();
+  const maanedLabels = [];
+  const vaerdier = [];
+
+  const startMaaned = 0; // Januar = måned 0
+  const slutMaaned = nu.getMonth(); // Aktuel måned (0-indekseret)
+
+  for (let m = startMaaned; m <= slutMaaned; m++) {
+    dato = new Date(nu.getFullYear(), m, 1);
+    maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
+
+    // Dummy data, til totalværdi for grafen
+    if (m < slutMaaned) {
+      // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
+      vaerdier.push(<%= totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
+    } else {
+      vaerdier.push(<%= totalForventetVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
+    }
+  }
 
 
     // Opsæt data og konfiguration
@@ -431,7 +431,7 @@ for (let m = startMaaned; m <= slutMaaned; m++) {
             ticks: {
               color: '#ffffff',
               callback: function (value) {
-                return value.toLocaleString('da-DK') + " DKK";
+                return value.toLocaleString('da-DK') + " " + valuta;
               }
             },
             grid: {

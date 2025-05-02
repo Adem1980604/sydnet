@@ -125,7 +125,7 @@
 .chart-card {
   flex: 1;
   min-width: 300px;
-  max-width: 500px; /* Maksimal bredde for hver chart */
+  max-width: 800px; /* Maksimal bredde for hver chart */
   background-color: #1f1f1f;
   padding: 20px;
   border-radius: 12px;
