@@ -1,29 +1,29 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-    background-color: #0d0d0d;
-    color: white;
-    margin: 0;
-    padding: 0;
+  background-color: #0d0d0d;
+  color: white;
+  margin: 0;
+  padding: 0;
 }
 
-/* Container layout */
+/* Layoutcontainer med sidebar og hovedindhold */
 .container {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100vh;
 }
 
-/*  Sidebar */
+/* Sidebar til navigation*/
 .sidebar {
   width: 220px;
   background-color: #1e1e1e;
   padding: 20px;
- 
 }
 
-.sidebar h2 {
-  text-align: center;
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+.sidebar .logo {
+  color: #c792ea;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
 }
 
 .sidebar ul {
@@ -47,88 +47,66 @@ body {
   transition: 0.3s ease;
 }
 
-.sidebar .logo {
-  color: #c792ea;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 30px;
+.sidebar a:hover {
+  background-color: #5e35b1;
 }
 
-/* Hovedindhold */
+/* Hovedindhold  */
 .content {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .content h1 {
-    text-align: left;
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
-/* Konto liste styling */
+/*Konto-visning */
 .konto-liste {
-    background-color: #1e1e1e;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 5px rgba(255,255,255,0.1);
+  background-color: #1e1e1e;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(255,255,255,0.1);
 }
 
 .konto-liste p {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 hr {
-    border: 0.5px solid #444;
+  border: 0.5px solid #444;
 }
-/* Dette bruges til vores popup der kommer frem når brugeren vil sætte penge ind */
-#popup {
-    display: none; /*sørger for at skjule popup til at starte med*/
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1e1e1e;
-    padding: 20px;
-    border: 2px solid black;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    
-  }
 
-  #popup label,
-#popup input,
-#popup select {
+/* Fælles styling for popup-vinduer (indsæt, luk, resultat) */
+.popup-box {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e1e;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
 
+.popup-box label,
+.popup-box input,
+.popup-box select {
   margin-bottom: 10px;
 }
 
-/* Dette bruges til vores lukke popup*/
-#lukPopup {
-    display: none; /*sørger for at skjule popup til at starte med*/
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1e1e1e;
-    padding: 20px;
-    border: 2px solid black;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    
-  }
-
-  #lukPopup label,
-#lukPopup input,
-#lukPopup select {
-
-  margin-bottom: 10px;
+/* Resultat-popup specifikt */
+#resultat {
+  font-family: "Lora", serif;
 }
 
-
-/* knap styling */
- button {
+/* Knapper – generel styling */
+button {
   background-color: #7c4dff;
   color: white;
   border: none;
@@ -137,33 +115,13 @@ hr {
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s ease;
-    
-  }
-  
-  /* Hover-effekt */
-  button:hover {
+}
 
-    background-color: #5e35b1
-  }
-  
+button:hover {
+  background-color: #5e35b1;
+}
 
-  #resultat {
-    display: none; /* skjult som udgangspunkt */
-    font-family: "Lora", serif;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1e1e1e;
-    padding: 20px;
-    border: 2px solid black;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    z-index: 1000; /* ligger ovenpå andet indhold */
-  }
-  
-
-  /* Sidebar styling */
+/*Højresidepanel til konto-oprettelse */
 .sidebar2 {
   width: 300px;
   background-color: #1e1e1e;
@@ -197,16 +155,5 @@ hr {
 }
 
 .sidebar2 button {
-background-color: #7c4dff;
-color: white;
-border: none;
-margin-top: 10px;
-border-radius: 20px;
-cursor: pointer;
-font-weight: bold;
-transition: background-color 0.3s ease;
-}
-
-.sidebar2 button:hover {
-background-color: #5e35b1
+  margin-top: 10px;
 }

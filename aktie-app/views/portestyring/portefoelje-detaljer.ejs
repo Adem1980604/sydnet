@@ -405,7 +405,8 @@ async function visPortfolioGraf() {
       data: data,
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 2, // Forholdet mellem bredde og højde (2:1)
         plugins: {
           legend: {
             labels: { color: '#ffffff' }
@@ -566,7 +567,8 @@ async function visPortfolioGraf() {
     data: data,
     options: {
       responsive: true,
-      maintainAspectRatio: false,
+      maintainAspectRatio: true,
+      aspectRatio: 2, // Forholdet mellem bredde og højde (2:1)
       plugins: {
         legend: {
           position: 'right',
