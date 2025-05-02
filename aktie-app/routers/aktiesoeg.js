@@ -1236,7 +1236,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
         },
         'Weekly Time Series': {
           '2025-04-24': {
-            '1. open': '193.2650',
+            '1. open': '1933.2650',
             '2. high': '208.8299',
             '3. low': '189.8112',
             '4. close': '208.3700',

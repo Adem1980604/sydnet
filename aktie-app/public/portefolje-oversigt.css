@@ -373,9 +373,41 @@ td.negative {
   color: #f44336;
 }
 
-/* Mobile */
-@media (max-width: 900px) {
-  .top-cards {
-    flex-direction: column;
-  }
+/* Styling for portefølje-liste */
+.port-liste {
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.port-liste p {
+  margin: 10px 0;
+}
+
+.port-liste button {
+  background-color: #6a5acd;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.port-liste button:hover {
+  background-color: #5e35b1;
+}
+
+/* Styling for positive og negative værdier */
+.positive {
+  color: #4caf50; /* Grøn farve for positiv værdi */
+  font-weight: bold;
+}
+
+.negative {
+  color: #f44336; /* Rød farve for negativ værdi */
+  font-weight: bold;
 }
