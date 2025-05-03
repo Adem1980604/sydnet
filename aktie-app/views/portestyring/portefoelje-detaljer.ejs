@@ -20,7 +20,6 @@
     </ul>
 
   </aside>
-
   <main class="main-content">
     <div class="header">
       <h1><%= portefolje.navn %></h1>
@@ -48,7 +47,7 @@
     <div class="grid-layout">
       <div class="summary-card">
        
-        
+    
         <div class="total-value">
           <p>Samlet urealiseret gevinst/tab</p>
           <% if (totalUrealiseretGevinstTab >= 0) { %>
@@ -59,7 +58,6 @@
         </div>
       </div>
     </div>
-
     <!-- Aktie tabel -->
     <section class="stock-table">
       <h3>Aktier i portefølje</h3>
@@ -88,7 +86,6 @@
                 <td><%= Number(aktuelPrisIBaseCurrency).toFixed(2) %> <%= valuta %></td> <!-- Aktuel pris pr stk -->
                 <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forvented Samlet værdi -->
                 <td><%= e.gak.toFixed(2) %> <%= valuta %></td> <!-- GAK -->
-              
                 <% if (gevinstTab >= 0) { %>
                   <td class="positive">+<%= gevinstTab.toFixed(2) %> <%= valuta %></td> <!-- Gevinst -->
                 <% } else { %>
@@ -174,7 +171,6 @@
 
       <button class="popup-knap" type="submit">Bekræft Handel/Salg</button>
     </form>
-
     <button class="popup-knap" onclick="lukPopup()">Luk</button>
   </div>
 </div>
@@ -379,9 +375,9 @@ async function visPortfolioGraf() {
     // Dummy data, til totalværdi for grafen
     if (m < slutMaaned) {
       // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-      vaerdier.push(<%= totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
+      vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
     } else {
-      vaerdier.push(<%= totalForventetVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
+      vaerdier.push(<%=totalForventetVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
     }
   }
 
@@ -399,7 +395,6 @@ async function visPortfolioGraf() {
         borderWidth: 2
       }]
     };
-
     const config = {
       type: 'line',
       data: data,
@@ -436,18 +431,17 @@ async function visPortfolioGraf() {
               }
             },
             grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
+            color: 'rgba(255, 255, 255, 0.1)'
             },
             title: {
-              display: true,
-              text: "Værdi (DKK)",
+            display: true,
+            text: "Værdi (DKK)",
               color: '#ffffff'
             }
           }
         }
       }
     };
-
     new Chart(ctx, config);
   }
 
@@ -484,10 +478,10 @@ async function visPortfolioGraf() {
 
       // Funktion der laver én tilfældig farve
   function randomRgbFarve() {
-  const r = Math.floor(Math.random() * 80) + 60;  
-  const g = Math.floor(Math.random() * 80) + 80;   
-  const b = Math.floor(Math.random() * 100) + 100; 
-  return `rgb(${r}, ${g}, ${b})`;
+  const r = Math.floor(Math.random()*80)+60;  
+  const g = Math.floor(Math.random()*80)+80;   
+  const b = Math.floor(Math.random()*100)+100; 
+  return `rgb(${r},${g},${b})`;
 }
 
 
@@ -515,7 +509,7 @@ async function visPortfolioGraf() {
 
   // Nulstil arrays
   donutLabels.length = 0;
-  donutData.length = 0;
+    donutData.length = 0;
 
   // Bygger labels og data
   for (let i = 0; i < brugerensAktier.length; i++) {
@@ -547,7 +541,7 @@ async function visPortfolioGraf() {
   for (let i = 0; i < donutLabels.length; i++) {
     let procent = (donutData[i] / total) * 100;
     procent = procent.toFixed(1);
-    labelsMedProcent.push(donutLabels[i] + " (" + procent + "%)");
+    labelsMedProcent.push(donutLabels[i] +"(" + procent + "%)");
   }
 
 

@@ -433,7 +433,7 @@ router.get('/porteside/:id', async function (req, res) {
     valutakurs, // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     handler, // alle handler lavet i porteføljen 
     aktieliste, // liste over alle akiter 
-    ejerListeFiltreret: beregner.ejerListeFiltreret, //de ekjer brugeren ejer nu 
+    ejerListeFiltreret: beregner.ejerListeFiltreret, //de aktier brugeren ejer nu 
     gakBeregning: beregner.gakBeregning, // info om GAK
   // totalErhvervelsespris: totaler.totalErhvervelsespris, // samlet købspris
     totalForventetVaerdi: totaler.totalForventetVaerdi, // samlet forventet værdi 
