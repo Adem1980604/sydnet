@@ -39,39 +39,38 @@
       </div>
 
       <!-- Portefølje liste -->
-      <div class="portefolje-container">
-        <div class="portefolje-box">
+      <div class="portefolje-container">  <div class="portefolje-box">
           <h3>Mine Porteføljer</h3>
           <ul>
             <% for (let i = 0; i < portefoljer.length; i++) { %>
               <div class="port-liste">
-                <p><strong>Portefølje:</strong> <%= portefoljer[i].navn %></p>
-                <p><strong>Tilknyttet konto:</strong> <%= portefoljer[i].kontonavn %></p>
+                <p><strong>Portefølje:</strong> <%=portefoljer[i].navn %></p>
+           <p><strong>Tilknyttet konto:</strong><%= portefoljer[i].kontonavn %></p>
                 <button onclick="sePortefolje('<%= portefoljer[i].portefoelje_id %>')">Se portefølje</button>
                 
-                <div class="portefolje-data">
-                  <p><strong>Erhvervelsespris:</strong> <%= portefoljer[i].totalErhvervelsespris.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
-                  <p><strong>Forventet værdi:</strong> <%= portefoljer[i].totalForventetVaerdi.toFixed(2) %> <%= portefoljer[i].kontovaluta %></p>
+         <div class="portefolje-data">
+                  <p><strong>Erhvervelsespris:</strong> <%=portefoljer[i].totalErhvervelsespris.toFixed(2)%><%= portefoljer[i].kontovaluta %></p>
+                      <p><strong>Forventet værdi:</strong> <%=portefoljer[i].totalForventetVaerdi.toFixed(2)%><%= portefoljer[i].kontovaluta%></p>
                   
                   <% if (portefoljer[i].totalUrealiseretGevinstTab >= 0) { %>
-                    <p class="positive">
-                      <strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %>
+           <p class="positive">
+                         <strong>Urealiseret Gevinst/Tab:</strong> +<%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %>
                     </p>
-                  <% } else { %>
+                  <%} else{%>
                     <p class="negative">
                       <strong>Urealiseret Gevinst/Tab:</strong> <%= portefoljer[i].totalUrealiseretGevinstTab.toFixed(2) %> <%= portefoljer[i].kontovaluta %>
                     </p>
-                  <% } %>
-                </div>
+                 <%}%>
+           </div>
               </div>
-            <% } %>
+            <%}%>
           </ul>
         </div>
 
         <!-- Donut-chart -->
         <div class="summary-card">
           <h3>Fordeling af værdi</h3>
-          <canvas id="portfolioPieChartSamletVeardi"></canvas>
+    <canvas id="portfolioPieChartSamletVeardi"></canvas>
         </div>
       </div>
 
@@ -81,7 +80,7 @@
         <label for="navn">Navn:</label>
         <input type="text" id="portefoljeNavn"><br>
 
-        <label for="navn">Konto id:</label>
+     <label for="navn">Konto id:</label>
         <select id="kontoNavnDropdown">
           <% for (let k = 0; k < konto.length; k++) { %>
             <option value="<%= konto[k].konto_id %>"><%= konto[k].navn %></option>
@@ -89,7 +88,7 @@
         </select>
 
         <button onclick="OpretPortefoelje()">Opret Portefølje</button>
-        <button onclick="lukPopup1()">Luk</button>
+     <button onclick="lukPopup1()">Luk</button>
       </div>
 
     </main>
@@ -102,7 +101,7 @@
       }
 
       function lukPopup1() {
-        document.getElementById('popup1').style.display = 'none';
+   document.getElementById('popup1').style.display = 'none';
       }
 
       async function OpretPortefoelje() {
@@ -174,7 +173,7 @@ document.getElementById('totalPortefoljeVaerdi').innerText = samletVaerdi.toFixe
   // Funktion der laver én tilfældig farve
   function randomRgbFarve() {
   const r = Math.floor(Math.random() * 80) + 60;   // 60–140
-  const g = Math.floor(Math.random() * 80) + 80;   // 80–160
+  const g = Math.floor(Math.random() * 80) +80;   // 80–160
   const b = Math.floor(Math.random() * 100) + 100; // 100–200
   return `rgb(${r}, ${g}, ${b})`;
 }
@@ -256,7 +255,7 @@ document.getElementById('totalPortefoljeVaerdi').innerText = samletVaerdi.toFixe
           padding: {
             top: 20,
             bottom: 20,
-            left: 20,
+         left: 20,
             right: 20
           }
         }
@@ -266,7 +265,7 @@ document.getElementById('totalPortefoljeVaerdi').innerText = samletVaerdi.toFixe
     new Chart(ctx, config);
   }
 
-  // Kald funktionen så charten vises
+
   visPortefoljeOversigtChart();
 
 
