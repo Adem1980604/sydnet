@@ -118,6 +118,8 @@ class PortefoljeBeregner {
                     e.gak = this.gakBeregning[j].samletPris / this.gakBeregning[j].samletAntal;
                     //console.log("********this*************");
                     //console.log(this);
+                }
+            }
 
             // Hvis vi fandt en nyeste handel -> brug pris og navn
             if (senesteHandler) {
