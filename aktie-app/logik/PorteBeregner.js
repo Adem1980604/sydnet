@@ -35,7 +35,7 @@ class PortefoljeBeregner {
             const valuta =   h.valuta;
             const antal = h.antal;
             const pris =   h.pris;
-            const salg_koeb =  h.salg_koeb; // false = køb, true = salg
+            const salg_koeb =  h.salg_koeb; // false = køb true = salg
 
             // 1: Find aktien i ejerlisten (hvis den findes)
             let ejerAktie = null;
@@ -50,6 +50,7 @@ class PortefoljeBeregner {
                 ejerAktie={symbol: symbol, antal: 0 };
                 this.ejerListe.push(ejerAktie);
                  }
+
             // 2:hvoFind eller opret GAK beregning for aktien
             let gakAktie =null;
             for (let j = 0; j< this.gakBeregning.length; j++) {
@@ -59,7 +60,7 @@ class PortefoljeBeregner {
                     }
             }
             if ( !gakAktie) {
-                gakAktie = {symbol,samletAntal:0,samletPris:0};
+                gakAktie = {symbol ,samletAntal:0,samletPris:0};
                 this.gakBeregning.push(gakAktie);
             }
             // 3: Opdater ejerantal og GAK baseret på køb/salg
@@ -97,30 +98,29 @@ class PortefoljeBeregner {
             let senesteHandler = null;
             for (let j = 0; j < this.handler.length; j++) {
                 if (this.handler[j].symbol===e.symbol) {
-                    if (!senesteHandler || new Date(this.handler[j].dato) > new Date(senesteHandler.dato)) {
+                    if (!senesteHandler||new Date(this.handler[j].dato) > new Date(senesteHandler.dato)) {
                         senesteHandler = this.handler[j];
                     }
                 }
-            }
+ }
             // Hvis vi fandt en nyeste handel -> brug pris og navn
             if (senesteHandler) {
                 e.pris= senesteHandler.pris;
                 e.navn =senesteHandler.navn;
                 e.portefolje_navn = senesteHandler.portefolje_navn;
             }
-
             // Find GAK
-            for (let j = 0; j< this.gakBeregning.length; j++) {
+            for (let j = 0; j < this.gakBeregning.length; j++) {
                 if (this.gakBeregning[j].symbol===e.symbol) {
                     e.gak = this.gakBeregning[j].samletPris/this.gakBeregning[j].samletAntal;
                     break;
-                }
-            }
+                   }
+ }
         }
     }
     // Metode til at beregne totaler for hver portefølje
     beregnTotaler() {
-        let totalErhvervelsespris =0; // hvad vi har betalt for aktien i alt
+        let totalErhvervelsespris=0; // hvad vi har betalt for aktien i alt
         let totalForventetVaerdi =0; // Hvad aktien er værd idag (markedspris)
 
         // går igennem alle værdipapir ( altså dem vi stadig ejer)
@@ -131,6 +131,7 @@ class PortefoljeBeregner {
         }
 // console.log( totalErhvervelsespris)
 //console.log( totalForventetVaerdi)
+
         // Beregn urealiseret gevinst/tab (profit minus hvad vi har betalt)
         const totalUrealiseretGevinstTab = totalForventetVaerdi - totalErhvervelsespris;
 
@@ -151,7 +152,7 @@ class PortefoljeBeregner {
         let investeringer = 0;
         for (let i= 0; i< this.ejerListeFiltreret.length; i++) {
             const e =this.ejerListeFiltreret[i];
-            investeringer += e.antal*e.pris
+            investeringer+= e.antal*e.pris
         }
         return kontanter+investeringer;
          }
@@ -204,7 +205,7 @@ class PortefoljeBeregner {
             });
         }
     
-        // Bubble sort: største gevinst øverst
+        // Bubble sort agtig: største gevinst øverst
         for (let i = 0; i< liste.length - 1; i++) {
             for (let j = 0; j <liste.length - 1 - i; j++) {
                 if (liste[j].gevinst < liste[j + 1].gevinst) {

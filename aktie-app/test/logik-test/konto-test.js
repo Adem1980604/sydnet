@@ -8,7 +8,7 @@ describe("hentSaldo", () => {
     const fakeDb = {
       request: () => ({
         input: () => ({
-          query: async () => ({ recordset: [{ saldo: 1500}] })
+          query: async () => ({recordset:[{ saldo: 1500}]})
         })
       })
     };
@@ -18,3 +18,4 @@ describe("hentSaldo", () => {
   });
 });
 
+//  chai http diskussion at vi bruger den almindelig require  
