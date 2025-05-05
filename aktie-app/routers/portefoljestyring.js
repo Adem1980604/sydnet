@@ -248,6 +248,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   
   // Brug klassen på hver portefølje
   for (let i = 0; i < portefoljer.length; i++) {
+    console.log("****************** NEXT ************************")
     const portefolje = portefoljer[i];
 
     // Man henter alle handler (køb/salg) tilhørende den portefølje
@@ -261,35 +262,40 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       WHERE h.portefoelje_id = @portefoelje_id
     `);
 
-  const handler = handlerResultat.recordset;
+    const handler = handlerResultat.recordset;
 
-
-  // her bruger vi klassen fra logik filen til at beregne ejerstruktur
-  const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
-  beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
-  // For hver aktie i porteføljen hentes live pris, her opdateres der pris på værdipapir
-  for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
-    const aktie = beregner.ejerListeFiltreret[j];
-    //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-    //console.log(aktie.symbol)
-    const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+    // Alle aktiekurser er i USD - så vi slår USD op i hentvalutakurs og finder kurs i forhold til kontoen base currency
+    const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
     const data2 = await response.json();
-    aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
-    aktie.pris = aktuelPris;
-    //console.log(aktuelPris); 
-  };
+    let valutakurs;
+    try {
+      let valuta_text = Object.values(handler[0].valuta);
+      let valuta_symbol = valuta_text.join('');
+      valutakurs = data2.conversion_rates[valuta_symbol];
+    } catch (error) {
+      valutakurs = 1;
+    } 
 
+    console.log("Valuta kurs : " + valutakurs)
+    // her bruger vi klassen fra logik filen til at beregne ejerstruktur
+    const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
+    beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
+    // For hver aktie i porteføljen hentes live pris, her opdateres der pris på værdipapir
+    for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
+      const aktie = beregner.ejerListeFiltreret[j];
+      //const apiSvar = await axios.get(`/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+      //console.log(aktie.symbol)
+      const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+      const data2 = await response.json();
+      aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+      aktie.pris = aktuelPris * valutakurs;
+      console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
+    };
 
-  //const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
-  //const data2 = await response.json();
-  ////console.log("*******0002")
-  ////console.log(data2.conversion_rates[valuta]);
-  ////console.log("*******0003")
-  //const valutakurs = data2.conversion_rates[valuta];
-
-   // Beregn totals baseret på opdaterede priser
+    // Beregn totals baseret på opdaterede priser
     //const totaler = beregner.beregnTotaler(valutakurs);
     const totaler = beregner.beregnTotaler();
+    console.log(totaler); 
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
     portefolje.totalErhvervelsespris = totaler.totalErhvervelsespris || 0;
@@ -306,6 +312,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   res.render('portestyring/portefoeljeoversigt', {
     konto,    
     portefoljer
+    //valutakurs
   });
 });
 
@@ -366,18 +373,18 @@ router.get('/porteside/:id', async function (req, res) {
     .input('konto_id', sql.Int, konto_id)
     .query(`SELECT * FROM konto.kontooplysninger WHERE konto_id = @konto_id`);
   const konto = kontooplysninger.recordset; // Vi gemmer dem i en variabel, så vi kan sende dem videre
-  console.log("*******0000")
-  console.log(konto)
-  console.log("*******0001")
+  //console.log("*******0000")
+  //console.log(konto)
+  //console.log("*******0001")
   const valuta = konto[0].valuta;
-  console.log("Valuta: " + valuta)
+  //console.log("Valuta: " + valuta)
 
 
   const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
   const data2 = await response.json();
-  console.log("*******0002")
-  console.log(data2.conversion_rates[valuta]);
-  console.log("*******0003")
+  //console.log("*******0002")
+  //console.log(data2.conversion_rates[valuta]);
+  //console.log("*******0003")
   const valutakurs = data2.conversion_rates[valuta];
 
 
@@ -433,7 +440,7 @@ router.get('/porteside/:id', async function (req, res) {
     valutakurs, // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     handler, // alle handler lavet i porteføljen 
     aktieliste, // liste over alle akiter 
-    ejerListeFiltreret: beregner.ejerListeFiltreret, //de ekjer brugeren ejer nu 
+    ejerListeFiltreret: beregner.ejerListeFiltreret, //de aktier brugeren ejer nu 
     gakBeregning: beregner.gakBeregning, // info om GAK
   // totalErhvervelsespris: totaler.totalErhvervelsespris, // samlet købspris
     totalForventetVaerdi: totaler.totalForventetVaerdi, // samlet forventet værdi 

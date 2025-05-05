@@ -9,6 +9,11 @@ En klasse der kan lave alle beregninger til portefølje-funktionalitet
 - Samlet total værdi (kontanter + investeringer) 
 - Top 5 værdipapirer baseret på værdi/profit
 */
+const { sql, forbindDatabase } = require('../db');
+const { query } = require('mssql');
+require('dotenv').config(); // sørger for at tage fat i vores env fil
+
+
 
 class PortefoljeBeregner {
     constructor(handler, konti = []) {
@@ -16,12 +21,14 @@ class PortefoljeBeregner {
         this.konti = konti;       //  Gemmer alle brugerens konti med saldo
         this.ejerListe = []; // Liste over aktier brugeren ejer lige nu
         this.gakBeregning = [];  // Data til at beregne GAK på hver aktie
-        this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte væk)
+        this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte)
         this.realiseretGevinst = 0; // Akkumulerer realiseret gevinst/tab
     }
 
     // Metode: Beregner ejerliste og GAK for alle aktier
     beregnEjerOgGAK() {
+        //console.log("****************handler************");
+        //console.log(this.handler);
         // Sorter handler efter dato først 
         this.handler.sort((a, b) => new Date(a.datotid) - new Date(b.datotid));
 
@@ -100,20 +107,56 @@ class PortefoljeBeregner {
                 }
             }
 
+            // Find Gennemsnitlig anskaffelseskurs GAK
+            for (let j = 0; j < this.gakBeregning.length; j++) {
+                if (this.gakBeregning[j].symbol === e.symbol) {
+                    e.gak = this.gakBeregning[j].samletPris / this.gakBeregning[j].samletAntal;
+                    //console.log("********this*************");
+                    //console.log(this);
+
+                    break;
+                }
+            }
+
+            /*
+            const db = await forbindDatabase();  // skaber en forbindelse med db
+            const db_result = await db.request()
+                .input('konto_id', sql.Int, senesteHandler.konto_id)
+                .query(`
+                    SELECT valuta 
+                    FROM konto.kontooplysninger kntopl 
+                    where kntopl.konto_id = @konto_id`
+                   );
+            const baseCurrency = db_result.recordset[0].valuta;
+            console.log("********Basecurrency");
+            console.log(baseCurrency);
+
+            const aktie = this.ejerListeFiltreret[i];
+            const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+            const data = await response.json();
+            const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
+
+            console.log("********aktuelPris");
+            console.log(aktuelPris);
+
+           
+            const response2 = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+            const data2 = await response2.json();
+            */
+            //const vaerdiIBaseCurrency = aktuelPris * data2.conversion_rates[baseCurrency];
+
+
             // Hvis vi fandt en nyeste handel -> brug pris og navn
-            if (senesteHandler) {
+            if (senesteHandler) {   
+                //e.pris = aktuelPris * data2.conversion_rates[baseCurrency];
                 e.pris = senesteHandler.pris;
                 e.navn = senesteHandler.navn;
                 e.portefolje_navn = senesteHandler.portefolje_navn;
             }
+            //console.log("**********E********************");
+            //console.log(e);
 
-            // Find GAK
-            for (let j = 0; j < this.gakBeregning.length; j++) {
-                if (this.gakBeregning[j].symbol === e.symbol) {
-                    e.gak = this.gakBeregning[j].samletPris / this.gakBeregning[j].samletAntal;
-                    break;
-                }
-            }
+            
         }
     }
 
@@ -127,8 +170,14 @@ class PortefoljeBeregner {
             const e = this.ejerListeFiltreret[i];
             totalErhvervelsespris += e.antal * e.gak;
             totalForventetVaerdi += e.antal * e.pris;// * valutakurs;
+            //console.log("********e*******************");
+            //console.log(e);
+            //console.log("********totalErhvervelsespris*******************");
+            //console.log(totalErhvervelsespris);
+            //console.log("********totalForventetVaerdi*******************");
+            //console.log(totalForventetVaerdi);            
         }
-
+        
         // Beregn urealiseret gevinst/tab (profit minus hvad vi har betalt)
         const totalUrealiseretGevinstTab = totalForventetVaerdi - totalErhvervelsespris;
 

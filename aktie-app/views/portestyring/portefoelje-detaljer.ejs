@@ -44,17 +44,28 @@
   </div>
 </div>
 
-
+   <!-- Vi udregner det samlede totale urealiserede gevinst eller tab, 
+    og sætter det ind som status oven over porteføjeaktielisten -->
+  
     <div class="grid-layout">
       <div class="summary-card">
-       
-        
+    
+        <% let totalUrealiseretGevinstTab2 = 0; %>
+        <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
+          const e2 = ejerListeFiltreret[i];
+          const samletVaerdi2 = e2.antal * e2.pris * valutakurs;  // Forventet værdi = antal * aktuel pris
+          const erhvervelsesPris2 = e2.antal * e2.gak; // Erhvervelsespris = antal * GAK;
+          const gevinstTab2 = samletVaerdi2 - erhvervelsesPris2; 
+          totalUrealiseretGevinstTab2 = totalUrealiseretGevinstTab2 + gevinstTab2;
+        }          
+        %>
+
         <div class="total-value">
           <p>Samlet urealiseret gevinst/tab</p>
-          <% if (totalUrealiseretGevinstTab >= 0) { %>
-            <h2 class="positive">+<%= Number(totalUrealiseretGevinstTab).toFixed(2) %> <%= valuta %></h2>
+          <% if (totalUrealiseretGevinstTab2 >= 0) { %>
+            <h2 class="positive">+<%= Number(totalUrealiseretGevinstTab2).toFixed(2) %> <%= valuta %></h2>
           <% } else { %>
-            <h2 class="negative"><%= Number(totalUrealiseretGevinstTab).toFixed(2) %> <%= valuta %></h2>
+            <h2 class="negative"><%= Number(totalUrealiseretGevinstTab2).toFixed(2) %> <%= valuta %></h2>
           <% } %>
         </div>
       </div>
@@ -68,27 +79,26 @@
           <tr>
             <th>Navn</th>
             <th>Volume</th>
-            <th>Pris pr stk</th>
-            <th>Forventet værdi</th>
-            <th>GAK</th>
+            <th>Gms. Anskaf. Kurs</th>
+            <th>Nuv. Pris pr stk</th>
+            <th>Nuv. Forventet værdi</th>            
             <th>Urealiseret gevinst/tab</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody>          
           <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
             const e = ejerListeFiltreret[i];
             const samletVaerdi = e.antal * e.pris * valutakurs;  // Forventet værdi = antal * aktuel pris
             const erhvervelsesPris = e.antal * e.gak; // Erhvervelsespris = antal * GAK
             const gevinstTab = samletVaerdi - erhvervelsesPris;
-            const aktuelPrisIBaseCurrency = e.pris * valutakurs;
+            const aktuelPrisIBaseCurrency = e.pris * valutakurs;            
           %>
               <tr> <!-- Start ny række -->
                 <td><%= e.navn %> (<%= e.symbol %>)</td> <!-- Navn -->
                 <td><%= e.antal %> stk.</td> <!-- Antal aktier -->
-                <td><%= Number(aktuelPrisIBaseCurrency).toFixed(2) %> <%= valuta %></td> <!-- Aktuel pris pr stk -->
-                <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forvented Samlet værdi -->
                 <td><%= e.gak.toFixed(2) %> <%= valuta %></td> <!-- GAK -->
-              
+                <td><%= Number(aktuelPrisIBaseCurrency).toFixed(2) %> <%= valuta %></td> <!-- Aktuel pris pr stk -->
+                <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forvented Samlet værdi -->                
                 <% if (gevinstTab >= 0) { %>
                   <td class="positive">+<%= gevinstTab.toFixed(2) %> <%= valuta %></td> <!-- Gevinst -->
                 <% } else { %>
@@ -379,9 +389,9 @@ async function visPortfolioGraf() {
     // Dummy data, til totalværdi for grafen
     if (m < slutMaaned) {
       // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-      vaerdier.push(<%= totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
+      vaerdier.push(<%= totalForventetVaerdi*valutakurs %> + Math.floor(Math.random() * <%= totalForventetVaerdi*valutakurs %> * 0.2)-(<%= totalForventetVaerdi*valutakurs %> * 0.1));
     } else {
-      vaerdier.push(<%= totalForventetVaerdi %>); // Faktisk værdi fra EJS for den aktuelle måned
+      vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
     }
   }
 

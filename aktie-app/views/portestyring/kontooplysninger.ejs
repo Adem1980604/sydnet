@@ -61,6 +61,7 @@
 
 
   <!-- Popup til indsættelse -->
+
   <div id="popup">
     <h3>Indsæt eller hæv penge på kontoen</h3>
     <label for="værdi">Beløb:</label>
@@ -190,8 +191,9 @@
     // Indsæt penge
     function aabenIndsaetPopup(konto_id,saldo) {
       valgtKontoId = JSON.stringify(konto_id);
-      nuvaerendeSaldo = saldo
-
+      nuvaerendeSaldo = saldo;
+      console.log("*****************kontoid: " + konto_id + "   saldo :  " + saldo + "*********************");
+      
       document.getElementById('popup').style.display = 'block';
     }
 

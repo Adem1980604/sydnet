@@ -13,7 +13,7 @@ let offlineValutaResponseData;
 //const apiKey = "X8PAHO4XS77MP7N8";
 // Venstre side af kontooplysninger (under opret konto)
 router.get('/aktiesoegning', async function (req, res) {
-  console.log("DEBUG: Initiated route get /aktiesoegning");  
+  //console.log("DEBUG: Initiated route get /aktiesoegning");  
   res.render('bruger-sider/aktiesoeg');  
 });
 
@@ -33,8 +33,8 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
     //console.log("****************response**************");
     //console.log(response);
     
-    console.log("****************response data**************");
-    console.log(response.data);
+    //console.log("****************response data**************");
+    //console.log(response.data);
     res.json(response.data);
 
   } else {
@@ -3222,8 +3222,8 @@ router.get('/hentvalutakurs/:valuta', async function (req, res) {
 
   if (live == true) {
     const response = await axios.get(url);
-    console.log("************************Response***********");
-    console.log(response.data);
+    //("************************Response***********");
+    //console.log(response.data);
     res.json(response.data);
   } else {
     if (valuta== "DKK"){

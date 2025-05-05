@@ -79,7 +79,7 @@ router.get('/log-ind', function (req, res) {
 //Denne post bliver sendt fra "log-ind.ejs" filen. Med den kommer information om et indtastet brugernavn og adgangskode
 router.post('/log-ind', async (req, res) => {
     //console.log(req); // Se hele requesten
-    console.log(req.body); // Ser kun på den del af requesten som indeholde brugernavn og adgangskode
+    //console.log(req.body); // Ser kun på den del af requesten som indeholde brugernavn og adgangskode
     const { brugernavn, adgangskode } = req.body; //Sætter brugernavn og adgangskode "tilbage" ind i to variable(brugernavn og adgangskode)
 
     //Hvis brugernavn og adgangskode er tomt, så udskriv følgende besked.
@@ -99,9 +99,9 @@ router.post('/log-ind', async (req, res) => {
                     FROM bruger.oplysninger 
                     WHERE username=@name`)
 
-    //console.log("db_result: " + db_result)  
+    console.log("db_result: " + db_result)  
     //console.log("**********************")
-    //console.log(db_result)
+    console.log(db_result)
     //console.log("**********************")
     // Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen, 
     //Catch bliver kun udløst hvis Try delen er "ulovlig"/programmet giver en rød fejl/crasher
@@ -122,22 +122,6 @@ router.post('/log-ind', async (req, res) => {
             const db_bruger_id = db_result.recordset[0].bruger_id;
             //const db_username = db_result.recordset[0].username;
             req.session.bruger_id = db_bruger_id; // gemmer brugerens ID i session
-
-                        
-            //const jwt = require('jsonwebtoken');
-
-            //const user = { id: db_bruger_id, username: db_username };
-            //const generateToken = (user) => {
-            // // Create a token with user information and a secret key
-            // return jwt.sign({ id: db_bruger_id, username: db_username }, 'your_secret_key', { expiresIn: '1h' });
-            //};
-
-            //const my_token = generateToken(user);
-            //console.log(" ********* token ************************")
-            //console.log(my_token);
-            //req.session.bearer_token = my_token;
-            
-
             return res.status(200).json({ success: true, message: "Password er korrekt"});
         }
     } catch (error) {        
@@ -333,19 +317,34 @@ router.get('/dashboard', async function (req, res) {
     `);
   const handler = handlerResultat.recordset;
 
+
+  // Alle aktiekurser er i USD - så vi slår USD op i hentvalutakurs og finder kurs i forhold til kontoen base currency
+  const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+  const data2 = await response.json();
+  let valutakurs;
+  try {
+    let valuta_text = Object.values(handler[0].valuta);
+    let valuta_symbol = valuta_text.join('');
+    valutakurs = data2.conversion_rates[valuta_symbol];
+  } catch (error) {
+    valutakurs = 1;
+  } 
+  console.log("Valuta kurs : " + valutakurs)
+
   // 3. Brug PortefoljeBeregner
   const beregner = new PortefoljeBeregner(handler, konti);  
   beregner.beregnEjerOgGAK();
 
 
-// vi opdater aktiepriser med live data
-for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
-  const aktie = beregner.ejerListeFiltreret[j];
-  const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
-  const data = await response.json();
-  const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
-  aktie.pris = aktuelPris;
-}
+  // vi opdater aktiepriser med live data
+  for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
+    const aktie = beregner.ejerListeFiltreret[j];
+    const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
+    const data = await response.json();
+    const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
+    aktie.pris = aktuelPris * valutakurs;
+    //console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
+  }
 
 
   // 4. Beregner totaler
@@ -356,6 +355,8 @@ for (let j = 0; j < beregner.ejerListeFiltreret.length; j++) {
   for (let i = 0; i < konti.length; i++) {
     samletKontantSaldo += konti[i].saldo;
   }
+  console.log("samletKontantSaldo : " + samletKontantSaldo)
+  console.log("totaler.totalForventetVaerdi : " + totaler.totalForventetVaerdi)
   const samletVaerdi = samletKontantSaldo + totaler.totalForventetVaerdi;
 
   // 6. Top 5 aktier

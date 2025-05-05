@@ -160,7 +160,8 @@
       maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short' }));
 
       if (m < slutMaaned) {
-        vaerdier.push(Math.floor(Math.random() * 10000) + 1000);
+        //vaerdier.push(Math.floor(Math.random() * 10000) + 1000);
+        vaerdier.push(<%= samletVaerdi.toFixed(2) %> + Math.floor(Math.random() * <%= samletVaerdi %> * 0.2) - (<%= samletVaerdi %> * 0.1));
       } else {
         vaerdier.push(<%= samletVaerdi.toFixed(2) %>);
       }
