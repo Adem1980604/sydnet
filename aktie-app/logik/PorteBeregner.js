@@ -9,6 +9,11 @@ En klasse der kan lave alle beregninger til portefølje-funktionalitet
 - Samlet total værdi (kontanter + investeringer) 
 - Top 5 værdipapirer baseret på værdi/profit
 */
+const { sql, forbindDatabase } = require('../db');
+const { query } = require('mssql');
+require('dotenv').config(); // sørger for at tage fat i vores env fil
+
+
 
 class PortefoljeBeregner {
     constructor(handler, konti = []) {
@@ -16,12 +21,16 @@ class PortefoljeBeregner {
         this.konti =konti;       //  Gemmer alle brugerens konti med saldo
         this.ejerListe= []; // Liste over aktier brugeren ejer lige nu
         this.gakBeregning = [];  // Data til at beregne GAK på hver aktie
+        this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte)
+        this.realiseretGevinst = 0; // Akkumulerer realiseret gevinst/tab
         this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte væk)
         this.realiseretGevinst =0; // Akkumulerer realiseret gevinst/tab
     }
 
     // Metode: Beregner ejerliste og GAK for alle aktier
     beregnEjerOgGAK() {
+        //console.log("****************handler************");
+        //console.log(this.handler);
         // Sorter handler efter dato først 
         this.handler.sort((a,b) => new Date(a.datotid)-new Date(b.datotid));
 
@@ -102,7 +111,7 @@ class PortefoljeBeregner {
                         senesteHandler = this.handler[j];
                     }
                 }
- }
+            }
             // Hvis vi fandt en nyeste handel -> brug pris og navn
             if (senesteHandler) {
                 e.pris= senesteHandler.pris;
@@ -128,7 +137,14 @@ class PortefoljeBeregner {
             const e = this.ejerListeFiltreret[i];
             totalErhvervelsespris+=e.antal * e.gak;
             totalForventetVaerdi += e.antal * e.pris;// * valutakurs;
+            //console.log("********e*******************");
+            //console.log(e);
+            //console.log("********totalErhvervelsespris*******************");
+            //console.log(totalErhvervelsespris);
+            //console.log("********totalForventetVaerdi*******************");
+            //console.log(totalForventetVaerdi);            
         }
+        
 // console.log( totalErhvervelsespris)
 //console.log( totalForventetVaerdi)
 

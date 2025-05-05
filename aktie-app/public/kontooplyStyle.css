@@ -79,9 +79,9 @@ hr {
   border: 0.5px solid #444;
 }
 
-/* Fælles styling for popup-vinduer (indsæt, luk, resultat) */
-.popup-box {
-  display: none;
+/* Dette bruges til vores popup der kommer frem når brugeren vil sætte penge ind */
+#popup {
+  display: none; /*sørger for at skjule popup til at starte med*/
   position: fixed;
   top: 50%;
   left: 50%;
@@ -91,13 +91,53 @@ hr {
   border: 2px solid black;
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  
 }
 
-.popup-box label,
-.popup-box input,
-.popup-box select {
-  margin-bottom: 10px;
+#popup label,
+#popup input,
+#popup select {
+
+margin-bottom: 10px;
+}
+
+/* Dette bruges til vores lukke popup*/
+#lukPopup {
+  display: none; /*sørger for at skjule popup til at starte med*/
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e1e;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  
+}
+
+#lukPopup label,
+#lukPopup input,
+#lukPopup select {
+
+margin-bottom: 10px;
+}
+
+
+
+#resultat {
+  display: none; /* skjult som udgangspunkt */
+  font-family: "Lora", serif;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e1e;
+  padding: 20px;
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000; /* ligger ovenpå andet indhold */
 }
 
 /* Resultat-popup specifikt */

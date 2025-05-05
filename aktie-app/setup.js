@@ -16,7 +16,6 @@ const config = {
 
 
 const dropAllTables = `
-DROP table IF EXISTS vaerdipapir.vpkurs
 DROP table IF EXISTS vaerdipapir.vphandler
 DROP table IF EXISTS vaerdipapir.vpoplysninger
 DROP table IF EXISTS konto.portefoelje
@@ -106,6 +105,7 @@ const lavTransaktionersTabel = `
       transaktionstype NVARCHAR(20),
       valuta NVARCHAR(50),
       datotid DATETIME,
+      CONSTRAINT transaktion_PK PRIMARY KEY (transaktions_id),
       CONSTRAINT konto1_FK FOREIGN KEY (konto_id) REFERENCES konto.kontooplysninger(konto_id)
     );
   `;
@@ -152,7 +152,7 @@ const lavVPOplysninger = `
       navn NVARCHAR(50),
       symbol NVARCHAR(20),
       type NVARCHAR(50),
-      CONSTRAINT portefoelje_PK PRIMARY KEY (symbol)
+      CONSTRAINT vpoplysninger_PK PRIMARY KEY (symbol)
     );
       `;
 
@@ -209,16 +209,7 @@ values  ('BA',   1, 2, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-
         ('CAT',  5, 6, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057')
         ;`
 
-const lavVPKurs = `
-        CREATE TABLE vaerdipapir.vpkurs(
-          vpkurs_id INT IDENTITY(1,1),
-          symbol NVARCHAR(20),
-          kurs DECIMAL(10,2),
-          datotid DATETIME,
-          CONSTRAINT vpkurs_PK PRIMARY KEY (vpkurs_id),
-          CONSTRAINT vpoplysninger2_FK FOREIGN KEY (symbol) REFERENCES vaerdipapir.vpoplysninger(symbol)
-        );
-          `;
+
 
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
@@ -249,7 +240,7 @@ async function ventPåDatabase() {
   await sql.query(lavPortefoeljeTabel);
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
-  await sql.query(lavVPKurs);
+
   
   // indsæt test data i tabeller
   await sql.query(dataibrugertabel);
