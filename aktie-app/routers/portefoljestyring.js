@@ -11,55 +11,31 @@ const axios = require('axios'); // axios, som er et moderne og populært HTTP-kl
 //********************* ROUTES for KONTO ******************************
 //*********************************************************************
 
-// Venstre side af kontooplysninger (under opret konto)
+// Viser kontooplysning/oversigts siden. Data til siden bliver hentet af kontooplysninger.ejs
 router.get('/kontooplysninger', async function (req, res) {
-  console.log("DEBUG: 000 - initiated route get /kontooplysninger");
-  const db = await forbindDatabase();
-  const result = await db.request().query(`
-    SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 1
-  `);
-  const konti = result.recordset;
-  res.render('portestyring/kontooplysninger', { konti });
-  console.log("DEBUG: 002 - get Kontooplysninger");
+  res.render('portestyring/kontooplysninger');
 });
 
 // Henter alle konti og viser dem på Eksisterende Konti siden
 router.get('/hentkontooplysninger', async function (req, res) {
   console.log("DEBUG: 010 - initiated route get /hentkontooplysninger");
-  //console.log(req);
-  //console.log("Bearer_token provided by the client in request header")
-  //console.log(req.session.bearer_token);
 
-  const loggedin_bruger_id = req.session.bruger_id;
+  const loggetInd_bruger_id = req.session.bruger_id;
 
   const db = await forbindDatabase(); // forbinder til databasen 
   // sørger for at vi kun få vist de aktive konti på siden
-
-  
   const result = await db.request()
-  .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+  .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)
   .query(`
     SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 1 and bruger_id = @loggedin_bruger_id
+    WHERE aktiv = 1 and bruger_id = @loggetInd_bruger_id
   `);
   res.json(result.recordset);
   console.log("DEBUG: 012 - get hentkontoooplysninger");
 });
 
 
-//router.get('/kontooplysninger/view', function (req, res) {
-//  res.render('portestyring/kontooplysninger');
-//  console.log("DEBUG: 020 - get kontoooplysninger");
-//});
-//
-//router.get('/konto-detalje', function (req, res) {
-//  res.render('portestyring/kontooplysninger');
-//  console.log("DEBUG: 030 - get konto-detalje");
-//  // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
-//});
-
-// Opretter en POST til tilføjelse af konto 
+// Håndtere post fra  
 router.post('/kontooplysninger', async function (req, res) {
   const { navn, bank_ref,konto_valuta } = req.body
   const saldo = 0.00;
@@ -207,15 +183,15 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 router.get('/portefoeljeoversigt', async function (req, res) {
   console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
-  const loggedin_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
+  const loggetInd_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
   const db = await forbindDatabase();
   const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
 
   // Henter konto
   const kontoResultater = await db.request()
-    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+    .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)
     .input('id', sql.Int, konto_id)    
-    .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggedin_bruger_id')
+    .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggetInd_bruger_id')
   /// Gem første række fra kontodata 
 
   const konto = kontoResultater.recordset;
@@ -224,7 +200,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
   // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
-    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
+    .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)   
     .query(`
       SELECT 
         portf.portefoelje_id, 
@@ -235,7 +211,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
         ktoopl.valuta as kontovaluta
       FROM konto.portefoelje portf
       JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
-      WHERE ktoopl.bruger_id = @loggedin_bruger_id`
+      WHERE ktoopl.bruger_id = @loggetInd_bruger_id`
     );
   const portefoljer = portefoljeResultater.recordset;
 

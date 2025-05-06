@@ -1,6 +1,3 @@
-<!-- OBS hvis du vil se siden skal du skrive http://localhost:4000/portefoljestyring/kontooplysninger  -->
-<!--find ud af hvorfor indsender knappen ikke virker muligvis forkert ruter -->
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -22,8 +19,6 @@
         <li><a href="/portefoljestyring/kontooplysninger">Kontooplysninger</a></li>
         <li><a href="/portefoljestyring/portefoeljeoversigt">Porteføljeoversigt</a></li>
       </ul>
-      
-
     </aside>
 
     <!-- Hovedsektion til kontoliste -->
@@ -107,6 +102,7 @@
         alert("Alle felter skal udfyldes!");
       } else {
         console.log("**********Debug013************");
+
         const svar = await fetch('/portefoljestyring/kontooplysninger', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
@@ -123,10 +119,7 @@
 
     // hent konto og så vis den 
     async function hentKonti() {
-      console.log("Henter Konti fra database");
-      //const local_token = localStorage.getItem('token');
-      //console.log(" ********* local_token ************************")
-      //console.log(local_token);
+
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
       console.log(response);
 
@@ -326,7 +319,7 @@
       `;
         container.appendChild(lukKontoElement)
       }
-      // hvis igen konti findes 
+      // Hvis der er ingen lukkede konti, så skjul section og skriv besked
       if (konti.length === 0) {
         container.innerHTML = "<p>Ingen lukkede konti.</p>";
         sektion.style.display = "none"; // Skjul sektionen

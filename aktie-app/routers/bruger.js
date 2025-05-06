@@ -194,10 +194,11 @@ router.post('/nulstill', async function (req, res) {
 //******* KONTO  ***********************
 //***********************************************************
 
-//**********ROUTE TIL AT VISE KONTOOPLYSNINGER************
+//**********ROUTE TIL AT VISE KONTOOVERSIGT/KONTOOPLYSNINGER************
 router.get('/kontooplysninger', function (req, res) {
     res.render('bruger-sider/kontooplysninger');
 });
+
 
 
 //router.get('/indsaetter', function (req, res) {
