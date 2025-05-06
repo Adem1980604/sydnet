@@ -3,7 +3,7 @@
 const {assert} = require('chai');
 const { validerLoginInput } = require('../../ISOfunktioner/validering');
 
-describe("validerLoginInput", () => {
+describe("validerLoginInput", function () {
   it("returnerer true når begge felter er udfyldt", function (){
     const resultat = validerLoginInput("sydnet", "sydnet1234");
     assert.isTrue(resultat);
