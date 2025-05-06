@@ -1,6 +1,6 @@
 // Her tester vi vores beregnGAK metode fra vores klasse altså om den faktisk udregner det rigtige antal og GAK ved køb og salg 
 
-const {expect} = require("chai");
+const {assert} = require("chai");
 const PortefoljeBeregner = require('../../logik/PorteBeregner');
 
 
@@ -40,8 +40,8 @@ describe("PortefoljeBeregner", function() {
     // Efter køb: (10*100 + 5*200) = 2000 / 15 = GAK 133.33
       // Efter salg af 5: tilbage 10 stk, GAK stadig 133.33
     
-   expect(aktie.symbol).to.equal("AAPL");
-    expect(aktie.antal).to.equal(10);
-    expect(aktie.gak).to.be.closeTo(133.33, 0.01);
+   assert.equal(aktie.symbol,"AAPL");
+   assert.equal(aktie.antal, 10);
+   assert.closeTo(aktie.gak, 133.33, 0.01);
   });
 });
