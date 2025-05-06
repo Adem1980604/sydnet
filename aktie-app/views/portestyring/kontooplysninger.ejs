@@ -61,7 +61,6 @@
 
 
   <!-- Popup til indsættelse -->
-
   <div id="popup">
     <h3>Indsæt eller hæv penge på kontoen</h3>
     <label for="værdi">Beløb:</label>
@@ -77,7 +76,7 @@
     <button onclick="lukPopup()">Luk</button>
   </div>
 
-  <!-- **************************** Hvad er dette for en luk knap? ********************** -->
+  <!-- Luk knap til forskellige popup resultater -->
   <div id="resultat">
     <button id="luk-resultat" class="luk-knap"></button>
   </div>
@@ -89,45 +88,12 @@
     <button onclick="lukPopup()">Fortryd lukning</button>
   </div>
 
-  <!-- **************************** Ingen grund til at dette er her? Laver en liste over konto saldoer ********************** -->
-  <!--
-  <% for (let i = 0; i < konti.length; i++) { %>
-    <p><strong>Saldo:</strong> <%= konti[i].saldo %></p>
-  <% } %>
--->
-
-
-
-
   <!-- **************************** JS-SCRIPT START ********************** -->
   <script>
     // Her oprettes globale variable som kan anvendes på tværs af funktioner
     let valgtKontoId = null;        //Vi antager at der ikke er valgt en konto i starten
     let kontoIdTilSletning = null;
     let nuvaerendeSaldo = null;
-
-    // Åbn popup og husk kontoId
-    function LukKonto(kontoId) {
-      kontoIdTilSletning = kontoId;
-      document.getElementById('lukPopup').style.display = 'block';
-    }
-
-    // Bekræft sletning
-    async function bekraeftLukning() {
-      const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
-        method: 'DELETE'
-      });
-
-      const resultat = await svar.json();
-
-      if (resultat.success) {
-        alert("Konto lukket.");
-        hentKonti();
-      } else {
-        alert("Noget gik galt.");
-      }
-      lukPopup(); // Skjul popup igen
-    }
 
     // opret ny konto       
     async function sendkonto() {
@@ -301,6 +267,7 @@
 
 
 
+
     // Redirection til kontoside
     function gaaTilKonto(id) {
       console.log("DEBUG initiated gaaTilKonto")
@@ -308,6 +275,28 @@
     }
 
 
+        // Åbn popup og husk kontoId
+        function LukKonto(kontoId) {
+      kontoIdTilSletning = kontoId;
+      document.getElementById('lukPopup').style.display = 'block';
+    }
+
+    // Bekræft sletning
+    async function bekraeftLukning() {
+      const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
+        method: 'DELETE'
+      });
+
+      const resultat = await svar.json();
+
+      if (resultat.success) {
+        alert("Konto lukket.");
+        hentKonti();
+      } else {
+        alert("Noget gik galt.");
+      }
+      lukPopup(); // Skjul popup igen
+    }
 
     // funtionen til at åbne en lukkede konti. 
 

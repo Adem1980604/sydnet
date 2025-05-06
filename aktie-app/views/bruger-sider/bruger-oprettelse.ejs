@@ -1,3 +1,5 @@
+<!--Kilde til bruger-oprettelses form: [https://www.w3schools.com/tags/att_input_pattern.asp]-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,49 +25,53 @@
             <label for="Password">Indtast Password(Skal indeholde 2 eller flere tegn)</label>
             <input type="password" name="Password" id="2" pattern=".{2,16}" required>
     
-            <label for="Password">Repeat Password(Skal indeholde mellem 2 og 16 tegn)</label>
+            <label for="Password">Gentag Password(Skal indeholde mellem 2 og 16 tegn)</label>
             <input type="password" name="Repeat Password" id="3" pattern=".{2,16}" required>
 
             <!--Pattern skal være følgende: karakterer efter fuldt af et @, efter fuldt af karakterer, efter fuldt af ".", efter fuldt af mindst 2 bogstaver. -->
             <label for="E-mail">Indtast din e-mail her</label>
             <input type="email" name="E-mail" id="4"  pattern="[a-z0-9]+@[a-z0-9]+\.[a-z]{2,}$" required>
-    
-            <button  type="submit" id = "knap">Opret Bruger</button>
+            
+            <!--Sat op med eventlistener-->
+            <button type="submit" id="knap">Opret Bruger</button>
           
     
         </form>  
     </div>
 </div>
-
     <script>
-
-        document.getElementById("opretForm").addEventListener("submit", async function(element){
-            element.preventDefault();
-     
-         
+    document.getElementById("opretForm").addEventListener("submit", async function (element) {
+        element.preventDefault();
+        //Tager det info brugeren har indsat, og sætter det ind i variable med passende navne
         let username = document.getElementById("1").value;
         let password = document.getElementById("2").value;
         let repeatPassword = document.getElementById("3").value;
         let email = document.getElementById("4").value;
 
-        console.log("brugernavn:  " + document.getElementById("1").value)
-        console.log("adgangskode: " + document.getElementById("2").value)
-        console.log("email: " + document.getElementById("4").value)
+        //console.log("brugernavn:  " + document.getElementById("1").value)
+        //console.log("adgangskode: " + document.getElementById("2").value)
+        //console.log("email: " + document.getElementById("4").value)
 
+
+        //Sender post med info givet fra brugeren videre til bruger.js som gemmer det i DB.
         const svar = await fetch('/bruger/register', {
             method: 'POST',
-            headers:{"Content-Type": "application/json"},
-            body: JSON.stringify({username, password, repeatPassword, email}) 
-        }); 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password, repeatPassword, email })
+        });
 
-       if(svar.redirected){
-        window.location.href = svar.url;
-        return;
-       }
-       if(!svar.ok){
-        alert("Der er sket en fejl, prøv igen !")
-        return; 
-       }
+        //Tjekker om "redirected" er true.(Evalueres af sig selv til true, hvis den ikke er false)
+        if (svar.redirected) {
+            console.log(svar);
+            // Sender brugeren videre til den route der bliver givet fra bruger.js fetchen
+            // Routen er til log-ind siden 
+            window.location.href = svar.url;
+            return;
+        }
+        if (!svar.ok) {
+            alert("Der er sket en fejl, prøv igen !")
+            return;
+        }
     });
 
 

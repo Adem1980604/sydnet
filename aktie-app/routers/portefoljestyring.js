@@ -64,7 +64,7 @@ router.post('/kontooplysninger', async function (req, res) {
   const { navn, bank_ref,konto_valuta } = req.body
   const saldo = 0.00;
   
-  const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet hved hvem brugeren er når man skifter imellem forskellige sider
+  const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet ved hvem brugeren er når man skifter imellem forskellige sider
   const nuværendeTid = new Date(); // tager fat i nutidens dato
   const db = await forbindDatabase();  // skaber en forbindelse med db
   const resultater = await db.request()
