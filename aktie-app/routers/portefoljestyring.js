@@ -224,7 +224,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   
   // Brug klassen på hver portefølje
   for (let i = 0; i < portefoljer.length; i++) {
-    console.log("****************** NEXT ************************")
+    //console.log("****************** NEXT ************************")
     const portefolje = portefoljer[i];
 
     // Man henter alle handler (køb/salg) tilhørende den portefølje
@@ -252,7 +252,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       valutakurs = 1;
     } 
 
-    console.log("Valuta kurs : " + valutakurs)
+    //console.log("Valuta kurs : " + valutakurs)
     // her bruger vi klassen fra logik filen til at beregne ejerstruktur
     const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
     beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
@@ -265,13 +265,13 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       const data2 = await response.json();
       aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
       aktie.pris = aktuelPris * valutakurs;
-      console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
+      //console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
     };
 
     // Beregn totals baseret på opdaterede priser
     //const totaler = beregner.beregnTotaler(valutakurs);
     const totaler = beregner.beregnTotaler();
-    console.log(totaler); 
+    //console.log(totaler); 
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
     portefolje.totalErhvervelsespris =totaler.totalErhvervelsespris || 0;
@@ -426,7 +426,7 @@ router.get('/porteside/:id', async function (req, res) {
 
 
 // ruten som gemmer handlen for den specifikke portefølje 
-router.post('/portesiden/:id/handel', async function (req, res) {
+router.post('/portefoljestyring/:id/handel', async function (req, res) {
   const db = await forbindDatabase();
   const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
   
@@ -442,10 +442,17 @@ router.post('/portesiden/:id/handel', async function (req, res) {
    let pris = parseFloat(req.body.pris);
    let antal = parseInt(req.body.antal);
 
+   const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+   const data2 = await response.json();   
+   const valutakurs = data2.conversion_rates[valuta];
+
+   let pris_i_kontobasecurrency = pris * valutakurs;
+
+
   // tilkobler dato og beregner gebyr 
   const datotid = new Date();
-  const gebyr = pris * 0.001; // 0.1 % gebyr 
-  const total = (pris * antal) + gebyr;
+  const gebyr = pris_i_kontobasecurrency * 0.001; // 0.1 % gebyr 
+  const total = (pris_i_kontobasecurrency * antal) + gebyr;
 
   // her tjekker vi om brugeren vil sælge eller handle 
   let salg_koeb
@@ -524,15 +531,16 @@ try {
     .input('vaerditype', sql.NVarChar(50), vaerditype)
     .input('salg_koeb', sql.Bit, salg_koeb)
     .input('antal', sql.Int, antal)
-    .input('pris', sql.Decimal(10, 2), pris)
+    .input('pris', sql.Decimal(10, 2), pris_i_kontobasecurrency)
+    .input('totalpris', sql.Decimal(10, 2), total)
     .input('valuta', sql.NVarChar(50), valuta)
     .input('gebyr', sql.Decimal(10, 2), gebyr)
     .input('datotid', sql.DateTime, datotid)
     .query(`
       INSERT INTO vaerdipapir.vphandler
-      (symbol,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, valuta, gebyr, datotid)
+      (symbol,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, totalpris, valuta, gebyr, datotid)
       VALUES
-      (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
+      (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @totalpris, @valuta, @gebyr, @datotid)
     `);
   } catch (error) {
     console.log("ERROR: Der skete en fejl i forbindelse med: Indsæt handel i databasen")
