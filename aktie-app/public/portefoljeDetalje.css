@@ -138,7 +138,6 @@ canvas {
   margin-top: 8px;
   font-size: 24px;
 }
-
 /* Tabel for aktier */
 .stock-table {
   background-color: #1f1f1f;
@@ -154,7 +153,6 @@ canvas {
   width: 100%;
   border-collapse: collapse;
 }
-
 .stock-table th, .stock-table td {
   padding: 12px;
   text-align: left;

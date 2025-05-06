@@ -107,7 +107,7 @@
                   <a href="/portefoljestyring/vaerdipapir/<%= e.symbol %>" class="detalje-knap">Detaljer</a>
                 </td>
 
-              </tr> <!-- Slut på række -->
+              </tr> 
           <% } %>
           </tbody>
       </table>
@@ -387,7 +387,7 @@ async function visPortfolioGraf() {
     // Dummy data, til totalværdi for grafen
     if (m < slutMaaned) {
       // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-      vaerdier.push(<%= totalForventetVaerdi*valutakurs %> + Math.floor(Math.random() * <%= totalForventetVaerdi*valutakurs %> * 0.2)-(<%= totalForventetVaerdi*valutakurs %> * 0.1));
+      vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
     } else {
       vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
     }

@@ -243,7 +243,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   //console.log(portefoljer);
 
 
-  // vi henter total værdi for hver portfølje som skla bruges til at lave en piechart 
+  // vi henter total værdi for hver portfølje som skal bruges til at lave en piechart 
 
   
   // Brug klassen på hver portefølje
@@ -298,8 +298,8 @@ router.get('/portefoeljeoversigt', async function (req, res) {
     console.log(totaler); 
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
-    portefolje.totalErhvervelsespris = totaler.totalErhvervelsespris || 0;
-    portefolje.totalForventetVaerdi = totaler.totalForventetVaerdi || 0;
+    portefolje.totalErhvervelsespris =totaler.totalErhvervelsespris || 0;
+    portefolje.totalForventetVaerdi=totaler.totalForventetVaerdi || 0;
     portefolje.totalUrealiseretGevinstTab = totaler.totalUrealiseretGevinstTab || 0;
   }
 
@@ -630,7 +630,7 @@ router.get('/vaerdipapir/:symbol', async function (req, res) {
   const info = resultat.recordset[0];
 
 
-  res.render('portestyring/vpapir-detalje', { info });
+  res.render('portestyring/vpapir-detalje', {info});
 });
 
 
