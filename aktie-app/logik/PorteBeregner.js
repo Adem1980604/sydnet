@@ -9,7 +9,7 @@ En klasse der kan lave alle beregninger til portefølje-funktionalitet
 - Samlet total værdi (kontanter + investeringer) 
 - Top 5 værdipapirer baseret på værdi/profit
 */
-const { sql, forbindDatabase } = require('../db');
+const { sql, forbindDatabase } = require('../forbindDB');
 const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 

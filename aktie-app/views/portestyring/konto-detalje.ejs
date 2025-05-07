@@ -108,9 +108,9 @@
 
         // Tilføj HTML 
         portElement.innerHTML = `
-    <p><strong>Portefølje:</strong> ${data.portefolje_oprettelse.navn}</p>
-    <button class="se-port">Se portefølje</button>
-  `;
+          <p><strong>Portefølje:</strong> ${data.portefolje_oprettelse.navn}</p>
+          <button class="se-port">Se portefølje</button>
+        `;
 
         container.appendChild(portElement);
 
@@ -125,7 +125,6 @@
       }
     }
 
-    // Redirection til den individuelle portefølje
     // Redirection til den individuelle portefølje
     function sePortefolje(id) {
       window.location.href = `/porteside/${id}`;

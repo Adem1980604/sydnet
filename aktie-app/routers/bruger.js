@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 //Søger for at vi kan oprette forbindelse til databasen vis vores db.js
-const { sql, forbindDatabase } = require('../db');
+const { sql, forbindDatabase } = require('../forbindDB');
 
 const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
@@ -201,19 +201,13 @@ router.get('/kontooplysninger', function (req, res) {
 
 
 
-//router.get('/indsaetter', function (req, res) {
-//    res.render('bruger-sider/indsaetter');
-//});
-
-
-// vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsættelse der laves
+//Håndterer post request, der skal give os det nuværende tidspunkt og dato for den indsættelse der laves
 router.post('/indsaetter', async function (req, res) {
     const { vaerdi, valuta, konto_id } = req.body;
     const nuværendeTid = new Date(); // tager fat i nutidens dato
     let vaerdiIBaseCurrency = 0; 
 
-    //Backendt delen: Vi vil indsætte værdien brugeren har indsæt/vil indsætte på sin konto.       
-
+    //Backendt delen: Vi vil indsætte værdien brugeren har indsæt/vil indsætte på sin konto(med den rigtige valuta værdi).       
     const db = await forbindDatabase();  // skaber en forbindelse med db
 
     const db_result = await db.request()
@@ -239,25 +233,11 @@ router.post('/indsaetter', async function (req, res) {
         const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/${valuta}`);
         console.log(response);
         const data2 = await response.json();
-      
-        console.log("****************DEBUG 9990**************");
-        console.log(data2.base_code);
-        console.log(data2.conversion_rates);
-        console.log("****************DEBUG 9991: EUR**************");
-        console.log(data2.conversion_rates.EUR);
-        console.log("****************DEBUG 9993: DKK**************");
-        console.log(data2.conversion_rates.DKK);
-        console.log("****************DEBUG 9994: USD**************");
-        console.log(data2.conversion_rates.USD);
-        console.log("****************DEBUG 9995: **************");
-        console.log(data2.conversion_rates[baseCurrency]);
 
         vaerdiIBaseCurrency = vaerdi * data2.conversion_rates[baseCurrency];
         console.log("vaerdiIBaseCurrency : " + vaerdiIBaseCurrency);
 
-    } 
-    console.log("******************Debug1000000000****************")
-    console.log(vaerdiIBaseCurrency);
+    }
 
     if (vaerdi == null || isNaN(vaerdi)) {
         return res.status(400).json({ success: false, message: "Ugyldig værdi sendt til serveren" });
@@ -307,7 +287,7 @@ router.post('/indsaetter', async function (req, res) {
 
 });
 
-// Dashboard route som viser alle de regnede værdier
+// Dashboard route som viser alle de regnede værdier som vises på Dashboard
 router.get('/dashboard', async function (req, res) {
   
   const brugerId = req.session.bruger_id;

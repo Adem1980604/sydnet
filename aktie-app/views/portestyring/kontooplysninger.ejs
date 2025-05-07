@@ -76,8 +76,9 @@
     <button id="luk-resultat" class="luk-knap"></button>
   </div>
 
-  <!-- popup til at lukke konto  -->
-  <div id="lukPopup">
+  <!--popup til at lukke konto-->
+  <div id="lukKontoPopup">
+  <!--<div id="lukPopup">-->
     <h3>Er du sikker på at du vil lukke kontoen? </h3>
     <button onclick="bekraeftLukning()">Ja, jeg vil gerne lukke denne konto</button>
     <button onclick="lukPopup()">Fortryd lukning</button>
@@ -90,25 +91,26 @@
     let kontoIdTilSletning = null;
     let nuvaerendeSaldo = null;
 
-    // opret ny konto       
+    // Sender info om ny konto der skal oprettes(Sendes til portefoljestyring.js)       
     async function sendkonto() {
+      //Gemmer info givet af bruger
       let nyKonto = {
         navn: document.getElementById("navn").value,
         bank_ref: document.getElementById("bank_ref").value,
         konto_valuta: document.getElementById("konto_valuta").value
       };
-
+      //Tjekker at ingen felter er tomme
       if (nyKonto.navn == "" || nyKonto.bank_ref == "" || nyKonto.konto_valuta == "") {
         alert("Alle felter skal udfyldes!");
       } else {
         console.log("**********Debug013************");
-
+        //Send post til portefoljestyring med info om den nye konto der skal oprettes
         const svar = await fetch('/portefoljestyring/kontooplysninger', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nyKonto)
         });
-
+        //Hvis fetchen til portefoljestyring gik godt, så kald hentKonti, for at vise den nye konto
         if (svar.ok) {
           await hentKonti();
           console.log("**********Debug013************");
@@ -116,8 +118,7 @@
       };
   };
 
-
-    // hent konto og så vis den 
+    // Hent konti og så vis dem 
     async function hentKonti() {
 
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
@@ -147,6 +148,11 @@
       }
     }
 
+    // Redirection bruger videre til individuel konto-detalje siden
+    function gaaTilKonto(id) {
+      window.location.href = `/konto/${id}`;
+    }
+
     // Indsæt penge
     function aabenIndsaetPopup(konto_id,saldo) {
       valgtKontoId = JSON.stringify(konto_id);
@@ -156,11 +162,11 @@
       document.getElementById('popup').style.display = 'block';
     }
 
-    // funktionen til at lukke popup
+    // funktionen til at lukke popups
     function lukPopup() {
       // Lukker begge popups, hvis de er synlige
       document.getElementById('popup').style.display = 'none';
-      document.getElementById('lukPopup').style.display = 'none';
+      document.getElementById('lukKontoPopup').style.display = 'none';
     }
 
 
@@ -187,7 +193,7 @@
       const result = await svar.json();
       console.log(" Server svar:", result);
 
-      // kode til at vise indsættelsen 
+      // Kode til at vise indsættelsen 
       if (result.success) {
         hentKonti(); // opdater listen med ny saldo
         const inds = result.indsaettelse;
@@ -259,40 +265,35 @@
     }
 
 
-
-
-    // Redirection til kontoside
-    function gaaTilKonto(id) {
-      console.log("DEBUG initiated gaaTilKonto")
-      window.location.href = `/konto/${id}`;
-    }
-
-
-        // Åbn popup og husk kontoId
-        function LukKonto(kontoId) {
+    //Husk kontoId og luk popup
+    function LukKonto(kontoId) {
+      //Gemmer konto id og giver variable videre til "bekraeftLukning"
       kontoIdTilSletning = kontoId;
-      document.getElementById('lukPopup').style.display = 'block';
+      //Vis "konto luk" popup'en
+      document.getElementById('lukKontoPopup').style.display = 'block';
     }
 
-    // Bekræft sletning
+
+    // Luk en konto(Bekraft lukning bliver kaldt når en bruger trykker på den knap)
     async function bekraeftLukning() {
+      // Sender det konto id der skal slettes til portefoljestyring.js
       const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
         method: 'DELETE'
-      });
-
+    });
+    // Afventer svar
       const resultat = await svar.json();
-
+      // Hvis svaret er korrekt så skriv det til brugeren og luk popup
       if (resultat.success) {
         alert("Konto lukket.");
         hentKonti();
       } else {
         alert("Noget gik galt.");
       }
-      lukPopup(); // Skjul popup igen
+      // Skjul popup igen
+      lukPopup(); 
     }
 
     // funtionen til at åbne en lukkede konti. 
-
     async function hentLukkedeKonti() {
       const response = await fetch('/portefoljestyring/hent-lukkede-konti');
       const konti = await response.json();
