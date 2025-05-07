@@ -11,60 +11,36 @@ const axios = require('axios'); // axios, som er et moderne og populært HTTP-kl
 //********************* ROUTES for KONTO ******************************
 //*********************************************************************
 
-// Venstre side af kontooplysninger (under opret konto)
+// Viser kontooplysning/oversigts siden. Data til siden bliver hentet af kontooplysninger.ejs
 router.get('/kontooplysninger', async function (req, res) {
-  console.log("DEBUG: 000 - initiated route get /kontooplysninger");
-  const db = await forbindDatabase();
-  const result = await db.request().query(`
-    SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 1
-  `);
-  const konti = result.recordset;
-  res.render('portestyring/kontooplysninger', { konti });
-  console.log("DEBUG: 002 - get Kontooplysninger");
+  res.render('portestyring/kontooplysninger');
 });
 
 // Henter alle konti og viser dem på Eksisterende Konti siden
 router.get('/hentkontooplysninger', async function (req, res) {
   console.log("DEBUG: 010 - initiated route get /hentkontooplysninger");
-  //console.log(req);
-  //console.log("Bearer_token provided by the client in request header")
-  //console.log(req.session.bearer_token);
 
-  const loggedin_bruger_id = req.session.bruger_id;
+  const loggetInd_bruger_id = req.session.bruger_id;
 
   const db = await forbindDatabase(); // forbinder til databasen 
   // sørger for at vi kun få vist de aktive konti på siden
-
-  
   const result = await db.request()
-  .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+  .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)
   .query(`
     SELECT * FROM konto.kontooplysninger
-    WHERE aktiv = 1 and bruger_id = @loggedin_bruger_id
+    WHERE aktiv = 1 and bruger_id = @loggetInd_bruger_id
   `);
   res.json(result.recordset);
   console.log("DEBUG: 012 - get hentkontoooplysninger");
 });
 
 
-//router.get('/kontooplysninger/view', function (req, res) {
-//  res.render('portestyring/kontooplysninger');
-//  console.log("DEBUG: 020 - get kontoooplysninger");
-//});
-//
-//router.get('/konto-detalje', function (req, res) {
-//  res.render('portestyring/kontooplysninger');
-//  console.log("DEBUG: 030 - get konto-detalje");
-//  // her skal vi på et eller andet måde få fat i en id for hvert konto der laves ved brug af SQL, 
-//});
-
-// Opretter en POST til tilføjelse af konto 
+// Håndtere post fra  
 router.post('/kontooplysninger', async function (req, res) {
   const { navn, bank_ref,konto_valuta } = req.body
   const saldo = 0.00;
   
-  const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet hved hvem brugeren er når man skifter imellem forskellige sider
+  const bruger_id = req.session.bruger_id; // henter bruger_id fra sessionen, sessionen bruges så systmet ved hvem brugeren er når man skifter imellem forskellige sider
   const nuværendeTid = new Date(); // tager fat i nutidens dato
   const db = await forbindDatabase();  // skaber en forbindelse med db
   const resultater = await db.request()
@@ -207,15 +183,15 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 router.get('/portefoeljeoversigt', async function (req, res) {
   console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
-  const loggedin_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
+  const loggetInd_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
   const db = await forbindDatabase();
   const konto_id = req.params.id // vi henter det :id parameter fra URL’en, som brugeren har besøgt
 
   // Henter konto
   const kontoResultater = await db.request()
-    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)
+    .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)
     .input('id', sql.Int, konto_id)    
-    .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggedin_bruger_id')
+    .query('SELECT * FROM konto.kontooplysninger WHERE bruger_id = @loggetInd_bruger_id')
   /// Gem første række fra kontodata 
 
   const konto = kontoResultater.recordset;
@@ -224,7 +200,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
 
   // Hent alle porteføljer for brugeren
   const portefoljeResultater = await db.request() 
-    .input('loggedin_bruger_id', sql.Int, loggedin_bruger_id)   
+    .input('loggetInd_bruger_id', sql.Int, loggetInd_bruger_id)   
     .query(`
       SELECT 
         portf.portefoelje_id, 
@@ -235,7 +211,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
         ktoopl.valuta as kontovaluta
       FROM konto.portefoelje portf
       JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
-      WHERE ktoopl.bruger_id = @loggedin_bruger_id`
+      WHERE ktoopl.bruger_id = @loggetInd_bruger_id`
     );
   const portefoljer = portefoljeResultater.recordset;
 
@@ -248,7 +224,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
   
   // Brug klassen på hver portefølje
   for (let i = 0; i < portefoljer.length; i++) {
-    console.log("****************** NEXT ************************")
+    //console.log("****************** NEXT ************************")
     const portefolje = portefoljer[i];
 
     // Man henter alle handler (køb/salg) tilhørende den portefølje
@@ -276,7 +252,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       valutakurs = 1;
     } 
 
-    console.log("Valuta kurs : " + valutakurs)
+    //console.log("Valuta kurs : " + valutakurs)
     // her bruger vi klassen fra logik filen til at beregne ejerstruktur
     const beregner = new PortefoljeBeregner(handler); //  opretter en ny beregner-klasse og beregner ejerListe og GAK.
     beregner.beregnEjerOgGAK(); // kalder på metode der beregner GAK osv...
@@ -289,13 +265,13 @@ router.get('/portefoeljeoversigt', async function (req, res) {
       const data2 = await response.json();
       aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
       aktie.pris = aktuelPris * valutakurs;
-      console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
+      //console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
     };
 
     // Beregn totals baseret på opdaterede priser
     //const totaler = beregner.beregnTotaler(valutakurs);
     const totaler = beregner.beregnTotaler();
-    console.log(totaler); 
+    //console.log(totaler); 
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
     portefolje.totalErhvervelsespris =totaler.totalErhvervelsespris || 0;
@@ -450,7 +426,7 @@ router.get('/porteside/:id', async function (req, res) {
 
 
 // ruten som gemmer handlen for den specifikke portefølje 
-router.post('/portesiden/:id/handel', async function (req, res) {
+router.post('/portefoljestyring/:id/handel', async function (req, res) {
   const db = await forbindDatabase();
   const portefoelje_id = req.params.id; // her tager vi fat i id for porteføjen
   
@@ -466,10 +442,17 @@ router.post('/portesiden/:id/handel', async function (req, res) {
    let pris = parseFloat(req.body.pris);
    let antal = parseInt(req.body.antal);
 
+   const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
+   const data2 = await response.json();   
+   const valutakurs = data2.conversion_rates[valuta];
+
+   let pris_i_kontobasecurrency = pris * valutakurs;
+
+
   // tilkobler dato og beregner gebyr 
   const datotid = new Date();
-  const gebyr = pris * 0.001; // 0.1 % gebyr 
-  const total = (pris * antal) + gebyr;
+  const gebyr = pris_i_kontobasecurrency * 0.001; // 0.1 % gebyr 
+  const total = (pris_i_kontobasecurrency * antal) + gebyr;
 
   // her tjekker vi om brugeren vil sælge eller handle 
   let salg_koeb
@@ -548,15 +531,16 @@ try {
     .input('vaerditype', sql.NVarChar(50), vaerditype)
     .input('salg_koeb', sql.Bit, salg_koeb)
     .input('antal', sql.Int, antal)
-    .input('pris', sql.Decimal(10, 2), pris)
+    .input('pris', sql.Decimal(10, 2), pris_i_kontobasecurrency)
+    .input('totalpris', sql.Decimal(10, 2), total)
     .input('valuta', sql.NVarChar(50), valuta)
     .input('gebyr', sql.Decimal(10, 2), gebyr)
     .input('datotid', sql.DateTime, datotid)
     .query(`
       INSERT INTO vaerdipapir.vphandler
-      (symbol,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, valuta, gebyr, datotid)
+      (symbol,portefoelje_id,konto_id, vaerditype,salg_koeb, antal, pris, totalpris, valuta, gebyr, datotid)
       VALUES
-      (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @valuta, @gebyr, @datotid)
+      (@symbol, @portefoelje_id, @konto_id, @vaerditype, @salg_koeb, @antal, @pris, @totalpris, @valuta, @gebyr, @datotid)
     `);
   } catch (error) {
     console.log("ERROR: Der skete en fejl i forbindelse med: Indsæt handel i databasen")

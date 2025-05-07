@@ -51,11 +51,11 @@
             adgangskode: "Emil"
         };
         //Udskriver både brugernavn og adgangskode for at kunne følge med i terminalen
-        console.log("brugernavn:  " + document.getElementById("brugernavn").value)
-        console.log("adgangskode: " + document.getElementById("adgangskode").value)
+        //console.log("brugernavn:  " + document.getElementById("brugernavn").value)
+        //console.log("adgangskode: " + document.getElementById("adgangskode").value)
         
-        //Her tager vi det "bruger data" vi lige har fået, altså brugernavn og password, og siger "Send dette til vores "bruger.js" fil(aka POST)"
-        //Og send info om brugernavn og adgangskode med via vores variable logIndData. Afventer svar fra "bruger.js" filen
+        //Her tager vi det bruger data vi lige har fået, altså brugernavn og password, og sender dette til vores "bruger.js"(POST)"
+        //Og sender data via vores variable "logIndData". Afventer svar fra "bruger.js" filen
         const svar = await fetch('/bruger/log-ind', {
             method: 'POST',
             headers:{"Content-Type": "application/json"},
@@ -64,16 +64,6 @@
         
         //Her venter vi så på tilbagemelding/den givne håndtering der sker i "bruger.js" filen
         const resultat = await svar.json();
-        
-        //console.log("****************Resultat************");
-        //console.log(resultat);
-        //console.log("****************Token************");
-        //console.log(resultat.token);
-        //localStorage.setItem('token', resultat.token);
-        //How to get token from localStorage
-        //const local_token = localStorage.getItem('token');
-        //console.log(" ********* local_token ************************")
-        //console.log(local_token);
 
         //Hvis tilbagemeldingen var succesfuld, altså har en status 200, så vil vi gerne sende brugeren videre til vores Dashboard/forside
         if (svar.status === 200){

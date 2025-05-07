@@ -46,8 +46,7 @@
                 document.getElementById("nulstill_form").addEventListener("submit", async function (event) {
                     event.preventDefault();
 
-                    // tager fat i værdier der skal bruges til req.body
-
+                    // tager fat i værdier der skal sendes til bruger.js vis req.body
                     let username = document.getElementById("username").value
                     let email = document.getElementById("email").value
                     let nyAdgangskode = document.getElementById("ny-adgangskode").value
@@ -60,13 +59,13 @@
                         body: JSON.stringify({ username, email, nyAdgangskode, nyAdgangskodeIgen })
                     });
 
-                    const resultat = await svar.json(); // venter på,at serveren svarer
+                    const resultat = await svar.json(); // venter på at serveren svarer
 
-                    // vi laver et if statment for at tjekke om bruger har en konto
+                    // Hvis ændringen af adgangskoden er succesfuld
                     if (resultat.success) {
                         alert("Adgangskoden er ændret");
 
-                        // Hvis angangkoden er ændet på den rigtig måde,send brugeren til forsiden (log-ind.ejs)
+                        //Send brugeren til forsiden (log-ind.ejs)
                         window.location.href = "/bruger/log-ind";
                     } else {
                         alert("Kunne ikke nulstille adgangskoden. Prøv igen!");
@@ -74,5 +73,4 @@
                 });
             </script>
 </body>
-
 </html>

@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
+//Søger for at vi kan oprette forbindelse til databasen vis vores db.js
 const { sql, forbindDatabase } = require('../db');
+
 const { query } = require('mssql');
 require('dotenv').config(); // sørger for at tage fat i vores env fil
 
+//Søger for at vi kan bruge vores klasse fra PorteBeregner.js
 const PortefoljeBeregner = require('../logik/PorteBeregner');
 
 
@@ -14,17 +17,21 @@ const PortefoljeBeregner = require('../logik/PorteBeregner');
 // GET bruges til at vise log-ind siden 
 
 //***********************************************************
-//******* BRUGER OPRET, LOGIN, LOGOFF ***********************
+//******* BRUGER OPRET, LOG-IND, LOGOFF ***********************
 //***********************************************************
+
+//**************** BRUGER OPRET ***********************
+// Søger for at bruger-oprettelses siden bliver vist når en bruger klikker/søger efter den.
 router.get('/bruger-oprettelse', function (req, res) {
     res.render('bruger-sider/bruger-oprettelse');
 });
 
-// HÅNDTER bruger-oprettelses side, antså den tager os til log ind siden når brugeren er oprettet.
+// Håndter post med data fra bruger-oprettelse.ejs.
+// Får brugers info ud af requesten
 router.post('/register', async (req, res) => {
     const { username, password, repeatPassword, email } = req.body;
 
-    // Tjek for tomme felter først. !!!Dette er dobbelt tjek, da det allerede sker i bruger-oprettelse.ejs HTML formen
+    // Tjek for tomme felter først. !!!Dette er dobbelttjek, da det allerede sker i bruger-oprettelse.ejs HTML formen
     if (!username || !password || !repeatPassword) {
         return res.status(400).json({ success: false, message: "Udfyld alle felter" });
     }
@@ -33,12 +40,10 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ success: false, message: "Adgangskoderne matcher ikke" });
     }
 
-    // skaber en forbindelse med db
+    // Skaber en forbindelse med db
     const db = await forbindDatabase();
 
-
-
-    //************* FORSØG - Funktion: BRUGER FINDES ALLEREDE I DB **************************/
+    //************* FORSØG(VIRKER IKKE) - Funktion: BRUGER FINDES ALLEREDE I DB **************************/
     /*
     //Check om bruger allerede findes i databasen, og derfor ikke kan "gen"oprette sig.
     db_result = 
@@ -57,7 +62,7 @@ router.post('/register', async (req, res) => {
         // Så findes brugeren ikke i forvejen og så skal vi bare fortsætte
     }
 */
-    //
+    //Hvis alt er gået godt, så indsætter vi den nye brugers info i databasen(I bruger.oplysninger)
     await db.request()
         .input('name', sql.NVarChar(100), username)
         .input('password', sql.NVarChar(100), password)
@@ -66,12 +71,13 @@ router.post('/register', async (req, res) => {
             `INSERT INTO bruger.oplysninger (username, password, email) 
           VALUES (@name, @password, @email)`);
 
+    //Redirecter os til log-ind siden når brugeren er oprettet.
     return res.redirect('/bruger/log-ind');
 });
 
-//Dette gør at vi overhovedet kan se siden. Den siger "Få info om denne side fra en given stig(bruger-sider/log-ind)".
-// (Denne forespørgsel kommer f.eks. fra Dashboard)
-//Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
+//********* LOG-IND ************************
+// Søger for at log-ind siden bliver vist når en bruger klikker/søger efter den.
+// Inden under den givne fil, står der hvordan siden skal se ud og derved hvad der skal vises i browseren.
 router.get('/log-ind', function (req, res) {
     res.render('bruger-sider/log-ind');
 });
@@ -80,17 +86,19 @@ router.get('/log-ind', function (req, res) {
 router.post('/log-ind', async (req, res) => {
     //console.log(req); // Se hele requesten
     //console.log(req.body); // Ser kun på den del af requesten som indeholde brugernavn og adgangskode
-    const { brugernavn, adgangskode } = req.body; //Sætter brugernavn og adgangskode "tilbage" ind i to variable(brugernavn og adgangskode)
+    
+    //Sætter brugernavn og adgangskode "tilbage" ind i to variable(brugernavn og adgangskode)
+    const { brugernavn, adgangskode } = req.body; 
 
-    //Hvis brugernavn og adgangskode er tomt, så udskriv følgende besked.
+    //Hvis brugernavn og adgangskode er tomt, så udskriv følgende besked.(Dobbelttjek, da det allerede tjekkes i log-ind.ejs)
     if (!brugernavn || !adgangskode) {
-        return res.status(400).json({ success: false, message: "Udfyld både bruger id og password" });
+        return res.status(400).json({ success: false, message: "Udfyld både bruger_id og password" });
     }
 
     //Skaber en forbindelse med db
     const db = await forbindDatabase();
 
-    //Søger efter bruger i databasen baseret på brugernavn
+    //Søger efter bruger i databasen baseret på brugernavn, og får info ud om den givne bruger(hvis den findes).
     db_result =
         await db.request()
             .input('name', sql.NVarChar(100), brugernavn)
@@ -99,67 +107,74 @@ router.post('/log-ind', async (req, res) => {
                     FROM bruger.oplysninger 
                     WHERE username=@name`)
 
-    console.log("db_result: " + db_result)  
-    //console.log("**********************")
-    console.log(db_result)
-    //console.log("**********************")
-    // Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen, 
-    //Catch bliver kun udløst hvis Try delen er "ulovlig"/programmet giver en rød fejl/crasher
+    //console.log("db_result: " + db_result)  
+    //console.log(db_result)
+    
+
+    //Try-Catch: Hvis der findes noget på den plads vi leder efter i databasen så fortsæt
+    //Catch bliver kun udløst hvis try delen fejler/programmet giver en rød fejl/crasher
     try {
         const db_username = db_result.recordset[0].username
-        console.log("db_username er : " + db_result.recordset[0].username + " and you entered : " + brugernavn)
+        console.log("db_username er : " + db_username + " and you entered : " + brugernavn)
     } catch {
-        return res.status(400).json({ success: false, message: "Bruger id findes ikke" });
+        return res.status(400).json({ success: false, message: "Bruger navn findes ikke" });
     }
 
+    //Samme try-catch metode, bare i forhold til password
     try {
         const db_password = db_result.recordset[0].password
         console.log("db_password er : " + db_result.recordset[0].password + " and you entered : " + adgangskode)
         if (db_password != adgangskode) {
             return res.status(400).json({ success: false, message: "Password er forkert" });
         } else {
-
+            
+            //Får fat i brugerens id, hvis begge try-catch er gået godt
             const db_bruger_id = db_result.recordset[0].bruger_id;
-            //const db_username = db_result.recordset[0].username;
-            req.session.bruger_id = db_bruger_id; // gemmer brugerens ID i session
+
+            //Gemmer brugerens id i session
+            req.session.bruger_id = db_bruger_id; 
             return res.status(200).json({ success: true, message: "Password er korrekt"});
         }
+    //"Ekstra" catch i tilfælde af at noget er gået helt galt
     } catch (error) {        
         console.log("ERROR" + error.message)  
         return res.status(400).json({ success: false, message: "Noget er gået helt galt" });
     }
-
 });
 
 
-
+//********* LOGOFF ************************
+//"Logger bruger ud", og viser dem logoff.ejs siden.
 router.get('/logoff', function (req, res) {
     //Fjerne bruger_id fra den givne session, hvilket gør at hvis man logger ud, så kan man ikke se noget data på nogen af siderne.
+    // Dette skyldes også at dataen er sat op til de givne brugere.
     req.session.bruger_id = 0;
     console.log(req.session);
     res.render('bruger-sider/logoff');
 });
 
 
-// Reset password
+//********* SKIFT ADGANGSKODE ************************
 router.get('/nulstill', function (req, res) {
     res.render('bruger-sider/nulstill');
 });
 
-//POST-rute vil håndeter vores Login-data, vi sørger for at brugeren kan nustille udgangskoden, og opdaterer den i DB.
+//Post der håndtere brugers ændring af sin adgangskode og opdaterer den i DB(kaldes fra nulstill.ejs)
 router.post('/nulstill', async function (req, res) {
+    //console.log(req.body); // Ser at vi modtager det rigtige info
+    
+    //Får info ud af req og gemmer det i nye variable.
+    const {username, email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
 
-    console.log(req.body); // debugging
-    const { username, email, nyAdgangskode, nyAdgangskodeIgen } = req.body;
     if (nyAdgangskode !== nyAdgangskodeIgen) {
-        // Hvis adgangkode ikke matcher stop og send fejl til klienten
+        // Hvis adgangkode ikke matcher stop og send fejl til brugeren
         return res.status(400).json({ success: false, message: "OBS. Der er sket en fejl prøv igen " });
     }
 
-    // db skal forbindes 
+    //Forbinder os til databasen 
     const db = await forbindDatabase();
 
-    // opdatrer adgangskode direkte ud fra email og brugernavn
+    // Opdaterer brugers adgangskode i DB ud fra email og brugernavn
     await db.request()
         .input('email', sql.NVarChar(255), email)
         .input('username', sql.NVarChar(100), username)
@@ -179,13 +194,16 @@ router.post('/nulstill', async function (req, res) {
 //******* KONTO  ***********************
 //***********************************************************
 
+//**********ROUTE TIL AT VISE KONTOOVERSIGT/KONTOOPLYSNINGER************
 router.get('/kontooplysninger', function (req, res) {
     res.render('bruger-sider/kontooplysninger');
 });
 
-router.get('/indsaetter', function (req, res) {
-    res.render('bruger-sider/indsaetter');
-});
+
+
+//router.get('/indsaetter', function (req, res) {
+//    res.render('bruger-sider/indsaetter');
+//});
 
 
 // vi laver en post request der skal give os den nuværende tidspunkt og dato for den indsættelse der laves
@@ -261,7 +279,7 @@ router.post('/indsaetter', async function (req, res) {
 
     const transaktions_id = transResult.recordset[0].transaktions_id;
 
-    // vi opdater saldoen hvis bruger indsætter penge på konto 
+    // vi opdaterer saldoen hvis bruger indsætter penge på konto 
 
     await db.request()
         .input('vaerdi', sql.Decimal(10, 2), vaerdiIBaseCurrency)
@@ -289,7 +307,7 @@ router.post('/indsaetter', async function (req, res) {
 
 });
 
-// Dashboard route som viser alle de regnede værder
+// Dashboard route som viser alle de regnede værdier
 router.get('/dashboard', async function (req, res) {
   
   const brugerId = req.session.bruger_id;

@@ -52,7 +52,6 @@ app.use('/aktiesoeg', dataRouter);
 // impoter routerne
 const brugerRuter = require('./routers/bruger');
 const portefoljeRuter = require('./routers/portefoljestyring');
-const transaktionsRuter = require('./routers/transaktionssider');
 const kontoRouter = require('./routers/portefoljestyring'); 
 //const dashboardRouter = require('./routers/bruger');
 
@@ -61,7 +60,6 @@ const kontoRouter = require('./routers/portefoljestyring');
 
 app.use('/bruger', brugerRuter);
 app.use('/portefoljestyring', portefoljeRuter);
-app.use('/transaktionssider', transaktionsRuter);
 app.use('/', kontoRouter);   
 //app.use('/', dashboardRouter);
 

@@ -23,6 +23,7 @@ DROP table IF EXISTS konto.transaktioner;
 DROP table IF EXISTS konto.kontooplysninger;
 DROP table IF EXISTS bruger.oplysninger;
 DROP table IF EXISTS konto.portefoelje;
+DROP table IF EXISTS historiskdata.portefoeljevaerdi;
 `;
 
 
@@ -30,6 +31,7 @@ const dropAllSchemas = `
 DROP schema IF EXISTS bruger;
 DROP schema IF EXISTS konto;
 DROP schema IF EXISTS vaerdipapir;
+DROP schema IF EXISTS historiskdata;
   `;
 
 
@@ -46,6 +48,9 @@ const lavSchemaVaerdipapir = `
 CREATE SCHEMA vaerdipapir
 `;
 
+const lavSchemaHistoriskData = `
+CREATE SCHEMA historiskdata
+`;
 
 // vi opretter tabeller
 
@@ -167,7 +172,7 @@ const dataOmVP =
         ('McDonalds', 'MCD', 'aktie'),
         ('Walmart Inc.', 'WMT', 'aktie'),
         ('Caterpiller Inc.', 'CAT', 'aktie')
-        `
+        `;
 
 const lavVPHandler = `
       CREATE TABLE vaerdipapir.vphandler(
@@ -207,10 +212,39 @@ values  ('BA',   1, 2, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-
         ('NKE',  5, 6, 'aktie', 0, 110,  603.20,  66352.00,'DKK',  66.35, '2024-05-10 20:11:29.057'),
         ('WMT',  5, 6, 'aktie', 0, 200,  395.46,  79092.00,'DKK',  79.09, '2024-05-10 20:11:29.057'),
         ('CAT',  5, 6, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057')
-        ;`
+        ;
+        `;
 
+const lavHistPorteVaerdi = `
+      CREATE TABLE historiskdata.portefoeljevaerdi(
+        histportvaerdi_id INT IDENTITY(1,1),
+        portefoelje_id INT,
+        vaerdi DECIMAL(10,2),
+        valuta NVARCHAR(50),
+        datotid DATETIME,        
+        CONSTRAINT histportvaerdi_id PRIMARY KEY (histportvaerdi_id),
+        CONSTRAINT portefoelje_PK FOREIGN KEY (portefoelje_id) REFERENCES konto.portefoelje(portefoelje_id)
+      );
+      `;
 
+const dataiHistPorteVaerdi = `insert into historiskdata.portefoeljevaerdi 
+    (portefoelje_id, vaerdi, valuta, datotid)
+values  ( 1, 500000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 1, 500000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 1, 500000, 'DKK', '2025-04-10 20:11:29.057')
+        ;
+        `;
 
+        
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
 async function ventPåDatabase() {
@@ -231,6 +265,7 @@ async function ventPåDatabase() {
   await sql.query(lavSchemaBruger);
   await sql.query(lavSchemaKonto);
   await sql.query(lavSchemaVaerdipapir);
+  await sql.query(lavSchemaHistoriskData);
 
   // opretter tabeller 
   console.log('Create all tables');
@@ -240,6 +275,7 @@ async function ventPåDatabase() {
   await sql.query(lavPortefoeljeTabel);
   await sql.query(lavVPOplysninger);
   await sql.query(lavVPHandler);
+  await sql.query(lavHistPorteVaerdi);
 
   
   // indsæt test data i tabeller
@@ -249,6 +285,7 @@ async function ventPåDatabase() {
   await sql.query(dataitransaktionstabel);
   await sql.query(dataOmVP); 
   await sql.query(dataiVpHandler); 
+  await sql.query(dataiHistPorteVaerdi); 
 
   
 

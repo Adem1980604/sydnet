@@ -48,7 +48,8 @@
   
     <div class="grid-layout">
       <div class="summary-card">
-    
+        
+        <!--
         <% let totalUrealiseretGevinstTab2 = 0; %>
         <% for (let i = 0; i < ejerListeFiltreret.length; i++) {
           const e2 = ejerListeFiltreret[i];
@@ -58,6 +59,7 @@
           totalUrealiseretGevinstTab2 = totalUrealiseretGevinstTab2 + gevinstTab2;
         }          
         %>
+        -->
 
         <div class="total-value">
           <p>Samlet urealiseret gevinst/tab</p>
@@ -96,8 +98,7 @@
                 <td><%= e.antal %> stk.</td> <!-- Antal aktier -->
                 <td><%= e.gak.toFixed(2) %> <%= valuta %></td> <!-- GAK -->
                 <td><%= Number(aktuelPrisIBaseCurrency).toFixed(2) %> <%= valuta %></td> <!-- Aktuel pris pr stk -->
-                <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forvented Samlet værdi -->
-                <td><%= e.gak.toFixed(2) %> <%= valuta %></td> <!-- GAK -->
+                <td><%= samletVaerdi.toFixed(2) %> <%= valuta %></td> <!-- Forventet Samlet værdi -->
                 <% if (gevinstTab >= 0) { %>
                   <td class="positive">+<%= gevinstTab.toFixed(2) %> <%= valuta %></td> <!-- Gevinst -->
                 <% } else { %>
@@ -291,40 +292,40 @@
         }
       }
 
-  // Opretter et data-objekt med de informationer der skal sendes til serveren
-  const data = {
-    konto_id,
-    vaerditype: document.getElementById("værditype").value,
-    antal: document.getElementById("antal").value,
-    //pris: document.getElementById("samlet_pris").value,
-    pris: nuvaerendeAktiePris,
-    valuta: valuta,
-    type,
-    symbol: valgtAktie.symbol
-  };
+      // Opretter et data-objekt med de informationer der skal sendes til serveren
+      const data = {
+        konto_id,
+        vaerditype: document.getElementById("værditype").value,
+        antal: document.getElementById("antal").value,
+        //pris: document.getElementById("samlet_pris").value,
+        pris: nuvaerendeAktiePris,
+        valuta: valuta,
+        type,
+        symbol: valgtAktie.symbol
+      };
 
-  // Sender handlen til backend via fetch (POST-request)
-  const svar = await fetch(`/portesiden/${portefolje_id}/handel`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+      // Sender handlen til portefoljestyring.js via fetch (POST-request)
+      const svar = await fetch(`/portefoljestyring/${portefolje_id}/handel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-  const resultat = await svar.json(); // Får svar tilbage fra serveren
+      const resultat = await svar.json(); // Får svar tilbage fra serveren
 
-  // Hvis alt gik godt
-  if (resultat.success) {
-    if (type === "kob") {
-      alert("Handel oprettet!"); // Køb
-    } else if (type === "salg") {
-      alert("Salg gennemført!"); // Salg
-    }
-    lukPopup();       // Lukker popup-vinduet
-    location.reload(); // Opdaterer siden så nye værdier vises
-  } else {
-    // Noget gik galt – vis en fejlbesked
-    alert("Noget gik galt");
-  }
+      // Hvis alt gik godt
+      if (resultat.success) {
+        if (type === "kob") {
+          alert("Handel oprettet!"); // Køb
+        } else if (type === "salg") {
+          alert("Salg gennemført!"); // Salg
+        }
+        lukPopup();       // Lukker popup-vinduet
+        location.reload(); // Opdaterer siden så nye værdier vises
+      } else {
+        // Noget gik galt – vis en fejlbesked
+        alert("Noget gik galt");
+      }
 });
 
   
