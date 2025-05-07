@@ -200,6 +200,7 @@
     let valuta = "<%= valuta %>"; // Valuta forkortelse
     let valutakurs = "<%= valutakurs %>"; // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     let valgtAktie = [];
+    let historiskVaerdi = "<%= historiskVaerdi %>";
 
     async function aktiesoeg() {
           const symbol = document.getElementById("aktieSoeg").value;
@@ -350,10 +351,10 @@ async function beregnSamletPris(){
 
   if(antal > 0) {
     //let samlet = valgtAktie.pris * antal;     
-    console.log(nuvaerendeAktiePris);
-    console.log(antal);
-    console.log(valuta);
-    console.log(valutakurs);
+    //console.log(nuvaerendeAktiePris);
+    //console.log(antal);
+    //console.log(valuta);
+    //console.log(valutakurs);
     let samlet = nuvaerendeAktiePris * antal * valutakurs; 
     visning.textContent = ` Samlet i kontoens valuta: ${samlet.toFixed(2)} ${valuta}`  // vi viser den samlet beregnet pris 
     document.getElementById("samlet_pris").value = nuvaerendeAktiePris;
@@ -378,18 +379,68 @@ async function visPortfolioGraf() {
   const startMaaned = 0; // Januar = måned 0
   const slutMaaned = nu.getMonth(); // Aktuel måned (0-indekseret)
 
-  for (let m = startMaaned; m <= slutMaaned; m++) {
-    dato = new Date(nu.getFullYear(), m, 1);
-    maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
+  //console.log("****************0*********************");
+  //console.log(historiskVaerdi[0]);
+  //console.log("****************1*********************");
+  //console.log(historiskVaerdi[1]);
+  //console.log("****************2*********************");
+  //console.log(historiskVaerdi[2]);
 
-    // Dummy data, til totalværdi for grafen
-    if (m < slutMaaned) {
-      // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-      vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
-    } else {
-      vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
-    }
-  }
+  // Bygger data til grafen og beregner total
+  
+
+  <% for (let m = 0; m < historiskVaerdi.length; m++) { %>
+      //maanedLabels.push("<%= String(historiskVaerdi[m].datotid).split(" ")[0] %>");      
+      <%if (m < historiskVaerdi.length) {%>
+        maanedLabels.push("<%= historiskVaerdi[m].datotid.getFullYear() %>-<%= historiskVaerdi[m].datotid.getMonth()%>-<%= historiskVaerdi[m].datotid.getDate()%>");
+        vaerdier.push(<%= historiskVaerdi[m].vaerdi %>);    // Man skal ikke gange med valuta fordi historiske data bliver gemt i konto's base currency
+      <% } else {%>
+        maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()%>-<%= today.getDate()%>");
+        vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
+      <%}%>
+  <% } %>//
+  // Push det sidste - altså idag 
+  <%let today = new Date();%>
+  maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()%>-<%= today.getDate()%>");
+  vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
+//
+  // Bygger data til grafen og beregner total
+
+
+  ////for (let m = startMaaned; m <= slutMaaned; m++) {
+  //  dato = new Date(nu.getFullYear(), m, 1);
+  //  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
+  //
+  //  // Dummy data, til totalværdi for grafen
+  //  if (m < slutMaaned) {
+  //    // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
+  //    vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
+  //  } else {
+  //    vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
+  //  }
+  //}
+
+  // her går vi igennen alle tidspunkter og fylder labels og priser ind 
+  //for (let i = 0; i < tidspunkter.length; i++) {
+  //  const tid = tidspunkter[i];
+  //  labels.push(tid); // pusher tidspunkt 
+  //  priser.push(parseFloat(timeSeries[tid]["1. open"])); // for hvert timestamp gemmes tidpunktet og åbningskursen i arrays 
+  //}
+
+  
+  
+  //for (let m = startMaaned; m <= slutMaaned; m++) {
+  //  dato = new Date(nu.getFullYear(), m, 1);
+  //  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
+  //
+  //  // Dummy data, til totalværdi for grafen
+  //  if (m < slutMaaned) {
+  //    // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
+  //    vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
+  //  } else {
+  //    vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
+  //  }
+  //}
 
 
     // Opsæt data og konfiguration

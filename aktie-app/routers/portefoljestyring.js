@@ -265,18 +265,13 @@ router.get('/portefoeljeoversigt', async function (req, res) {
     };
 
     // Beregn totals baseret på opdaterede priser
-    
     const totaler = beregner.beregnTotaler();
-     
 
     // Gem totals på portefølje, så vi kan vise det via vores EJS fil
     portefolje.totalErhvervelsespris =totaler.totalErhvervelsespris || 0;
     portefolje.totalForventetVaerdi=totaler.totalForventetVaerdi || 0;
     portefolje.totalUrealiseretGevinstTab = totaler.totalUrealiseretGevinstTab || 0;
   }
-
-  
-
 
   res.render('portestyring/portefoeljeoversigt', {
     konto,    
@@ -384,6 +379,18 @@ router.get('/porteside/:id', async function (req, res) {
   }
   
 
+  // hent historisk vaerdi data
+  const historiskVaerdiResultat = await db.request()
+    .input('id', sql.Int, portefoljeId)
+    .query(`
+      SELECT pfv.vaerdi, pfv.valuta, pfv.datotid
+      FROM historiskdata.portefoeljevaerdi pfv      
+      WHERE pfv.portefoelje_id = @id
+    `);
+  const historiskVaerdi = historiskVaerdiResultat.recordset;
+  console.log("*******DEBUG 9999***********")
+  console.log(historiskVaerdi[0])
+
   // 11. Når alle aktiepriser er hentet, beregner vi totaler
   //const totaler = beregner.beregnTotaler(valutakurs);
   const totaler = beregner.beregnTotaler();
@@ -396,6 +403,7 @@ router.get('/porteside/:id', async function (req, res) {
     valuta, // Valuta forkortelse
     valutakurs, // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     handler, // alle handler lavet i porteføljen 
+    historiskVaerdi,
     aktieliste, // liste over alle akiter 
     ejerListeFiltreret: beregner.ejerListeFiltreret, //de aktier brugeren ejer nu 
     gakBeregning: beregner.gakBeregning, // info om GAK
