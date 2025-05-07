@@ -15,6 +15,7 @@ const config = {
 
 
 const dropAllTables = `
+DROP table IF EXISTS historiskdata.portefoeljevaerdi;
 DROP table IF EXISTS vaerdipapir.vphandler
 DROP table IF EXISTS vaerdipapir.vpoplysninger
 DROP table IF EXISTS konto.portefoelje
@@ -22,7 +23,6 @@ DROP table IF EXISTS konto.transaktioner;
 DROP table IF EXISTS konto.kontooplysninger;
 DROP table IF EXISTS bruger.oplysninger;
 DROP table IF EXISTS konto.portefoelje;
-DROP table IF EXISTS historiskdata.portefoeljevaerdi;
 `;
 
 

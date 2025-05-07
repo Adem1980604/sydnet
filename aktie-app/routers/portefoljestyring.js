@@ -236,12 +236,19 @@ router.get('/portefoeljeoversigt', async function (req, res) {
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/USD`);
     const data2 = await response.json();
     let valutakurs;
+    
+    //console.log("Handler : " )
+    //console.log(handler)
+    //console.log("*********************" )
     try {
       let valuta_text = Object.values(handler[0].valuta);
       let valuta_symbol = valuta_text.join('');
       valutakurs = data2.conversion_rates[valuta_symbol];
+      //console.log("Valutakurs : " + valutakurs)
+      
     } catch (error) {
       valutakurs = 1;
+      //console.log("Error: Der skete en fejl i forbindelse med opslag af valutakurs - eller omregning af valuta ...router.get('/portefoeljeoversigt',")
     } 
 
     // her bruger vi klassen fra logik filen til at beregne ejerstruktur
@@ -367,13 +374,13 @@ router.get('/porteside/:id', async function (req, res) {
   for (let i = 0; i < beregner.ejerListeFiltreret.length; i++) {
     const aktie = beregner.ejerListeFiltreret[i];
 
-    console.log(aktie.symbol)
+    //console.log(aktie.symbol)
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
     const data2 = await response.json();
 
     aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
     aktie.pris = aktuelPris;
-    console.log(aktuelPris); 
+    //console.log(aktuelPris); 
   }
   
 

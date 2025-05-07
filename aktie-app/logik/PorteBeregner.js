@@ -18,13 +18,11 @@ require('dotenv').config(); // sørger for at tage fat i vores env fil
 class PortefoljeBeregner {
     constructor(handler, konti = []) {
         this.handler = handler;  // Gemmer alle handler (køb og salg) brugeren har lavet
-        this.konti =konti;       //  Gemmer alle brugerens konti med saldo
-        this.ejerListe= []; // Liste over aktier brugeren ejer lige nu
+        this.konti = konti;       //  Gemmer alle brugerens konti med saldo
+        this.ejerListe = []; // Liste over aktier brugeren ejer lige nu
         this.gakBeregning = [];  // Data til at beregne GAK på hver aktie
         this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte)
         this.realiseretGevinst = 0; // Akkumulerer realiseret gevinst/tab
-        this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte væk)
-        this.realiseretGevinst =0; // Akkumulerer realiseret gevinst/tab
     }
 
     // Metode: Beregner ejerliste og GAK for alle aktier
@@ -36,15 +34,17 @@ class PortefoljeBeregner {
 
         // Gennemgår alle handler (køb/salg)
         for (let i = 0; i < this.handler.length; i++) {
-            const h = this.handler[i];  
-            
-           // console.log(h)   
+            const h = this.handler[i];    
 
             const symbol = h.symbol;
             const valuta =   h.valuta;
             const antal = h.antal;
-            const pris =   h.pris;
+            const pris =   h.pris; // NB: Dette er anskaffelses prisen
             const salg_koeb =  h.salg_koeb; // false = køb true = salg
+            
+            //console.log("****************pris************");
+            //console.log(pris);
+                
 
             // 1: Find aktien i ejerlisten (hvis den findes)
             let ejerAktie = null;
@@ -60,7 +60,7 @@ class PortefoljeBeregner {
                 this.ejerListe.push(ejerAktie);
                  }
 
-            // 2:hvoFind eller opret GAK beregning for aktien
+            // 2:Find eller opret GAK beregning for aktien
             let gakAktie =null;
             for (let j = 0; j< this.gakBeregning.length; j++) {
                 if (this.gakBeregning[j].symbol===symbol) {
@@ -84,14 +84,19 @@ class PortefoljeBeregner {
                 if(gakAktie.samletAntal < antal){
                     throw new Error
                     (`Dette kan du ikke sælge du forsøger at sælge ${antal}, men ejer kun ${gakAktie.samletAntal}`);
-                  }
-                const gakIndenSalg =gakAktie.samletPris / gakAktie.samletAntal;
-                gakAktie.samletPris-= gakIndenSalg * antal;
-                gakAktie.samletAntal -=antal;
+                } else {
+                    const gakIndenSalg =gakAktie.samletPris / gakAktie.samletAntal;
+                    gakAktie.samletPris-= gakIndenSalg * antal;
+                    gakAktie.samletAntal -=antal;
 
-                // Beregn realiseret gevinst/tab for salget
-                const realiseret =(pris -gakIndenSalg) * antal;
-                this.realiseretGevinst+= realiseret;
+                    console.log("****************pris************");
+                    console.log("Pris :" + pris);
+                    console.log("gakIndenSalg :" + gakIndenSalg);
+                    // Beregn realiseret gevinst/tab for salget
+                    const realiseret = (pris -gakIndenSalg) * antal;
+                    this.realiseretGevinst+= realiseret;                
+                    console.log("realiseret :" + realiseret);
+                }
             }
         }
 
