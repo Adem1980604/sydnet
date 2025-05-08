@@ -117,7 +117,7 @@ router.post('/log-ind', async (req, res) => {
         const db_username = db_result.recordset[0].username
         console.log("db_username er : " + db_username + " and you entered : " + brugernavn)
     } catch {
-        return res.status(400).json({ success: false, message: "Bruger navn findes ikke" });
+        return res.status(400).json({ success: false, message: "Brugernavn findes ikke" });
     }
 
     //Samme try-catch metode, bare i forhold til password
@@ -133,7 +133,7 @@ router.post('/log-ind', async (req, res) => {
 
             //Gemmer brugerens id i session
             req.session.bruger_id = db_bruger_id; 
-            return res.status(200).json({ success: true, message: "Password er korrekt"});
+            return res.status(200).json({ success: true, message: "Alt er korrekt"});
         }
     //"Ekstra" catch i tilfælde af at noget er gået helt galt
     } catch (error) {        
