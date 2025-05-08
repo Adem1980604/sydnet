@@ -25,7 +25,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
   //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
   //console.log("******************** URL ****************");
   //console.log(url);
-  const live = true;
+  const live = false;
 
   if (live == true) {
     const response = await axios.get(url);
@@ -46,7 +46,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '3. Last Refreshed': '2025-04-24',
           '4. Time Zone': 'US/Eastern'
         },
-        'Weekly Time Series': {
+        'Weekly Time Series': {          
           '2025-04-24': {
             '1. open': '238.0650',
             '2. high': '249.3400',

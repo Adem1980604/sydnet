@@ -1,8 +1,7 @@
-
 const sql = require('mssql'); // vi importerer mssql-pakken, som forbinder med SQL server
-require('dotenv').config();
+require('dotenv').config(); //Gør det muligt at få info fra vores .env fil
 
-// forbindens konfiguraiton 
+// Forbinder til .env og får info om vores database 
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -16,6 +15,7 @@ const config = {
 
 
 const dropAllTables = `
+DROP table IF EXISTS historiskdata.portefoeljevaerdi;
 DROP table IF EXISTS vaerdipapir.vphandler
 DROP table IF EXISTS vaerdipapir.vpoplysninger
 DROP table IF EXISTS konto.portefoelje
@@ -23,7 +23,6 @@ DROP table IF EXISTS konto.transaktioner;
 DROP table IF EXISTS konto.kontooplysninger;
 DROP table IF EXISTS bruger.oplysninger;
 DROP table IF EXISTS konto.portefoelje;
-DROP table IF EXISTS historiskdata.portefoeljevaerdi;
 `;
 
 
@@ -35,7 +34,7 @@ DROP schema IF EXISTS historiskdata;
   `;
 
 
-// her opretter vi vores schema
+// Her opretter vi vores schema'er
 const lavSchemaBruger = `
 CREATE SCHEMA bruger
 `;
@@ -52,8 +51,7 @@ const lavSchemaHistoriskData = `
 CREATE SCHEMA historiskdata
 `;
 
-// vi opretter tabeller
-
+// Vi opretter  tabeller
 const lavBrugerTabel = `
   CREATE TABLE bruger.oplysninger (
     bruger_id INT IDENTITY(1,1),
@@ -229,18 +227,18 @@ const lavHistPorteVaerdi = `
 
 const dataiHistPorteVaerdi = `insert into historiskdata.portefoeljevaerdi 
     (portefoelje_id, vaerdi, valuta, datotid)
-values  ( 1, 500000, 'DKK', '2024-05-10 19:51:13.727'),        
-        ( 1, 500000, 'DKK', '2024-06-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-07-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-08-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-09-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-10-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-11-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2024-12-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2025-01-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2025-02-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2025-03-10 20:11:29.057'),
-        ( 1, 500000, 'DKK', '2025-04-10 20:11:29.057')
+values  ( 1, 590000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 1, 630000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 1, 710000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 1, 681000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 1, 693000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 1, 745000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 1, 750000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 1, 810000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 1, 830000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 1, 953000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 1, 820000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 1, 800000, 'DKK', '2025-04-10 20:11:29.057')
         ;
         `;
 
@@ -248,26 +246,27 @@ values  ( 1, 500000, 'DKK', '2024-05-10 19:51:13.727'),
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
 async function ventPåDatabase() {
-  //forbinder til databasen
+  
   console.log('Connet to database');
-  await sql.connect(config); // skaber forbindelse med din database
+  // skaber forbindelse med din database
+  await sql.connect(config); 
 
-  //Drop all TABLES
+  //Dropper alle TABLES
   console.log('Drop all tabels');
   await sql.query(dropAllTables);
 
-  //Drop all SCHEMA
+  //Dropper alle SCHEMAER
   console.log('Drop all schemas');
   await sql.query(dropAllSchemas);
 
-  // opretter SCHEMA 
+  //Opretter alle SCHEMAER 
   console.log('Create all schemas');
   await sql.query(lavSchemaBruger);
   await sql.query(lavSchemaKonto);
   await sql.query(lavSchemaVaerdipapir);
   await sql.query(lavSchemaHistoriskData);
 
-  // opretter tabeller 
+  // Opretter alle TABLES 
   console.log('Create all tables');
   await sql.query(lavBrugerTabel);
   await sql.query(lavKontoTabel);
@@ -278,7 +277,7 @@ async function ventPåDatabase() {
   await sql.query(lavHistPorteVaerdi);
 
   
-  // indsæt test data i tabeller
+  // Indsæt test data i tabeller
   await sql.query(dataibrugertabel);
   await sql.query(dataikontotabel);
   await sql.query(dataIPortefoeljeTabel);
@@ -288,11 +287,10 @@ async function ventPåDatabase() {
   await sql.query(dataiHistPorteVaerdi); 
 
   
-
-  console.log('alt oprettet') // tjek
+  console.log('alt oprettet') // Kommer vi her til så er alt oprettet
 };
 
-
+//Kalder funktion
 ventPåDatabase();
 
 

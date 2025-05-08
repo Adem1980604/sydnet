@@ -53,7 +53,7 @@ async function hentOgVisGraf(symbol) {
   for (let i = 0; i < tidspunkter.length; i++) {
     const tid = tidspunkter[i];
     labels.push(tid); // pusher tidspunkt 
-    priser.push(parseFloat(timeSeries[tid]["4. close"])); // for hvert timestamp gemmes tidpunktet og lukkekursen i arrays 
+    priser.push(parseFloat(timeSeries[tid]["1. open"])); // for hvert timestamp gemmes tidpunktet og åbningskursen i arrays 
   }
 
 
