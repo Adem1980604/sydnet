@@ -67,6 +67,7 @@ const dataibrugertabel = `
     INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Meda', 'Meda', 'Meda@cbs.dk')
     INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Mads', 'Mads', 'Mads@cbs.dk')
     INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Nikola', 'Nikola', 'Nikola@cbs.dk')
+    INSERT INTO bruger.oplysninger (username, password, email) VALUES ('Forelæser', 'HAITPROG1', 'Forelæser@cbs.dk')
     `;
 
 
@@ -92,11 +93,13 @@ const dataikontotabel = `
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (1,'Emil_Konto4','DKK',3000,'Nordea','2024-05-06 20:00:00',NULL,1)
+
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto1','DKK',5000,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',3000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
-  
+
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (5,'ForelæserKonto','DKK',30000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
 `;
 
 
@@ -122,6 +125,8 @@ const dataitransaktionstabel = `
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,200,'DKK','2025-02-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5000,'DKK','2025-03-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,100,'DKK','2025-04-06 20:00:00')
+
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (9,30000,'DKK','2025-04-06 20:00:00')
   `;
 
 
@@ -143,10 +148,13 @@ const dataIPortefoeljeTabel  = `
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje2','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje3','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (2,'Emils portefoelje4','2024-05-07 20:00:00')
+
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje1','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje2','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje3','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje4','2024-05-07 20:00:00')
+
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (9,'ForelæserPortefoelje','2024-05-07 20:00:00')
 `;
 
 const lavVPOplysninger = `
@@ -238,11 +246,24 @@ values  ( 1, 590000, 'DKK', '2024-05-10 19:51:13.727'),
         ( 1, 830000, 'DKK', '2025-01-10 20:11:29.057'),
         ( 1, 953000, 'DKK', '2025-02-10 20:11:29.057'),
         ( 1, 820000, 'DKK', '2025-03-10 20:11:29.057'),
-        ( 1, 800000, 'DKK', '2025-04-10 20:11:29.057')
+        ( 1, 800000, 'DKK', '2025-04-10 20:11:29.057'),
+        ( 6, 590000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 6, 630000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 6, 710000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 6, 681000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 6, 693000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 6, 745000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 6, 750000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 6, 810000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 6, 830000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 6, 953000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 6, 820000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 6, 800000, 'DKK', '2025-04-10 20:11:29.057')
         ;
         `;
 
-        
+
+
 
 // Vi laver en async function som sørger for at, alt bliver forbundet i den rigtig rækkefølge
 async function ventPåDatabase() {

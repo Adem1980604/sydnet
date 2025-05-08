@@ -119,13 +119,13 @@ router.get('/konto/:id', async function (req, res) {
   });
 });
 
-// Ruten til at slette konto
+// Ruten til at slette konto, som bliver sendt fra kontooplysninger
 router.delete('/slet-konto/:id', async function (req, res) {
   const kontoId = req.params.id; // tager fat i den tilhørende konto man er inde på 
   const nuværendeTid = new Date(); // tager fat i nutidens dato
   const db = await forbindDatabase();
 
-  // slette selve konto 
+  // slette selve konto ved at sætte aktiv og nedlagt 
   await db.request()
     .input('kontoId', sql.Int, kontoId)
     .input('nedlagt', sql.DateTime, nuværendeTid)
@@ -135,6 +135,7 @@ router.delete('/slet-konto/:id', async function (req, res) {
         WHERE konto_id = @kontoId
 
       `);
+  //******E
   res.json({
     success: true,
     konto_slettet: {
@@ -155,7 +156,7 @@ router.post('/genaktiver-konto/:id', async function (req, res) {
     .query(` 
     UPDATE konto.kontooplysninger
     SET aktiv = 1, nedlagt = NULL 
-     WHERE konto_id = @Id
+    WHERE konto_id = @Id
   `);
 
   res.json({ success: true });
@@ -373,23 +374,41 @@ router.get('/porteside/:id', async function (req, res) {
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
     const data2 = await response.json();
 
-    aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
-    aktie.pris = aktuelPris;
-    //console.log(aktuelPris); 
+    try {
+      aktuelPris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+      aktie.pris = aktuelPris;
+    } catch (error) {
+      return res.status(400).json({ success: false, message: "**** ERROR - Ikke flere live forsøg tilbage. Skift til offline mode************" });
+    }
+    
+
+
+
+
   }
   
 
   // hent historisk vaerdi data
+  let historiskVaerdi;
   const historiskVaerdiResultat = await db.request()
     .input('id', sql.Int, portefoljeId)
     .query(`
       SELECT pfv.vaerdi, pfv.valuta, pfv.datotid
       FROM historiskdata.portefoeljevaerdi pfv      
-      WHERE pfv.portefoelje_id = @id
-    `);
-  const historiskVaerdi = historiskVaerdiResultat.recordset;
-  console.log("*******DEBUG 9999***********")
-  console.log(historiskVaerdi[0])
+      WHERE pfv.portefoelje_id = @id;
+    `);  
+  if (historiskVaerdiResultat.recordset === undefined || historiskVaerdiResultat.recordset.length < 1) {
+    my_date = new Date
+    my_date.setDate(my_date.getDate()-360)
+    historiskVaerdi = [
+      { vaerdi: 0, valuta: 'DKK', datotid: my_date }
+    ]
+
+
+  } else {
+    
+    historiskVaerdi = historiskVaerdiResultat.recordset;
+  }
 
   // 11. Når alle aktiepriser er hentet, beregner vi totaler
   //const totaler = beregner.beregnTotaler(valutakurs);

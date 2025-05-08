@@ -6,7 +6,8 @@ const router = express.Router();
 
 // replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
 // Emil's API key // 
-const apiKey = "SBD4RTB73V5BISI9";
+//const apiKey = "SBD4RTB73V5BISI9";
+const apiKey = "5P55MKFW71QMFJHB";
 let offlineResponseData;
 let offlineValutaResponseData;
 //Jan's API key//
@@ -25,6 +26,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
   //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
   //console.log("******************** URL ****************");
   //console.log(url);
+  
   const live = false;
 
   if (live == true) {
@@ -33,8 +35,8 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
     //console.log("****************response**************");
     //console.log(response);
     
-    //console.log("****************response data**************");
-    //console.log(response.data);
+    console.log("****************response data**************");
+    console.log(response.data);
     res.json(response.data);
 
   } else {
@@ -47,6 +49,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {          
+          '2025-05-07': {
+            '1. open': '243.7400',
+            '2. high': '254.4700',
+            '3. low': '243.6400',
+            '4. close': '253.3700',
+            '5. volume': '10438725'
+          },
+          '2025-05-02': {
+            '1. open': '232.8600',
+            '2. high': '245.6900',
+            '3. low': '232.0700',
+            '4. close': '245.5500',
+            '5. volume': '20198202'
+          },
           '2025-04-24': {
             '1. open': '238.0650',
             '2. high': '249.3400',
@@ -443,6 +459,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '184.3900',
+            '2. high': '187.5800',
+            '3. low': '183.5000',
+            '4. close': '185.5600',
+            '5. volume': '16460350'
+          },
+          '2025-05-02': {
+            '1. open': '182.7500',
+            '2. high': '187.5800',
+            '3. low': '177.6300',
+            '4. close': '185.4600',
+            '5. volume': '38383222'
+          },
           '2025-04-24': {
             '1. open': '160.0000',
             '2. high': '177.4000',
@@ -839,6 +869,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '69.1700',
+            '2. high': '69.7900',
+            '3. low': '65.9900',
+            '4. close': '67.5500',
+            '5. volume': '33561479'
+          },
+          '2025-05-02': {
+            '1. open': '62.1900',
+            '2. high': '69.8600',
+            '3. low': '61.9700',
+            '4. close': '69.2300',
+            '5. volume': '56352692'
+          },
           '2025-04-24': {
             '1. open': '58.2500',
             '2. high': '62.7400',
@@ -1235,6 +1279,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '203.1000',
+            '2. high': '204.1000',
+            '3. low': '193.2500',
+            '4. close': '196.2500',
+            '5. volume': '188851877'
+          },
+          '2025-05-02': {
+            '1. open': '210.0000',
+            '2. high': '214.5600',
+            '3. low': '202.1600',
+            '4. close': '205.3500',
+            '5. volume': '286233457'
+          },
           '2025-04-24': {
             '1. open': '193.2650',
             '2. high': '208.8299',
@@ -1631,6 +1689,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '319.3800',
+            '2. high': '326.4700',
+            '3. low': '318.1100',
+            '4. close': '320.2900',
+            '5. volume': '5109406'
+          },
+          '2025-05-02': {
+            '1. open': '306.4500',
+            '2. high': '324.6700',
+            '3. low': '302.1750',
+            '4. close': '323.6800',
+            '5. volume': '16692116'
+          },
           '2025-04-24': {
             '1. open': '289.3300',
             '2. high': '308.2100',
@@ -2020,6 +2092,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '313.0000',
+            '2. high': '319.2400',
+            '3. low': '310.7000',
+            '4. close': '318.1300',
+            '5. volume': '8952206'
+          },
+          '2025-05-02': {
+            '1. open': '317.7000',
+            '2. high': '321.0000',
+            '3. low': '310.6800',
+            '4. close': '311.9600',
+            '5. volume': '20488817'
+          },
           '2025-04-24': {
             '1. open': '311.0000',
             '2. high': '320.0000',
@@ -2416,6 +2502,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '58.1150',
+            '2. high': '58.8100',
+            '3. low': '56.7900',
+            '4. close': '58.6200',
+            '5. volume': '39312497'
+          },
+          '2025-05-02': {
+            '1. open': '57.7300',
+            '2. high': '58.7000',
+            '3. low': '54.7500',
+            '4. close': '58.5900',
+            '5. volume': '68745896'
+          },
           '2025-04-24': {
             '1. open': '55.2300',
             '2. high': '59.2000',
@@ -2812,6 +2912,20 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           '4. Time Zone': 'US/Eastern'
         },
         'Weekly Time Series': {
+          '2025-05-07': {
+            '1. open': '98.9400',
+            '2. high': '99.7400',
+            '3. low': '98.3100',
+            '4. close': '98.8300',
+            '5. volume': '34375322'
+          },
+          '2025-05-02': {
+            '1. open': '95.1000',
+            '2. high': '99.2200',
+            '3. low': '94.3400',
+            '4. close': '98.7500',
+            '5. volume': '76472042'
+          },
           '2025-04-24': {
             '1. open': '93.0200',
             '2. high': '96.6000',
@@ -3199,6 +3313,11 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           }
         }
       }
+    } else {
+      offlineResponseData = {
+        Information: 'We have detected your API key as 5P55MKFW71QMFJHB and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.'
+      }
+      return res.status(400).json({ success: false, message: "Aktien findes ikke!" });
     }
     res.json(offlineResponseData);
   }

@@ -339,15 +339,21 @@ router.get('/dashboard', async function (req, res) {
     const aktie = beregner.ejerListeFiltreret[j];
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
     const data = await response.json();
-    console.log(data["Information"]);
-    if (String(data["Information"]).search("limit is 25") != -1) {
-        console.log("*** ERROR - No more live attempts ************")
-        console.log(data["Information"])
-        return res.status(400).json({ success: false, message: "**** ERROR - Ikke flere live forsøg tilbage. Skift til offline mode************" });
+    console.log(data);
+    if (data == null) {
+        console.log("DEGBUG**********************");
+        return res.status(400).json({ success: false, message: "Du har slået offline data til, og denne bruger ejer en aktie der ikke findes i offlinedata. Du skal derfor enten slå live data til igen, eller logge ind med en ny bruger, som kun har aktier der er tilgængelige offline" });
     } else {
-        console.log(parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]))
-        const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
-        aktie.pris = aktuelPris * valutakurs;        
+        console.log(data["Information"]);
+        if (String(data["Information"]).search("limit is 25") != -1) {
+            console.log("*** ERROR - No more live attempts ************")
+            console.log(data["Information"])
+            return res.status(400).json({ success: false, message: "**** ERROR - Ikke flere live forsøg tilbage. Skift til offline mode************" });
+        } else {
+            console.log(parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]))
+            const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
+            aktie.pris = aktuelPris * valutakurs;        
+        }
     }
     //console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
   }

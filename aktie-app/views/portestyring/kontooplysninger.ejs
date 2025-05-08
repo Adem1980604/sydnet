@@ -157,8 +157,7 @@
     function aabenIndsaetPopup(konto_id,saldo) {
       valgtKontoId = JSON.stringify(konto_id);
       nuvaerendeSaldo = saldo;
-      console.log("*****************kontoid: " + konto_id + "   saldo :  " + saldo + "*********************");
-      
+      //console.log("*****************kontoid: " + konto_id + "   saldo :  " + saldo + "*********************");
       document.getElementById('popup').style.display = 'block';
     }
 
@@ -274,7 +273,7 @@
     }
 
 
-    // Luk en konto(Bekraft lukning bliver kaldt når en bruger trykker på den knap)
+    // Luk en konto(Bekraftlukning bliver kaldt når en bruger trykker på den knap)
     async function bekraeftLukning() {
       // Sender det konto id der skal slettes til portefoljestyring.js
       const svar = await fetch(`/portefoljestyring/slet-konto/${kontoIdTilSletning}`, {
@@ -293,7 +292,7 @@
       lukPopup(); 
     }
 
-    // funtionen til at åbne en lukkede konti. 
+    // Funktionen til at vise alle lukkede konti. 
     async function hentLukkedeKonti() {
       const response = await fetch('/portefoljestyring/hent-lukkede-konti');
       const konti = await response.json();
@@ -329,18 +328,19 @@
 
     }
 
-    // Bekræft genoprettelse af konto 
+    //Genåben en lukket konto 
     async function genaktiverKonto(kontoId) {
+      //Sender post til portefoljestyring med konto id fra konto der skal genaktiveres
       const lukSvar = await fetch(`/portefoljestyring/genaktiver-konto/${kontoId}`, {
         method: 'POST'
       });
 
       const lukkeResultater = await lukSvar.json();
-
+      //Tjekker om post gik godt
       if (lukkeResultater.success) {
         alert("Konto er genaktiveret.");
-        hentKonti(); // vis konto igen blandt aktive konti 
-        hentLukkedeKonti() // vi opdatere listen af konti der er lukket 
+        hentKonti(); // Opdaterer listen af aktive konti på siden
+        hentLukkedeKonti() // Opdaterer listen af konti der er lukket 
 
       } else {
         alert("Noget gik galt.");
