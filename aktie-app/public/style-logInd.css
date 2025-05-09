@@ -47,7 +47,7 @@ body {
   gap: 20px;
 }
 
-/* Login formular */
+/* Log-ind formular */
 .log-ind-formual {
   background-color: #2a2a2a;
   padding: 20px;
@@ -102,7 +102,7 @@ button:hover, a:hover {
   background-color: #5e35b1;
 }
 
-/* Login-knappen med ekstra stil */
+/* Log-ind knappen med ekstra stil */
 #logind-knap {
   width: 100%;
   margin-top: 20px;
@@ -113,7 +113,7 @@ button:hover, a:hover {
   margin: 10px 5px 0 0;
 }
 
-/* Justering af logind-form-container hvis nødvendigt */
+/* Justering af log-ind-form-container hvis nødvendigt */
 .login-container {
   background-color: #1a1a1a;
   padding: 30px;

@@ -3,7 +3,7 @@ const router = express.Router();
 router.use(express.json());
 const { sql, forbindDatabase } = require('../forbindDB');  // tager fat i db filen 
 const PortefoljeBeregner = require('../logik/PorteBeregner'); // logiken til beregning af portefølje funktionaliteter 
-const axios = require('axios'); // axios, som er et moderne og populært HTTP-klientbibliotek Denne gør HTTP kaldet mere simpelt og lækkert
+const axios = require('axios'); // Hjælper med at lave HTTP-forespørgslerne.
 
 
 
@@ -180,7 +180,7 @@ router.get('/hent-lukkede-konti', async function (req, res) {
 //*********************************************************************
 
 router.get('/portefoeljeoversigt', async function (req, res) {
-  console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
+  //console.log("DEBUG: 080 - initiated route /portefoeljeoversigt");
 
   const loggetInd_bruger_id = req.session.bruger_id; // man henter brugerid fra sessionen, så systemet ved hvad for en bruger vi arbejder med
   const db = await forbindDatabase();
@@ -380,11 +380,6 @@ router.get('/porteside/:id', async function (req, res) {
     } catch (error) {
       return res.status(400).json({ success: false, message: "**** ERROR - Ikke flere live forsøg tilbage. Skift til offline mode************" });
     }
-    
-
-
-
-
   }
   
 
@@ -481,7 +476,6 @@ router.post('/portefoljestyring/:id/handel', async function (req, res) {
 
   // 2. hvis det er køb og saldoen er for lav så send fejl 
   if (type === "kob" && saldo < total) {
-    console.log("Vi sender fejlmeddelelse til clienten med besked om at der ikke er penge nok.")
     // Retur besked bliver sendt men message bliver ikke vist korrekt på klienten.
     return res.status(400).json({ success: false, message: "Ikke nok penge på kontoen" });
   }

@@ -1,5 +1,5 @@
 const sql = require('mssql'); // importerer Microsoft SQL Server i driveren 
-require('dotenv').config(); // henter vores database-logindoplysninger fra .env filen
+require('dotenv').config(); // henter vores database-log-ind oplysninger fra .env filen
 
 // opbygger din forbindelse med databasen
 const config = {

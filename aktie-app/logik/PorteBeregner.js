@@ -89,13 +89,13 @@ class PortefoljeBeregner {
                     gakAktie.samletPris-= gakIndenSalg * antal;
                     gakAktie.samletAntal -=antal;
 
-                    console.log("****************pris************");
-                    console.log("Pris :" + pris);
-                    console.log("gakIndenSalg :" + gakIndenSalg);
+                    //console.log("****************pris************");
+                    //console.log("Pris :" + pris);
+                    //console.log("gakIndenSalg :" + gakIndenSalg);
+
                     // Beregn realiseret gevinst/tab for salget
                     const realiseret = (pris -gakIndenSalg) * antal;
                     this.realiseretGevinst+= realiseret;                
-                    console.log("realiseret :" + realiseret);
                 }
             }
         }
@@ -142,16 +142,11 @@ class PortefoljeBeregner {
             const e = this.ejerListeFiltreret[i];
             totalErhvervelsespris+=e.antal * e.gak;
             totalForventetVaerdi += e.antal * e.pris;// * valutakurs;
-            //console.log("********e*******************");
-            //console.log(e);
-            //console.log("********totalErhvervelsespris*******************");
-            //console.log(totalErhvervelsespris);
-            //console.log("********totalForventetVaerdi*******************");
-            //console.log(totalForventetVaerdi);            
+         
         }
         
-// console.log( totalErhvervelsespris)
-//console.log( totalForventetVaerdi)
+        //console.log( totalErhvervelsespris)
+        //console.log( totalForventetVaerdi)
 
         // Beregn urealiseret gevinst/tab (profit minus hvad vi har betalt)
         const totalUrealiseretGevinstTab = totalForventetVaerdi - totalErhvervelsespris;

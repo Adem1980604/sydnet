@@ -103,7 +103,6 @@
       if (nyKonto.navn == "" || nyKonto.bank_ref == "" || nyKonto.konto_valuta == "") {
         alert("Alle felter skal udfyldes!");
       } else {
-        console.log("**********Debug013************");
         //Send post til portefoljestyring med info om den nye konto der skal oprettes
         const svar = await fetch('/portefoljestyring/kontooplysninger', {
           method: 'POST',
@@ -113,24 +112,28 @@
         //Hvis fetchen til portefoljestyring gik godt, så kald hentKonti, for at vise den nye konto
         if (svar.ok) {
           await hentKonti();
-          console.log("**********Debug013************");
+          console.log("**********Debug014************");
         };
       };
   };
 
     // Hent konti og så vis dem 
     async function hentKonti() {
-
+      // Kalder "hentkontooplysninger" i portefoljestyring
+      // Den henter alle aktive konti brugeren ejer
       const response = await fetch('/portefoljestyring/hentkontooplysninger');
-      console.log(response);
-
+      //console.log(response);
+      //Gemmer konti i en variable
       const konti = await response.json();
+      //Får fat i konto-container, som skal indeholde listen med konti
       const container = document.getElementById("konto-container");
-      container.innerHTML = ""; // Ryd gammel liste
-
+      // Ryd gammel liste med konti
+      container.innerHTML = "";
+      //For-loop gennem alle konti i listen
       for (let i = 0; i < konti.length; i++) {
         const kontoElement = document.createElement("div");
         kontoElement.classList.add("konto-liste");
+        //Skriver information samt sætter knapper på hver konto
         kontoElement.innerHTML =
           `
           <p><strong>Navn:</strong> ${konti[i].navn}</p>
@@ -142,7 +145,8 @@
           <hr>
         `;
 
-        console.log("DEBUG 060  ***************");
+        //console.log("DEBUG 060  ***************");
+        //Tilføjer alle konti til konto-container
         container.appendChild(kontoElement)
         
       }
@@ -157,7 +161,6 @@
     function aabenIndsaetPopup(konto_id,saldo) {
       valgtKontoId = JSON.stringify(konto_id);
       nuvaerendeSaldo = saldo;
-      //console.log("*****************kontoid: " + konto_id + "   saldo :  " + saldo + "*********************");
       document.getElementById('popup').style.display = 'block';
     }
 
@@ -171,32 +174,39 @@
 
     // Send indsættelse
     async function indsaetData() {
+      //Data for indsættelsen bliver gemt
       const data = {
         vaerdi: (document.getElementById("værdi").value),
         valuta: document.getElementById("indsæt-valuta").value,
         konto_id: valgtKontoId
         
       };
-
+      //Tjekker om beløbet er større end 0
       if (data.vaerdi <= 0) {
         console.log("Beløb til indsættelse skal være større end nul.", data);
         return alert("Beløb til indsættelse skal være større end nul.");
       }
 
-      console.log(" Sender til server:", data);
+      //console.log(" Sender til server:", data);
+      //Sender post til bruger.js med data om indsættelsen
       const svar = await fetch('/bruger/indsaetter', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
+      //Får svar tilbage
       const result = await svar.json();
-      console.log(" Server svar:", result);
+      //console.log(" Server svar:", result);
 
       // Kode til at vise indsættelsen 
       if (result.success) {
         hentKonti(); // opdater listen med ny saldo
+        //Udtag det data vi gerne vil have fra vores post request
         const inds = result.indsaettelse;
+        
+
         const resultatDiv = document.getElementById("resultat");
+        
         resultatDiv.innerHTML =
           `
           <button id="luk-resultat" class="luk-knap">Luk</button>
@@ -205,14 +215,14 @@
           <p>Konto-ID: ${inds.konto}</p>
           <p>Dato og tid for oprettelse: ${inds.tid}</p>
           `;
+        
         resultatDiv.style.display = "block";
         document.getElementById("luk-resultat").addEventListener("click", () => {
-          resultatDiv.style.display = "none";
+        resultatDiv.style.display = "none";
         });
         lukPopup();
       }
     }
-
 
 
     // Send hævning
@@ -233,7 +243,7 @@
         return alert("Der er ikke dækning på kontoen til at hæve dette beløb");
       }
 
-      console.log(" Sender til server:", data);
+      //console.log(" Sender til server:", data);
       const svar = await fetch('/bruger/indsaetter', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
@@ -242,7 +252,7 @@
       const result = await svar.json();
       console.log(" Server svar:", result);
 
-      // kode til at vise indsættelsen 
+      // Kode til at vise indsættelsen 
       if (result.success) {
         hentKonti(); // opdater listen med ny saldo
         const inds = result.indsaettelse;

@@ -1,44 +1,37 @@
-'use strict';
+//Bruges også i forbindelse med vores HTTP kald
 const express = require('express'); 
-const axios = require('axios'); // axios, som er et moderne og populært HTTP-klientbibliotek Denne gør HTTP kaldet mere simpelt og lækkert
+const axios = require('axios'); // axios, som er et moderne og populært HTTP-klientbibliotek, som hjælper med at lave HTTP-forespørgslerne.
 const router = express.Router();
-//const { getStockData } = require('./stockData');
 
-// replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
 // Emil's API key // 
-//const apiKey = "SBD4RTB73V5BISI9";
-const apiKey = "5P55MKFW71QMFJHB";
+const apiKey = "SBD4RTB73V5BISI9";
+// Ekstra API key(Der måske giver 25 forsøg mere?) //
+//const apiKey = "5P55MKFW71QMFJHB";
+
 let offlineResponseData;
 let offlineValutaResponseData;
-//Jan's API key//
-//const apiKey = "X8PAHO4XS77MP7N8";
-// Venstre side af kontooplysninger (under opret konto)
-router.get('/aktiesoegning', async function (req, res) {
-  //console.log("DEBUG: Initiated route get /aktiesoegning");  
-  res.render('bruger-sider/aktiesoeg');  
-});
-
 
 router.get('/hentaktiekurs/:navn', async function (req, res) {
+  //Får navnet/ticker symbolet der er indtastet ud i en variabel
   const navn = req.params.navn;
-  //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${navn}&interval=60min&apikey=${apiKey}`;
+  //Gemmer URL kaldet i "url"
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=${navn}&apikey=${apiKey}`;
-  //const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${navn}&time_from=20240424T0130&apikey=${apiKey}`;
+
   //console.log("******************** URL ****************");
   //console.log(url);
   
+  //Hvorvidt man vil arbejde med live eller offlinedata
+  //**********************LIVE = true / OFFLINE = false****************
   const live = false;
 
+  //Hvis vi vil arbejde med live data
   if (live == true) {
+    //Laver et HTTP kald ved hjælp af axios med den givne url
     const response = await axios.get(url);
-    //const my_data = res.json(response.data);
-    //console.log("****************response**************");
-    //console.log(response);
-    
-    console.log("****************response data**************");
-    console.log(response.data);
+    //Sender data tilbage til den der spørg efter det
     res.json(response.data);
 
+  //Hvis vi vil arbejde med offline data
   } else {
     if (navn == "IBM") {
       offlineResponseData = {
@@ -3313,24 +3306,24 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
           }
         }
       }
+    //Hvis aktien der bliver spurgt til ikke findes i offlinedata
     } else {
-      offlineResponseData = {
-        Information: 'We have detected your API key as 5P55MKFW71QMFJHB and our standard API rate limit is 25 requests per day. Please subscribe to any of the premium plans at https://www.alphavantage.co/premium/ to instantly remove all daily rate limits.'
-      }
-      return res.status(400).json({ success: false, message: "Aktien findes ikke!" });
+      offlineResponseData = null;
     }
+    //Sender data tilbage til den der spørg efter det
     res.json(offlineResponseData);
   }
 });  
  
-
+//*******************************
+//*******************************VALUTA SØG*******************
+//*******************************
 
 // Emil's valuta kurs API key // 
 const apiValutaKey = "4471cd41f9c9723ed298ca8d";
 
+//
 router.get('/hentvalutakurs/:valuta', async function (req, res) {
-  //console.log("********************Reg.params*************");
-  //console.log(req.params);
   const valuta = req.params.valuta;
 
 

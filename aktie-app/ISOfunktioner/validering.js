@@ -1,6 +1,6 @@
 // Her laves det en valideringsfunktion, altså vi tjekker om brugernavn og adgangkode begge to er udfyldt 
 
-function validerLoginInput(brugernavn, adgangskode) {
+function validerLogIndInput(brugernavn, adgangskode) {
     if (!brugernavn || !adgangskode) {
       return false;
     }
@@ -8,6 +8,6 @@ function validerLoginInput(brugernavn, adgangskode) {
   }
   
   module.exports = {
-    validerLoginInput
+    validerLogIndInput
   };
   

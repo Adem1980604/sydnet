@@ -159,9 +159,8 @@
     </label>
     <span id="handelstype-label">Køb</span>
 
-    <!-- Søgefelt til aktier -->
-    <input type="text" id="aktieSoeg" placeholder="Søg værdipapir">
-    <button onclick="aktiesoeg()">Søg efter værdipapir</button>
+    <!--Søgefelt til aktier-->
+    <input type="text" id="aktieSoegning" placeholder="Søg efter værdipapir">
     <ul id="vaerdiResultat"></ul>
 
     <!-- Formular til køb/salg -->
@@ -200,19 +199,7 @@
     let valuta = "<%= valuta %>"; // Valuta forkortelse
     let valutakurs = "<%= valutakurs %>"; // Valuta kurs i mellem USD og konto base currency - dvs. hvis tilknyttet konto er i USD så er valutakurs = 1. Hvis tilknyttet konto er i DKK er valutakurs = 6,5 
     let valgtAktie = [];
-    let historiskVaerdi = "<%= historiskVaerdi %>";
-
-    async function aktiesoeg() {
-          const symbol = document.getElementById("aktieSoeg").value;
-          const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
-          const data2 = await response.json();
-
-          nuvaerendeAktiePris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
-          console.log(nuvaerendeAktiePris); 
-          valgtAktie.pris = nuvaerendeAktiePris;
-          valgtAktie.symbol = symbol;  
-          console.log(valgtAktie); 
-    }  
+    let historiskVaerdi = "<%= historiskVaerdi %>"; 
 
     // funktion til at åbne popup for opret handel eller salg
     function åbnPopup() {
@@ -329,9 +316,23 @@
   
 //**************************** SEARCHBAR FUNKTIONALITET ********************** -->
 
- // vi antager at  brugeren ikke har valgt en aktie 
-  
-const input = document.getElementById("aktieSoeg");
+//Finder aktie pris på baggrund af bruger input i aktieSoegning's feltet
+async function aktiesoeg() {
+  //Finder ud af hvilken aktie brugeren har søgt efter  
+  const symbol = document.getElementById("aktieSoegning").value;
+  const response = await fetch(`/aktiesoeg/hentaktiekurs/${symbol}`);
+  const data2 = await response.json();
+  nuvaerendeAktiePris = Object.values(data2["Weekly Time Series"])[0]["1. open"];
+  //console.log(nuvaerendeAktiePris); 
+  valgtAktie.pris = nuvaerendeAktiePris;
+  valgtAktie.symbol = symbol;  
+  //console.log(valgtAktie); 
+}  
+
+
+
+// vi antager at  brugeren ikke har valgt en aktie 
+const input = document.getElementById("aktieSoegning");
 //console.log("**********************input********************");
 //console.log(input);
 const resultatListe = document.getElementById("vaerdiResultat");
@@ -403,45 +404,6 @@ async function visPortfolioGraf() {
   <%let today = new Date();%>
   maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()%>-<%= today.getDate()%>");
   vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
-//
-  // Bygger data til grafen og beregner total
-
-
-  ////for (let m = startMaaned; m <= slutMaaned; m++) {
-  //  dato = new Date(nu.getFullYear(), m, 1);
-  //  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
-  //
-  //  // Dummy data, til totalværdi for grafen
-  //  if (m < slutMaaned) {
-  //    // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-  //    vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
-  //  } else {
-  //    vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
-  //  }
-  //}
-
-  // her går vi igennen alle tidspunkter og fylder labels og priser ind 
-  //for (let i = 0; i < tidspunkter.length; i++) {
-  //  const tid = tidspunkter[i];
-  //  labels.push(tid); // pusher tidspunkt 
-  //  priser.push(parseFloat(timeSeries[tid]["1. open"])); // for hvert timestamp gemmes tidpunktet og åbningskursen i arrays 
-  //}
-
-  
-  
-  //for (let m = startMaaned; m <= slutMaaned; m++) {
-  //  dato = new Date(nu.getFullYear(), m, 1);
-  //  maanedLabels.push(dato.toLocaleDateString('da-DK', { month: 'short'}));
-  //
-  //  // Dummy data, til totalværdi for grafen
-  //  if (m < slutMaaned) {
-  //    // Generer random historiske data - plus minus 10% af den nuværendeForventedeVaardi - Udregnes som: TFV + Random*(20% af TFV) - (10% af TFV)
-  //    vaerdier.push(<%=totalForventetVaerdi %> + Math.floor(Math.random() * <%= totalForventetVaerdi %> * 0.2)-(<%= totalForventetVaerdi %> * 0.1));
-  //  } else {
-  //    vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
-  //  }
-  //}
-
 
     // Opsæt data og konfiguration
     const data = {

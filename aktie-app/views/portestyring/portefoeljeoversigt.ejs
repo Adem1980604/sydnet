@@ -101,17 +101,16 @@
       }
 
       function lukPopup1() {
-   document.getElementById('popup1').style.display = 'none';
+        document.getElementById('popup1').style.display = 'none';
       }
 
       async function OpretPortefoelje() {
         const navn = document.getElementById("portefoljeNavn").value;
-        console.log("OpretPortefoelje   - Portefølje navn: " + navn)
-
-        console.log(document);
+        //console.log("OpretPortefoelje   - Portefølje navn: " + navn)
+        //console.log(document);
 
         const konto_id = document.getElementById("kontoNavnDropdown").value;
-        console.log("OpretPortefoelje   - Konto_id: " + konto_id)
+        //console.log("OpretPortefoelje   - Konto_id: " + konto_id)
 
         const nyPortefølje = { navn, konto_id };
 

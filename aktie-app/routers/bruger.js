@@ -43,25 +43,6 @@ router.post('/register', async (req, res) => {
     // Skaber en forbindelse med db
     const db = await forbindDatabase();
 
-    //************* FORSØG(VIRKER IKKE) - Funktion: BRUGER FINDES ALLEREDE I DB **************************/
-    /*
-    //Check om bruger allerede findes i databasen, og derfor ikke kan "gen"oprette sig.
-    db_result = 
-        await db.request()
-            .input('name', sql.NVarChar(100), username)        
-            .query(`SELECT username
-                FROM bruger.oplysninger 
-                WHERE username=@name`)
-    try {
-        const db_username = db_result.recordset[0].username
-        console.log("db_username er : " + db_result.recordset[0].username + " Den findes allerede ")
-        //return res.status(200).json({ success: true, message: "OK" });
-        return res.status(400).json({ success: false, message: "Password er forkert" });
-        //return res.status(400).json({ success: false, message: "Bruger id findes allerede - kan ikke oprettes igen." });
-    } catch {
-        // Så findes brugeren ikke i forvejen og så skal vi bare fortsætte
-    }
-*/
     //Hvis alt er gået godt, så indsætter vi den nye brugers info i databasen(I bruger.oplysninger)
     await db.request()
         .input('name', sql.NVarChar(100), username)
@@ -149,7 +130,7 @@ router.get('/logoff', function (req, res) {
     //Fjerne bruger_id fra den givne session, hvilket gør at hvis man logger ud, så kan man ikke se noget data på nogen af siderne.
     // Dette skyldes også at dataen er sat op til de givne brugere.
     req.session.bruger_id = 0;
-    console.log(req.session);
+    //console.log(req.session);
     res.render('bruger-sider/logoff');
 });
 
@@ -202,14 +183,17 @@ router.get('/kontooplysninger', function (req, res) {
 
 
 //Håndterer post request, der skal give os det nuværende tidspunkt og dato for den indsættelse der laves
+//Request kommer fra kontooplysninger.ejs ved både indsættelse og hævning
 router.post('/indsaetter', async function (req, res) {
+    //Får data ud af requesten
     const { vaerdi, valuta, konto_id } = req.body;
-    const nuværendeTid = new Date(); // tager fat i nutidens dato
+    //Får fat i det nuværende tidspunkt
+    const nuværendeTid = new Date();
     let vaerdiIBaseCurrency = 0; 
 
-    //Backendt delen: Vi vil indsætte værdien brugeren har indsæt/vil indsætte på sin konto(med den rigtige valuta værdi).       
+    //Backendt delen: Vi vil indsætte værdien brugeren har indsæt(med den rigtige valuta værdi).       
     const db = await forbindDatabase();  // skaber en forbindelse med db
-
+    //Finder ud af hvilken valuta konto'en har
     const db_result = await db.request()
         .input('konto_id', sql.Int, konto_id)
         .query(`
@@ -218,33 +202,34 @@ router.post('/indsaetter', async function (req, res) {
             where kntopl.konto_id = @konto_id`
            );
 
-    console.log(db_result);
+    //console.log(db_result);
+    //Finder frem til konto'en base currency
     const baseCurrency = db_result.recordset[0].valuta;
-    
+    //Hvis den valuta vi vil indsætte er den samme som den konto'en står i, så behøver vi ikke at finde valutakursen
     if (baseCurrency == valuta) {
        // Do Nothing
-       console.log("********Debug888***********");
+       //console.log("********Debug888***********");
        vaerdiIBaseCurrency = vaerdi;
-    } 
-    else { 
-        console.log("kontoens baseCurrency : " + baseCurrency);
-        console.log("indsat valuta : " + valuta);
-        console.log("antal penge indsat : " + vaerdi);
+
+    //Ellers find valutakursen og udregn hvad værdien af indsættelsen er i kontoen's valuta
+    } else { 
         const response = await fetch(`http://localhost:4000/aktiesoeg/hentvalutakurs/${valuta}`);
-        console.log(response);
+        //console.log(response);
         const data2 = await response.json();
 
         vaerdiIBaseCurrency = vaerdi * data2.conversion_rates[baseCurrency];
-        console.log("vaerdiIBaseCurrency : " + vaerdiIBaseCurrency);
-
+        //console.log("vaerdiIBaseCurrency : " + vaerdiIBaseCurrency);
     }
-
+    //Tjekker værdien for fejl
     if (vaerdi == null || isNaN(vaerdi)) {
         return res.status(400).json({ success: false, message: "Ugyldig værdi sendt til serveren" });
     }
 
     let transaktionsType="";
-    if (vaerdi >0 )  {transaktionsType="Indsat"} else {transaktionsType="Hævet"}
+    //Hvis værdien er større end 0, så er det en indsættelse og ellers er det en hævning
+    if (vaerdi > 0 )  {transaktionsType="Indsat"} else {transaktionsType="Hævet"}
+
+    //Indsætter transaktionen i databasen, hvor vi også sætte et tidspunkt for transaktionen.
     const transResult = await db.request()
         .input('vaerdi', sql.Decimal(10, 2), Number(vaerdiIBaseCurrency).toFixed(2))
         .input('valuta', sql.NVarChar(100), baseCurrency)
@@ -256,11 +241,11 @@ router.post('/indsaetter', async function (req, res) {
           OUTPUT INSERTED.transaktions_id
          VALUES (@vaerdi, @valuta, @datotid, @konto_id, @transaktionstype )`
         );
-
+    
+    // Tager fat i transaktions_id'et, så vi kan sende det tilbage
     const transaktions_id = transResult.recordset[0].transaktions_id;
 
-    // vi opdaterer saldoen hvis bruger indsætter penge på konto 
-
+    // vi opdaterer saldoen på brugerens konto
     await db.request()
         .input('vaerdi', sql.Decimal(10, 2), vaerdiIBaseCurrency)
         .input('konto_id', sql.Int, konto_id)
@@ -270,7 +255,7 @@ router.post('/indsaetter', async function (req, res) {
       WHERE konto_id = @konto_id 
     `);
 
-    // sender svar tilbage ved brug af json
+    //Sender svar tilbage ved brug af json
     res.json({
         success: true,
         indsaettelse: {
@@ -279,11 +264,10 @@ router.post('/indsaetter', async function (req, res) {
             valuta,
             konto: konto_id,
             tid: nuværendeTid.toLocaleString(),
-
         }
     });
 
-    console.log("Indsættelse modtaget:", req.body); //tjek 
+    //console.log("Indsættelse modtaget:", req.body); //tjek 
 
 });
 
@@ -327,7 +311,7 @@ router.get('/dashboard', async function (req, res) {
   } catch (error) {
     valutakurs = 1;
   } 
-  console.log("Valuta kurs : " + valutakurs)
+  //console.log("Valuta kurs : " + valutakurs)
 
   // 3. Brug PortefoljeBeregner
   const beregner = new PortefoljeBeregner(handler, konti);  
@@ -339,23 +323,15 @@ router.get('/dashboard', async function (req, res) {
     const aktie = beregner.ejerListeFiltreret[j];
     const response = await fetch(`http://localhost:4000/aktiesoeg/hentaktiekurs/${aktie.symbol}`);
     const data = await response.json();
-    console.log(data);
-    if (data == null) {
-        console.log("DEGBUG**********************");
-        return res.status(400).json({ success: false, message: "Du har slået offline data til, og denne bruger ejer en aktie der ikke findes i offlinedata. Du skal derfor enten slå live data til igen, eller logge ind med en ny bruger, som kun har aktier der er tilgængelige offline" });
+    //console.log(data);
+  if (data == null) { 
+    return res.status(400).json({ success: false, message: "Du har slået offline data til, og denne bruger ejer en aktie der ikke findes i offlinedata. Du skal derfor enten slå live data til igen, eller logge ind med en ny bruger, som kun har aktier der er tilgængelige offline" });
+    
     } else {
-        console.log(data["Information"]);
-        if (String(data["Information"]).search("limit is 25") != -1) {
-            console.log("*** ERROR - No more live attempts ************")
-            console.log(data["Information"])
-            return res.status(400).json({ success: false, message: "**** ERROR - Ikke flere live forsøg tilbage. Skift til offline mode************" });
-        } else {
-            console.log(parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]))
-            const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
-            aktie.pris = aktuelPris * valutakurs;        
-        }
+        //console.log(parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]))
+        const aktuelPris = parseFloat(Object.values(data["Weekly Time Series"])[0]["1. open"]);
+        aktie.pris = aktuelPris * valutakurs;        
     }
-    //console.log("Aktiekurs i USD: " + aktuelPris + " | Aktiekurs i konto base currency: " + aktie.pris); 
   }
 
 
@@ -367,8 +343,9 @@ router.get('/dashboard', async function (req, res) {
   for (let i = 0; i < konti.length; i++) {
     samletKontantSaldo += konti[i].saldo;
   }
-  console.log("samletKontantSaldo : " + samletKontantSaldo)
-  console.log("totaler.totalForventetVaerdi : " + totaler.totalForventetVaerdi)
+  //console.log("samletKontantSaldo : " + samletKontantSaldo)
+  //console.log("totaler.totalForventetVaerdi : " + totaler.totalForventetVaerdi)
+
   const samletVaerdi = samletKontantSaldo + totaler.totalForventetVaerdi;
 
   // 6. Top 5 aktier
