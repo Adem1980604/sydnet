@@ -1,7 +1,7 @@
 const sql = require('mssql'); // importerer Microsoft SQL Server i driveren 
 require('dotenv').config(); // henter vores database-log-ind oplysninger fra .env filen
 
-// opbygger din forbindelse med databasen
+// opbygger  forbindelse med databasen
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
