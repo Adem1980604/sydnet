@@ -18,10 +18,11 @@ ul {
 }
 
 li {
-  padding: 0.5rem 0;
+  padding: 0.5px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* knap Tilbage til danshboard styling */
 a {
   display: inline-block;
   margin-top: 1.5rem;
@@ -32,7 +33,7 @@ a {
   font-weight: bold;
   text-decoration: none;
 }
-
+/*knap hover */
 a:hover {
   background-color: #5e35b1;
 }
@@ -44,13 +45,11 @@ a:hover {
   align-items: flex-start;
   margin-top: 20px;
 }
-
+/* bokse styling*/
 .card, .chart-container {
-  flex: 1;
+  flex: 2;
   background-color: #1a1a1a;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 40px;
 }
 
 .chart-container {

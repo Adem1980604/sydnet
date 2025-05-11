@@ -107,15 +107,15 @@
       }
 
       async function OpretPortefoelje() {
-        const navn = document.getElementById("portefoljeNavn").value;
+        const navn = document.getElementById("portefoljeNavn").value; // opfanger brugeren data for portefølje navn
         //console.log("OpretPortefoelje   - Portefølje navn: " + navn)
         //console.log(document);
 
-        const konto_id = document.getElementById("kontoNavnDropdown").value;
+        const konto_id = document.getElementById("kontoNavnDropdown").value; // opfanger brugerens valg af kotnonavn
         //console.log("OpretPortefoelje   - Konto_id: " + konto_id)
 
-        const nyPortefølje = { navn, konto_id };
-
+        const nyPortefølje = { navn, konto_id }; // objekt med navn og id laves 
+        // objekten sendes til databasen 
         const svar = await fetch('/portefoljestyring/opret-portefolje', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },

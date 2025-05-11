@@ -182,7 +182,7 @@ class PortefoljeBeregner {
             const vaerdi = e.antal * e.pris;
             liste.push({ navn: e.navn, symbol:e.symbol, antal: e.antal, vaerdi: vaerdi,portefolje_navn: e.portefolje_navn})
         }
-// vi laver en bubble sort for at sørger for at største værdi ligger først 
+// vi laver en "bubble sort" for at sørger for at største værdi ligger først 
         for (let i = 0; i < liste.length - 1; i++) {
             for (let j = i + 1; j <liste.length; j++) {
                     if(liste[j].vaerdi> liste[i].vaerdi){

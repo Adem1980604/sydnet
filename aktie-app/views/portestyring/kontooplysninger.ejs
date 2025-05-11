@@ -242,8 +242,8 @@
         console.log("Der er ikke dækning på kontoen til at hæve dette beløb");
         return alert("Der er ikke dækning på kontoen til at hæve dette beløb");
       }
-
-      //console.log(" Sender til server:", data);
+// sender til bruger js under ruten indsaetter linje 187
+      //console.log(" Sender til server:", data); 
       const svar = await fetch('/bruger/indsaetter', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
