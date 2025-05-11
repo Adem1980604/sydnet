@@ -161,12 +161,12 @@ canvas {
 
 /* Positiv og negativ farver */
 .positive {
-  color: #4caf50;
+  color: #46634C;
   font-weight: bold;
 }
 
 .negative {
-  color: #f44336;
+  color: #BD3A3A;
   font-weight: bold;
 }
 
@@ -317,7 +317,7 @@ input:checked + .slider.round:before {
   transform: translateX(25px);
 }
 
-/* Søgefelt  */
+/* Søge */
 #aktieSøg, #vaerdiResultat {
   width: 100%;
   padding: 10px;

@@ -81,12 +81,12 @@ body {
 
 /* Farver til positiv og negativ profit*/
 .positive {
-  color: #4caf50;
+  color: #46634C;
   font-weight: bold;
 }
 
 .negative {
-  color: #f44336;
+  color: #BD3A3A;
   font-weight: bold;
 }
 

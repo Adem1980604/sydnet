@@ -18,7 +18,8 @@ body {
 
 }
 
-/* Sidebar */
+/* Sidebar 
+*/
 .sidebar {
   width: 240px;
   background-color: #181818;
@@ -253,11 +254,11 @@ th {
 
 /* Farver for positiv og negativ gevinst/tab*/
 .positive {
-  color: #4caf50;
+  color: #46634C;
   font-weight: bold;
 }
 
 .negative {
-  color: #f44336;
+  color: #BD3A3A;
   font-weight: bold;
 }
