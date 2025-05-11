@@ -286,7 +286,7 @@ router.get('/portefoelje-detaljer', function (req, res) {
   res.render('portestyring/portefoelje-detaljer');
 });
 
-// ruten til oprettels af portefølje  "portefoljeoversigt.ejs linje fra 109"
+// ruten til oprettels af portefølje, sendes fra portefoljeoversigt.ejs
 router.post('/opret-portefolje', async function (req, res) {
   const { navn, konto_id } = req.body; // vi får data, som blev sendt fra fetch()
   const dato = new Date();
@@ -316,7 +316,7 @@ router.post('/opret-portefolje', async function (req, res) {
   });
 });
 
-// ruten til at gå ind på den individuelle portefølje for en bruger 
+// ruten til at gå ind på en individuel portefølje(Bliver kaldt via knap på porteføljeoversigts siden)
 router.get('/porteside/:id', async function (req, res) {
   const db = await forbindDatabase();
   const portefoljeId = req.params.id; // her tager vi fat i id for porteføjen
