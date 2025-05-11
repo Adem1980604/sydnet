@@ -10,11 +10,6 @@ En klasse der kan lave alle beregninger til portefølje-funktionalitet
 - Top 5 værdipapirer baseret på værdi/profit
 */
 
-//const { sql, forbindDatabase } = require('../forbindDB');
-//const { query } = require('mssql');
-//require('dotenv').config(); // sørger for at tage fat i vores env fil
-
-
 class PortefoljeBeregner {
     constructor(handler, konti = []) {
         this.handler = handler;  // Gemmer alle handler (køb og salg) brugeren har lavet
