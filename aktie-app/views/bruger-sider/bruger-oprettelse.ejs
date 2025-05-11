@@ -48,10 +48,6 @@
         let repeatPassword = document.getElementById("3").value;
         let email = document.getElementById("4").value;
 
-        //console.log("brugernavn:  " + document.getElementById("1").value)
-        //console.log("adgangskode: " + document.getElementById("2").value)
-        //console.log("email: " + document.getElementById("4").value)
-
 
         //Sender post med info givet fra brugeren videre til bruger.js som gemmer det i DB.
         const svar = await fetch('/bruger/register', {

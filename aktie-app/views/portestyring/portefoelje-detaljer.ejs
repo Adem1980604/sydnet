@@ -378,31 +378,25 @@ async function visPortfolioGraf() {
   const vaerdier = [];
 
   const startMaaned = 0; // Januar = måned 0
-  const slutMaaned = nu.getMonth(); // Aktuel måned (0-indekseret)
-
-  //console.log("****************0*********************");
-  //console.log(historiskVaerdi[0]);
-  //console.log("****************1*********************");
-  //console.log(historiskVaerdi[1]);
-  //console.log("****************2*********************");
-  //console.log(historiskVaerdi[2]);
+  const slutMaaned = nu.getMonth() + 1; // Aktuel måned (0-indekseret)
+ 
 
   // Bygger data til grafen og beregner total
-  
-
-  <% for (let m = 0; m < historiskVaerdi.length; m++) { %>
-      //maanedLabels.push("<%= String(historiskVaerdi[m].datotid).split(" ")[0] %>");      
+  <% for (let m = 0; m < historiskVaerdi.length; m++) { %>      
       <%if (m < historiskVaerdi.length) {%>
-        maanedLabels.push("<%= historiskVaerdi[m].datotid.getFullYear() %>-<%= historiskVaerdi[m].datotid.getMonth()%>-<%= historiskVaerdi[m].datotid.getDate()%>");
+        maanedLabels.push("<%= historiskVaerdi[m].datotid.getFullYear() %>-<%= historiskVaerdi[m].datotid.getMonth()+1%>-<%= historiskVaerdi[m].datotid.getDate()%>");
         vaerdier.push(<%= historiskVaerdi[m].vaerdi %>);    // Man skal ikke gange med valuta fordi historiske data bliver gemt i konto's base currency
-      <% } else {%>
-        maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()%>-<%= today.getDate()%>");
+      <% } 
+      else {%>
+        <% let today = new Date();%>
+        maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()+1%>-<%= today.getDate()%>");
         vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
       <%}%>
-  <% } %>//
+  <% } %>
   // Push det sidste - altså idag 
-  <%let today = new Date();%>
-  maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth()%>-<%= today.getDate()%>");
+  
+  <% let today = new Date();%>
+  maanedLabels.push("<%= today.getFullYear() %>-<%= today.getMonth() + 1 %>-<%= today.getDate()%>");
   vaerdier.push(<%= totalForventetVaerdi*valutakurs %>); // Faktisk værdi fra EJS for den aktuelle måned
 
     // Opsæt data og konfiguration
