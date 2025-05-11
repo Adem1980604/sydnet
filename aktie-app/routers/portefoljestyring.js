@@ -30,6 +30,7 @@ router.get('/hentkontooplysninger', async function (req, res) {
     SELECT * FROM konto.kontooplysninger
     WHERE aktiv = 1 and bruger_id = @loggetInd_bruger_id
   `);
+  // sender json objekt videre til kontooplysninger.ejs
   res.json(result.recordset);
 });
 
@@ -285,7 +286,7 @@ router.get('/portefoelje-detaljer', function (req, res) {
   res.render('portestyring/portefoelje-detaljer');
 });
 
-// ruten til oprettels af portefølje  
+// ruten til oprettels af portefølje  "portefoljeoversigt.ejs linje fra 109"
 router.post('/opret-portefolje', async function (req, res) {
   const { navn, konto_id } = req.body; // vi får data, som blev sendt fra fetch()
   const dato = new Date();
@@ -303,6 +304,7 @@ router.post('/opret-portefolje', async function (req, res) {
       `);
 
   const portefoelje_id = result.recordset[0].portefoelje_id;
+  // portefoljeoversigt.ejs modtager så dette som en json objekt der så kan bruges i ejs filen her sendes der også dato med 
   res.json({
     success: true,
     portefolje_oprettelse: {
