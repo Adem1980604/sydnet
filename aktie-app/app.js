@@ -36,17 +36,10 @@ app.get('/', function (req, res) {
 
 
 
-//*******************API kald data route lavet med Fred*********/
+//*******************API kald data route*********/
 const dataRouter = require('./routers/aktiesoeg');
 app.use('/aktiesoeg', dataRouter);
 
-
-
-//***************Denne behøves ikke...indtil andet er bevist**********/
-// vi sætter ROUTE op for MAIN PAGE.
-//app.get('/Dashboard', function (req, res) {
-  //res.render('Dashboard')
-//});
 
 
 // impoter routerne
