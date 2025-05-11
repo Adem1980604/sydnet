@@ -6,14 +6,14 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-/*Grundlæggende layout og baggrund*/
+
 body {
   background-color: #1E1E1E;
   color: white;
   min-height: 100vh;
 }
 
-/* Flex-container der holder hele layoutet (sidebar + content) */
+/*container der holder hele layoutet */
 .container {
   display: flex;
   min-height: 100vh;
@@ -57,14 +57,14 @@ body {
   background-color: #5e35b1; 
 }
 
-/*Hovedindhold (dashboard) */
+/*(dashboard) */
 .content {
   flex: 1;
   padding: 30px;
   background-color: #0d0d0d;
 }
 
-/*Øverste kort med samlet værdi, gevinst osv.*/
+/*Øverste dem med samlet værdi, gevinst osv....*/
 .top-cards {
   display: flex;
   gap: 20px;
@@ -73,7 +73,7 @@ body {
 
 .card {
   flex: 1;
-  background-color: #1B1B19;
+  background-color: #272724;
   border-radius: 12px;
   padding: 20px;
   text-align: left;
@@ -81,16 +81,16 @@ body {
 
 /* Farver til positiv og negativ profit*/
 .positive {
-  color: #4caf50;
+  color: #46634C;
   font-weight: bold;
 }
 
 .negative {
-  color: #f44336;
+  color: #BD3A3A;
   font-weight: bold;
 }
 
-/*Sektion for tabeller med aktie-data*/
+/*sektion for tabeller med aktie-data*/
 .table-section {
   display: flex;
   gap: 20px;
@@ -128,7 +128,3 @@ body {
   height: 300px;
 }
 
-.chart-card canvas {
-  width: 100% !important;
-  height: 100% !important;
-}

@@ -2,8 +2,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #0d0d0d;
   color: white;
-  margin: 0;
-  padding: 0;
+
 }
 
 /* Layoutcontainer med sidebar og hovedindhold */
@@ -23,7 +22,7 @@ body {
   color: #c792ea;
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 30px;
+
 }
 
 .sidebar ul {
@@ -44,7 +43,6 @@ body {
   padding: 10px;
   background-color: #292929;
   border-radius: 8px;
-  transition: 0.3s ease;
 }
 
 .sidebar a:hover {
@@ -150,7 +148,6 @@ button {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
