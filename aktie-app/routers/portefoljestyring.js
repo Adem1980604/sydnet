@@ -268,7 +268,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
     // Beregn totals baseret på opdaterede priser
     const totaler = beregner.beregnTotaler();
 
-    // Gem totals på portefølje, så vi kan vise det via vores EJS fil
+    // Gem totaler på portefølje, så vi kan vise det via vores EJS fil
     portefolje.totalErhvervelsespris =totaler.totalErhvervelsespris || 0;
     portefolje.totalForventetVaerdi=totaler.totalForventetVaerdi || 0;
     portefolje.totalUrealiseretGevinstTab = totaler.totalUrealiseretGevinstTab || 0;
@@ -421,7 +421,7 @@ router.get('/porteside/:id', async function (req, res) {
     aktieliste, // liste over alle akiter 
     ejerListeFiltreret: beregner.ejerListeFiltreret, //de aktier brugeren ejer nu 
     gakBeregning: beregner.gakBeregning, // info om GAK
-  // totalErhvervelsespris: totaler.totalErhvervelsespris, // samlet købspris
+    // totalErhvervelsespris: totaler.totalErhvervelsespris, // samlet købspris
     totalForventetVaerdi: totaler.totalForventetVaerdi, // samlet forventet værdi 
     totalUrealiseretGevinstTab: totaler.totalUrealiseretGevinstTab // samlet urealiseret gevidst/tak
   });

@@ -1,24 +1,22 @@
-//Bruges også i forbindelse med vores HTTP kald
+// Kilde til aktiekurser: [https://www.alphavantage.co/documentation/]
+// Kilde til valutakurs: [https://www.exchangerate-api.com/docs/overview]
+// Bruges også i forbindelse med vores HTTP kald
 const express = require('express'); 
 const axios = require('axios'); // axios, som er et moderne og populært HTTP-klientbibliotek, som hjælper med at lave HTTP-forespørgslerne.
 const router = express.Router();
 
 // Emil's API key // 
 const apiKey = "SBD4RTB73V5BISI9";
-// Ekstra API key(Der måske giver 25 forsøg mere?) //
-//const apiKey = "5P55MKFW71QMFJHB";
 
 let offlineResponseData;
 let offlineValutaResponseData;
 
+//Henter aktiekursen til den der spørg ud fra den aktie der bliver spurgt til
 router.get('/hentaktiekurs/:navn', async function (req, res) {
   //Får navnet/ticker symbolet der er indtastet ud i en variabel
   const navn = req.params.navn;
   //Gemmer URL kaldet i "url"
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=${navn}&apikey=${apiKey}`;
-
-  //console.log("******************** URL ****************");
-  //console.log(url);
   
   //Hvorvidt man vil arbejde med live eller offlinedata
   //**********************LIVE = true / OFFLINE = false****************

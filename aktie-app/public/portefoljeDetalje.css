@@ -116,7 +116,7 @@ body {
 .chart-card h4 {
   margin-bottom: 15px;
   font-size: 16px;
-  color: #ccc;
+  color: #c0baba;
 }
 
 canvas {
@@ -184,8 +184,7 @@ canvas {
   font-size: 16px;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  z-index: 1000;
+   z-index: 1000;
 }
 
 .opret-handel-knap:hover {

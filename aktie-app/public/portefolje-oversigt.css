@@ -1,7 +1,5 @@
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -17,7 +15,7 @@ body {
 .container {
   display: flex;
   background-color: #121212;
-  min-height: 100vh;
+
 }
 
 /* Sidebar 
@@ -53,7 +51,6 @@ body {
   padding: 10px;
   background-color: #292929;
   border-radius: 8px;
-  transition: 0.3s ease;
 }
 
 .sidebar a:hover {
@@ -81,7 +78,6 @@ body {
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .header-div button:hover {
@@ -94,7 +90,7 @@ body {
   gap: 30px;
   margin-bottom: 30px;
 }
-
+/* top område med totoal værid skrift osv..*/
 .card {
   flex: 1;
   background-color: #1f1f1f;
@@ -108,7 +104,7 @@ body {
   font-size: 14px;
   color: #aaa;
   text-transform: uppercase;
-  letter-spacing: 1px;
+    letter-spacing: 1px;
   margin-top: 0;
 }
 
@@ -120,7 +116,7 @@ body {
 /* Portefølje-liste og graf side om side */
 .portefolje-container {
   display: flex;
-  gap: 30px;
+  gap: 10px;
   align-items: flex-start;
   margin-top: 20px;
 }
