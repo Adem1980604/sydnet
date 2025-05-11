@@ -99,7 +99,17 @@ const dataikontotabel = `
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
   INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (2,'Meda_Konto4','DKK',3000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
 
-  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (5,'ForelæserKonto','DKK',30000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (3,'Mads_Konto1','DKK',5000,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (3,'Mads_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (3,'Mads_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (3,'Mads_Konto4','DKK',3000,'Nordea','2024-05-06 20:00:00',NULL,1)
+
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (4,'Nikola_Konto1','DKK',5000,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (4,'Nikola_Konto2','DKK',8500,'Jyske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (4,'Nikola_Konto3','DKK',2000,'Danske Bank','2024-05-06 20:00:00',NULL,1)
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (4,'Nikola_Konto4','DKK',3000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
+
+  INSERT INTO konto.kontooplysninger (bruger_id, navn, valuta, saldo, bank_ref, oprettet, nedlagt, aktiv) VALUES (5,'ForelæserKonto','DKK',300000,'Nordea Bank','2024-05-06 20:00:00',NULL,1)
 `;
 
 
@@ -121,12 +131,23 @@ const dataitransaktionstabel = `
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,200,'DKK','2025-02-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,500,'DKK','2025-03-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (2,50,'DKK','2025-04-06 20:00:00')
+
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,600,'DKK','2025-01-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,200,'DKK','2025-02-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,5000,'DKK','2025-03-06 20:00:00')
     INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (6,100,'DKK','2025-04-06 20:00:00')
 
-    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (9,30000,'DKK','2025-04-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (10,100,'DKK','2025-01-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (10,200,'DKK','2025-02-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (10,500,'DKK','2025-03-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (10,50,'DKK','2025-04-06 20:00:00')
+
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (14,600,'DKK','2025-01-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (14,200,'DKK','2025-02-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (14,5000,'DKK','2025-03-06 20:00:00')
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (14,100,'DKK','2025-04-06 20:00:00')
+
+    INSERT INTO konto.transaktioner (konto_id, vaerdi, valuta, datotid) VALUES (17,300000,'DKK','2025-04-06 20:00:00')
   `;
 
 
@@ -154,7 +175,18 @@ const dataIPortefoeljeTabel  = `
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje3','2024-05-07 20:00:00')
     INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (6,'Medas portefoelje4','2024-05-07 20:00:00')
 
-    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (9,'ForelæserPortefoelje','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (10,'Mads portefoelje1','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (10,'Mads portefoelje2','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (10,'Mads portefoelje3','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (10,'Mads portefoelje4','2024-05-07 20:00:00')
+
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (14,'Nikolas portefoelje1','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (14,'Nikolas portefoelje2','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (14,'Nikolas portefoelje3','2024-05-07 20:00:00')
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (14,'Nikolas portefoelje4','2024-05-07 20:00:00')
+
+
+    INSERT INTO konto.portefoelje (konto_id, navn, dato) VALUES (17,'ForelæserPortefoelje','2024-05-07 20:00:00')
 `;
 
 const lavVPOplysninger = `
@@ -217,7 +249,26 @@ values  ('BA',   1, 2, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-
         ('MCD',  5, 6, 'aktie', 0, 150, 1761.50, 264225.00,'DKK', 264.23, '2024-05-10 20:11:29.057'),
         ('NKE',  5, 6, 'aktie', 0, 110,  603.20,  66352.00,'DKK',  66.35, '2024-05-10 20:11:29.057'),
         ('WMT',  5, 6, 'aktie', 0, 200,  395.46,  79092.00,'DKK',  79.09, '2024-05-10 20:11:29.057'),
-        ('CAT',  5, 6, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057')
+        ('CAT',  5, 6, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057'),
+
+        ('BA',   9, 10, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-05-10 19:51:13.727'),        
+        ('AAPL', 9, 10, 'aktie', 0, 10,  1098.70,  10986.95,'DKK',  10.99, '2024-05-10 20:11:29.057'),
+        ('IBM',  9, 10, 'aktie', 0, 20,  1079.00,  21580.00,'DKK',  21.58, '2024-05-10 20:11:29.057'),
+        ('MCD',  9, 10, 'aktie', 0, 150, 1761.50, 264225.00,'DKK', 264.23, '2024-05-10 20:11:29.057'),
+        ('NKE',  9, 10, 'aktie', 0, 110,  603.20,  66352.00,'DKK',  66.35, '2024-05-10 20:11:29.057'),
+        ('WMT',  9, 10, 'aktie', 0, 200,  395.46,  79092.00,'DKK',  79.09, '2024-05-10 20:11:29.057'),
+        ('CAT',  9, 10, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057'),
+
+        ('BA',   13, 14, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-05-10 19:51:13.727'),        
+        ('AAPL', 13, 14, 'aktie', 0, 10,  1098.70,  10986.95,'DKK',  10.99, '2024-05-10 20:11:29.057'),
+        ('IBM',  13, 14, 'aktie', 0, 20,  1079.00,  21580.00,'DKK',  21.58, '2024-05-10 20:11:29.057'),
+        ('MCD',  13, 14, 'aktie', 0, 150, 1761.50, 264225.00,'DKK', 264.23, '2024-05-10 20:11:29.057'),
+        ('NKE',  13, 14, 'aktie', 0, 110,  603.20,  66352.00,'DKK',  66.35, '2024-05-10 20:11:29.057'),
+        ('WMT',  13, 14, 'aktie', 0, 200,  395.46,  79092.00,'DKK',  79.09, '2024-05-10 20:11:29.057'),
+        ('CAT',  13, 14, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057'),
+
+        ('BA',   17, 17, 'aktie', 0, 100,  764.21,  76420.50,'DKK',  76.42, '2024-05-10 19:51:13.727'),        
+        ('CAT',  17, 17, 'aktie', 0, 100, 2215.66, 221565.50,'DKK', 221.57, '2024-05-10 20:11:29.057')
         ;
         `;
 
@@ -247,6 +298,7 @@ values  ( 1, 590000, 'DKK', '2024-05-10 19:51:13.727'),
         ( 1, 953000, 'DKK', '2025-02-10 20:11:29.057'),
         ( 1, 820000, 'DKK', '2025-03-10 20:11:29.057'),
         ( 1, 800000, 'DKK', '2025-04-10 20:11:29.057'),
+
         ( 5, 590000, 'DKK', '2024-05-10 19:51:13.727'),        
         ( 5, 630000, 'DKK', '2024-06-10 20:11:29.057'),
         ( 5, 710000, 'DKK', '2024-07-10 20:11:29.057'),
@@ -258,7 +310,46 @@ values  ( 1, 590000, 'DKK', '2024-05-10 19:51:13.727'),
         ( 5, 830000, 'DKK', '2025-01-10 20:11:29.057'),
         ( 5, 953000, 'DKK', '2025-02-10 20:11:29.057'),
         ( 5, 820000, 'DKK', '2025-03-10 20:11:29.057'),
-        ( 5, 800000, 'DKK', '2025-04-10 20:11:29.057')
+        ( 5, 800000, 'DKK', '2025-04-10 20:11:29.057'),
+
+        ( 9, 590000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 9, 630000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 9, 710000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 9, 681000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 9, 693000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 9, 745000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 9, 750000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 9, 810000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 9, 830000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 9, 953000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 9, 820000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 9, 800000, 'DKK', '2025-04-10 20:11:29.057'),
+
+        ( 13, 590000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 13, 630000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 13, 710000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 13, 681000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 13, 693000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 13, 745000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 13, 750000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 13, 810000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 13, 830000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 13, 953000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 13, 820000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 13, 800000, 'DKK', '2025-04-10 20:11:29.057'),
+         
+        ( 17, 275000, 'DKK', '2024-05-10 19:51:13.727'),        
+        ( 17, 290000, 'DKK', '2024-06-10 20:11:29.057'),
+        ( 17, 325000, 'DKK', '2024-07-10 20:11:29.057'),
+        ( 17, 302000, 'DKK', '2024-08-10 20:11:29.057'),
+        ( 17, 308000, 'DKK', '2024-09-10 20:11:29.057'),
+        ( 17, 319000, 'DKK', '2024-10-10 20:11:29.057'),
+        ( 17, 321000, 'DKK', '2024-11-10 20:11:29.057'),
+        ( 17, 340000, 'DKK', '2024-12-10 20:11:29.057'),
+        ( 17, 345000, 'DKK', '2025-01-10 20:11:29.057'),
+        ( 17, 361000, 'DKK', '2025-02-10 20:11:29.057'),
+        ( 17, 345000, 'DKK', '2025-03-10 20:11:29.057'),
+        ( 17, 310000, 'DKK', '2025-04-10 20:11:29.057')
         ;
         `;
 
