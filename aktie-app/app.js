@@ -64,3 +64,7 @@ app.listen(port, () => { //Gør at porten er åben og lytter
     console.log(`app listening on port ${port}`) //Tekst i konsollen
 });
 
+
+
+
+

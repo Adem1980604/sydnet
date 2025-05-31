@@ -4,7 +4,7 @@ const {assert} = require("chai");
 const PortefoljeBeregner = require('../../logik/PorteBeregner');
 
 
-describe("PortefoljeBeregner", function() {
+describe("PortefoljeBeregner", function() { // describe grupperede de reletrede test
   it("beregner korrekt antal og GAK efter køb og salg", function()  {
     
     const handler = [
