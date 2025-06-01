@@ -33,7 +33,7 @@ router.get('/hentkontooplysninger', async function (req, res) {
   // sender json objekt videre til kontooplysninger.ejs
   res.json(result.recordset);
 });
-
+ 
 
 // Håndtere post fra kontooplysninger.ejs og opretter konto i databasen
 router.post('/kontooplysninger', async function (req, res) {
@@ -107,16 +107,16 @@ router.get('/konto/:id', async function (req, res) {
   const transaktioner = transaktionerResultater.recordset;
 
     // Hent porteføljer
-  const portefoljeResultater = await db.request()
+ /* const portefoljeResultater = await db.request()
     .input('id', sql.Int, konto_id)
     .query('SELECT * FROM konto.portefoelje WHERE konto_id = @id');
   const portefoljer = portefoljeResultater.recordset;
-   
+   */
   // render siden med data 
   res.render('portestyring/konto-detalje', {
     konto, // vi sender konti object til konto_detalje.ejs
     transaktioner, // hvis vi vil sende indsættelsesdata til ejs siden
-    portefoljer // sendes til EJS
+    //portefoljer // sendes til EJS
   });
 });
 
@@ -585,7 +585,7 @@ try {
   });
 
 });
-
+// rute til visning af en specifikt værdi papir ( EJS. side der tilhøre er vpapir-detalje.ejs)
 router.get('/vaerdipapir/:symbol', async function (req, res) {
   const db = await forbindDatabase();
   const symbol = req.params.symbol;
@@ -600,7 +600,7 @@ router.get('/vaerdipapir/:symbol', async function (req, res) {
   const info = resultat.recordset[0];
 
 
-  res.render('portestyring/vpapir-detalje', {info});
+  res.render('portestyring/vpapir-detalje', {info}); // info bruges så i EJS filen til at vise oplysninger som navn osv.
 });
 
 
