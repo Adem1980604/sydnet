@@ -1,13 +1,14 @@
 
-const express = require('express');
-const path = require('path');
+const express = require('express'); //Gør at man kan lave en hjemmeside, hvor alt kan snakke sammen
 const app = express();
-app.set('case sensitive routing', false);
-const session = require('express-session');
+
+const path = require('path'); //Giver dig mulighed for at arbejde med flere forskellige filer/fil struktur
+app.set('case sensitive routing', false); //Ikke case sensitive json
+const session = require('express-session'); //Gør at vi kan arbejde med sessions
 
 
 
-const port = 4000;
+const port = 4000; //Serveren kører på denne port
 
 
 // her sætter vi EJS som template, så vi kan bruge "dynamiske" HTML-sider

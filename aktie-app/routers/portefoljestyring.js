@@ -208,7 +208,7 @@ router.get('/portefoeljeoversigt', async function (req, res) {
         ktoopl.navn as kontonavn,
         ktoopl.valuta as kontovaluta
       FROM konto.portefoelje portf
-      JOIN konto.kontooplysninger ktoopl on portf.konto_id = ktoopl.konto_id
+      JOIN konto.kontooplysninger ktoopl ON portf.konto_id = ktoopl.konto_id
       WHERE ktoopl.bruger_id = @loggetInd_bruger_id`
     );
   const portefoljer = portefoljeResultater.recordset;
