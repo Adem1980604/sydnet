@@ -20,7 +20,7 @@ router.get('/hentaktiekurs/:navn', async function (req, res) {
   
   //Hvorvidt man vil arbejde med live eller offlinedata
   //**********************LIVE = true / OFFLINE = false****************
-  const live = false;
+  const live = true;
 
   //Hvis vi vil arbejde med live data
   if (live == true) {
