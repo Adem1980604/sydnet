@@ -177,7 +177,7 @@ router.post('/nulstill', async function (req, res) {
 
 //**********ROUTE TIL AT VISE KONTOOVERSIGT/KONTOOPLYSNINGER************
 router.get('/kontooplysninger', function (req, res) {
-    res.render('bruger-sider/kontooplysninger');
+   res.render('bruger-sider/kontooplysninger');
 });
 
 

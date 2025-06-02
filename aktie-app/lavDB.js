@@ -1,4 +1,4 @@
-const sql = require('mssql'); // vi importerer mssql-pakken, som forbinder med SQL server
+const sql = require('mssql'); // vi importerer mssql-pakken, som gør at vi kan skrive SQL
 require('dotenv').config(); //Gør det muligt at få info fra vores .env fil
 
 // Forbinder til .env og får info om vores database 
