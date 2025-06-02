@@ -45,3 +45,4 @@ describe("PortefoljeBeregner", function() { // describe grupperede de reletrede 
    assert.closeTo(aktie.gak, 133.33, 0.01);
   });
 });
+

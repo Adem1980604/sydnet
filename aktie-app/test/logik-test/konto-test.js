@@ -4,6 +4,7 @@ const {assert} = require('chai');
 const {hentSaldo} = require('../../ISOfunktioner/konto');
 
 describe("hentSaldo", function () {
+
   it("returnerer korrekt saldo fra fake db", async function() {
 // vi laver en fake DB forbindelse med det samme struktur som vores normale DB
     const fakeDb = {
