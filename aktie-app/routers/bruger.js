@@ -177,7 +177,7 @@ router.post('/nulstill', async function (req, res) {
 
 //**********ROUTE TIL AT VISE KONTOOVERSIGT/KONTOOPLYSNINGER************
 router.get('/kontooplysninger', function (req, res) {
-    res.render('bruger-sider/kontooplysninger');
+   res.render('bruger-sider/kontooplysninger');
 });
 
 
@@ -251,7 +251,7 @@ router.post('/indsaetter', async function (req, res) {
         .input('konto_id', sql.Int, konto_id)
         .query(`
       UPDATE konto.kontooplysninger
-      SET saldo = saldo + @vaerdi
+      SET  = saldo + @vaerdi
       WHERE konto_id = @konto_id 
     `);
 
@@ -274,7 +274,7 @@ router.post('/indsaetter', async function (req, res) {
 // Dashboard route som viser alle de regnede værdier som vises på Dashboard
 router.get('/dashboard', async function (req, res) {
   
-  const brugerId = req.session.bruger_id;
+  const brugerId = req.session.bruger_id; // tager fat i den speficikke bruger der bruger siden.
   const db = await forbindDatabase();
 
   // 1. Hent alle konti
@@ -333,7 +333,6 @@ router.get('/dashboard', async function (req, res) {
         aktie.pris = aktuelPris * valutakurs;        
     }
   }
-
 
   // 4. Beregner totaler
   const totaler = beregner.beregnTotaler();

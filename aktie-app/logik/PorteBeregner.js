@@ -14,7 +14,7 @@ class PortefoljeBeregner {
     constructor(handler, konti = []) {
         this.handler = handler;  // Gemmer alle handler (køb og salg) brugeren har lavet
         this.konti = konti;       //  Gemmer alle brugerens konti med saldo
-        this.ejerListe = []; // Liste over aktier brugeren ejer lige nu
+        this.ejerListe = []; // Liste over aktier brugeren ejer lige nu + har ejet
         this.gakBeregning = [];  // Data til at beregne GAK på hver aktie
         this.ejerListeFiltreret = []; // Kun aktier hvor antal > 0 (ingen solgte)
         this.realiseretGevinst = 0; // Akkumulerer realiseret gevinst/tab
@@ -24,6 +24,7 @@ class PortefoljeBeregner {
     beregnEjerOgGAK() {
         //console.log("****************handler************");
         //console.log(this.handler);
+
         // Sorter handler efter dato først 
         this.handler.sort((a,b) => new Date(a.datotid)-new Date(b.datotid));
 
@@ -55,6 +56,7 @@ class PortefoljeBeregner {
                 this.ejerListe.push(ejerAktie);
                  }
 
+
             // 2:Find eller opret GAK beregning for aktien
             let gakAktie =null;
             for (let j = 0; j< this.gakBeregning.length; j++) {
@@ -67,12 +69,15 @@ class PortefoljeBeregner {
                 gakAktie = {symbol ,samletAntal:0,samletPris:0};
                 this.gakBeregning.push(gakAktie);
             }
+           
+
             // 3: Opdater ejerantal og GAK baseret på køb/salg
             if (salg_koeb === false) { // køb
 
                 ejerAktie.antal+= antal;
                 gakAktie.samletPris +=antal * pris;
                 gakAktie.samletAntal += antal;
+
             } else {// salg
                 ejerAktie.antal -=antal;
 

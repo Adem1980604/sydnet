@@ -4,14 +4,16 @@ const {assert} = require('chai');
 const {hentSaldo} = require('../../ISOfunktioner/konto');
 
 describe("hentSaldo", function () {
+
   it("returnerer korrekt saldo fra fake db", async function() {
 // vi laver en fake DB forbindelse med det samme struktur som vores normale DB
     const fakeDb = {
       request: function () { // vi starter en sql request 
         return {
-        input: function () { // her tilføjer vi vores konto_id = konto_id 
+        input: function () { // her tilføjer vi vores konto_id = konto_id  det der bliver sat ind er .input('konto_id', konto_id)
           return {
-          query: async function(){ // sender sql query 
+          query: async function(){ // sender sql query det der bliver sat ind her er query(`SELECT saldo FROM konto.kontooplysninger WHERE konto_id = @konto_id`);
+    
             return ({recordset:[{ saldo: 1500}]})
           }
         };

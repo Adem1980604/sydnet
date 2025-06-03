@@ -13,11 +13,11 @@ const config = {
   }
 };
 
-// vi forbinder nu vores database 
+// vi sætter funktion op der kan forbinder os til databasen 
 async function forbindDatabase() {
   return await sql.connect(config);
 }
-
+//Vi vil bruge de her funktioner globalt
 module.exports = {
   sql,
   forbindDatabase
