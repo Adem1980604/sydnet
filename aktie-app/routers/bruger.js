@@ -251,7 +251,7 @@ router.post('/indsaetter', async function (req, res) {
         .input('konto_id', sql.Int, konto_id)
         .query(`
       UPDATE konto.kontooplysninger
-      SET  = saldo + @vaerdi
+      SET saldo = saldo + @vaerdi
       WHERE konto_id = @konto_id 
     `);
 
